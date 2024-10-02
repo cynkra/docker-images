@@ -30,7 +30,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         run: |
-          echo "tag=$(head -1 | cut -d: -f2)" >> "$GITHUB_OUTPUT"
+          echo "tag=$(head -1 tofutf | cut -d: -f2)" >> "$GITHUB_OUTPUT"
       - name: test
         run: ${{ steps.meta.outputs.tag }}
       # - name: Build and push Docker image
