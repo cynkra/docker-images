@@ -31,9 +31,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
+        env:
+          IMAGE: ${{ matrix.image }}
         id: meta
         run: |
-          echo "tag=$(head -1 ${{ matrix.image }} | cut -d: -f2)" >> "$GITHUB_OUTPUT"
+          echo "tag=$(grep FROM $IMAGE | cut -d: -f2)" >> "$GITHUB_OUTPUT"
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
