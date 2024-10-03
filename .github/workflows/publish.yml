@@ -20,7 +20,7 @@ jobs:
       # 
     strategy:
       matrix:
-        images: [tofutf, rig-ubuntu, rig-rocky8]
+        image: [tofutf, rig-ubuntu, rig-rocky8]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
