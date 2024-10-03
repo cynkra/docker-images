@@ -36,6 +36,7 @@ jobs:
         id: meta
         run: |
           echo "tag=$(grep FROM $IMAGE | cut -d: -f2)" >> "$GITHUB_OUTPUT"
+      # setup buildx is needed to use cache
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build and push Docker image
