@@ -45,6 +45,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.image }}
+          sbom: true
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:${{ steps.meta.outputs.tag }}
           cache-from: type=gha
