@@ -2,7 +2,9 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: ['main']
+    branches:
+      - main
+      - dev
   workflow_dispatch:
 
 env:
@@ -49,7 +51,7 @@ jobs:
         with:
           context: .
           file: ${{ matrix.image }}
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:${{ steps.meta.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:latest
