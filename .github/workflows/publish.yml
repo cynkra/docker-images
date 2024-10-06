@@ -53,8 +53,8 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:${{ steps.meta.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:latest
+          cache-to: type=inline
 
       # # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
       # - name: Generate artifact attestation
