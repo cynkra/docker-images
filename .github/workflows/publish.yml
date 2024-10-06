@@ -47,7 +47,9 @@ jobs:
           context: .
           file: ${{ matrix.image }}
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:${{ steps.meta.outputs.tag }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ matrix.image }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
