@@ -72,6 +72,7 @@ jobs:
       matrix:
         image:
           - rig-ubuntu-dbi
+          - rig-ubuntu-revdepcheck
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
