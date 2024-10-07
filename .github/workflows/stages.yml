@@ -18,8 +18,14 @@ jobs:
     strategy:
       matrix:
         image:
-          - tofutf
+          - r-4-duckdb
+          - r-minimal
+          - rig-centos7
+          - rig-rocky8
           - rig-ubuntu
+          - rig-ubuntu-revdepcheck
+          - rigraph-san
+          - tofutf
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       image: ${{ matrix.image }}
@@ -29,7 +35,11 @@ jobs:
     strategy:
       matrix:
         image:
-          - rig-rocky8
+          - RPostgres
+          - dm
+          - rig-ubuntu-dbi
+          - rig-ubuntu-duckdb
+          - rig-ubuntu-igraph
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       image: ${{ matrix.image }}
