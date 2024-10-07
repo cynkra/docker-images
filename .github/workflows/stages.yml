@@ -23,7 +23,6 @@ jobs:
           - rig-centos7
           - rig-rocky8
           - rig-ubuntu
-          - rig-ubuntu-revdepcheck
           - rigraph-san
           - tofutf
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
@@ -40,6 +39,7 @@ jobs:
           - rig-ubuntu-dbi
           - rig-ubuntu-duckdb
           - rig-ubuntu-igraph
+          - rig-ubuntu-revdepcheck
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       image: ${{ matrix.image }}

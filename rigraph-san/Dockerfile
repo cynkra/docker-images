@@ -1,4 +1,4 @@
-FROM wch1/r-debug
+FROM wch1/r-debug:latest
 
 RUN apt-get install -y libglpk-dev libgmp-dev libarpack2-dev
 
