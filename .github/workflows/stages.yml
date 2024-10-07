@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         image:
-          - RPostgres
+          - r-postgres
           - dm
           - rig-ubuntu-dbi
           - rig-ubuntu-duckdb
