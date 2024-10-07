@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-ubuntu:main
+FROM ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 
 RUN apt-get install -y python3
 
