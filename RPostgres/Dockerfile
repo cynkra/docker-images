@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-ubuntu:main
+FROM ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 
 RUN apt-get update && apt-get install -y gnupg lsb-release time postgresql-client
 
