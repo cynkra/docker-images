@@ -19,9 +19,9 @@ jobs:
       matrix:
         image:
           - r-4-duckdb
-          # - r-debug
+          # - r-debug # forked from wch/r-debug, not yet ready
           - r-minimal
-          # - rig-centos7
+          # - rig-centos7 # EOL
           - rig-rocky8
           - rig-ubuntu
           - rigraph-san
