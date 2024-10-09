@@ -44,3 +44,13 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       image: ${{ matrix.image }}
+
+  stage-3:
+    needs: stage-2
+    strategy:
+      matrix:
+        image:
+          - rig-ubuntu-duckdb-dev
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      image: ${{ matrix.image }}
