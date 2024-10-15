@@ -22,6 +22,7 @@ jobs:
           # - r-debug # forked from wch/r-debug, not yet ready
           - r-minimal
           # - rig-centos7 # EOL
+          - rig-debian
           - rig-rocky8
           - rig-ubuntu
           - rigraph-san
