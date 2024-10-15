@@ -43,6 +43,7 @@ jobs:
           - rig-ubuntu-duckdb
           - rig-ubuntu-igraph
           - rig-ubuntu-revdepcheck
+          - rig-ubuntu24-gcc14
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       image: ${{ matrix.image }}
