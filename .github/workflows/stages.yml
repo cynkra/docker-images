@@ -25,6 +25,7 @@ jobs:
           - rig-debian
           - rig-rocky8
           - rig-ubuntu
+          - rig-ubuntu24
           - rigraph-san
           - tofutf
     uses: cynkra/docker-images/.github/workflows/publish.yml@main

@@ -70,6 +70,10 @@ FIXME
 
 FIXME
 
+### [rig-ubuntu24](rig-ubuntu24)
+
+Ubuntu 24.04 with rig.
+
 ### [rigraph-san](rigraph-san)
 
 FIXME
