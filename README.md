@@ -78,6 +78,10 @@ Ubuntu 24.04 with rig.
 
 Based on rig-ubuntu24, with GCC 14.
 
+### [rig-ubuntu24-gcc14-duckdb](rig-ubuntu24-gcc14-duckdb)
+
+Based on rig-ubuntu24-gcc14, with duckdb dependencies.
+
 ### [rigraph-san](rigraph-san)
 
 FIXME
