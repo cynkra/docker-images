@@ -14,3 +14,5 @@ update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 50
 update-alternatives --install /usr/bin/cpp cpp-bin /usr/bin/cpp-14 100
 update-alternatives --install /usr/bin/cpp cpp-bin /usr/bin/cpp-13 50
 EOF
+
+RUN echo -e "CXX11FLAGS=-Wall -pedantic -g -O2\nCXX14FLAGS=-Wall -pedantic -g -O2\nCXX17FLAGS=-Wall -pedantic -g -O2\nCFLAGS=-Wall -pedantic -g -O2" >> ~/.R/Makevars

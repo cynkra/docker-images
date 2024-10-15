@@ -76,7 +76,7 @@ Ubuntu 24.04 with rig.
 
 ### [rig-ubuntu24-gcc14](rig-ubuntu24-gcc14)
 
-Based on rig-ubuntu24, with GCC 14.
+Based on rig-ubuntu24, with GCC 14, to replicate compiler warnings on CRAN.
 
 ### [rig-ubuntu24-gcc14-duckdb](rig-ubuntu24-gcc14-duckdb)
 
