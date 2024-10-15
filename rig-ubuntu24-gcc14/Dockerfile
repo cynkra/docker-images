@@ -3,7 +3,7 @@ FROM ghcr.io/cynkra/docker-images/rig-ubuntu24:latest
 # Get most recent gcc-14 from oracular
 RUN sed -i 's/noble/oracular/g' /etc/apt/sources.list
 
-RUN apt-get update && install -y gcc-14 g++-14 cpp-14
+RUN apt-get update && apt-get install -y gcc-14 g++-14 cpp-14
 
 # https://stackoverflow.com/a/9103299/946850
 RUN <<EOF
