@@ -1,5 +1,5 @@
 # Before changing this to 24.04, check if pak install from binary
-FROM debian:trixie
+FROM debian:bookworm
 
 RUN apt-get update && apt-get install -y curl sudo locales ccache
 
