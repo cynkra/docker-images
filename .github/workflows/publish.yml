@@ -35,6 +35,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.image }}
+          pull: true
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ inputs.image }}:latest
