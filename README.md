@@ -58,6 +58,10 @@ FIXME
 
 FIXME
 
+### [rig-ubuntu-duckdb4](rig-ubuntu-duckdb4)
+
+Like rig-ubuntu-duckdb, but with R 4.0.
+
 ### [rig-ubuntu-duckdb-dev](rig-ubuntu-duckdb-dev)
 
 FIXME

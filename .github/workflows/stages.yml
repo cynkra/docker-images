@@ -41,6 +41,7 @@ jobs:
           - dm
           - rig-ubuntu-dbi
           - rig-ubuntu-duckdb
+          - rig-ubuntu-duckdb4
           - rig-ubuntu-igraph
           - rig-ubuntu-revdepcheck
           - rig-ubuntu24-gcc14
