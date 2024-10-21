@@ -1,6 +1,8 @@
 # Before changing this to 24.04, check if pak install from binary
 FROM ubuntu:22.04
 
+COPY date.txt /date.txt
+
 RUN apt-get update && apt-get install -y curl sudo locales ccache
 
 # https://stackoverflow.com/a/28406007/946850
