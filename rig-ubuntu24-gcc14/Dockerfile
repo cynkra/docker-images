@@ -15,4 +15,8 @@ update-alternatives --install /usr/bin/cpp cpp-bin /usr/bin/cpp-14 100
 update-alternatives --install /usr/bin/cpp cpp-bin /usr/bin/cpp-13 50
 EOF
 
-RUN echo -e "CXX11FLAGS=-Wall -pedantic -g -O2\nCXX14FLAGS=-Wall -pedantic -g -O2\nCXX17FLAGS=-Wall -pedantic -g -O2\nCFLAGS=-Wall -pedantic -g -O2" >> ~/.R/Makevars
+# echo without /bin/echo adds a verbatim `-e` to the output
+# because commands in Dockerfiles are by default
+# run in /bin/sh and not /bin/bash and
+# the shell builtin echo does not support the `-e` flag
+RUN /bin/echo -e "CXX11FLAGS=-Wall -pedantic -g -O2\nCXX14FLAGS=-Wall -pedantic -g -O2\nCXX17FLAGS=-Wall -pedantic -g -O2\nCFLAGS=-Wall -pedantic -g -O2" >> ~/.R/Makevars
