@@ -34,9 +34,9 @@ FIXME
 
 FIXME
 
-### [rig-centos7](rig-centos7)
+### [rchk-igraph](rchk-igraph)
 
-FIXME
+From kalibera/rchk with igraph dependencies.
 
 ### [rig-debian](rig-debian)
 

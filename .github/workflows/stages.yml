@@ -21,6 +21,7 @@ jobs:
           - r-4-duckdb
           # - r-debug # forked from wch/r-debug, not yet ready
           - r-minimal
+          - rchk-igraph
           # - rig-centos7 # EOL
           - rig-debian
           - rig-rocky8
