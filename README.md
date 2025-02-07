@@ -90,6 +90,10 @@ Based on rig-ubuntu24-gcc14, with duckdb dependencies.
 
 FIXME
 
+#### [sops-age](sops-age)
+
+A minimal image with `sops` and `age`.
+
 ### [tofutf](tofutf)
 
 FIXME
