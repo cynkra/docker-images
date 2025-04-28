@@ -1,8 +1,8 @@
 FROM wch1/r-debug:latest
 
-RUN apt-get install -y libglpk-dev libgmp-dev libarpack2-dev
-
 RUN true
+
+RUN apt-get install -y libglpk-dev libgmp-dev libarpack2-dev
 
 RUN RD -q -e 'pak::pak("igraph/rigraph", dependencies = TRUE, upgrade = TRUE)'
 
