@@ -1,6 +1,6 @@
 FROM wch1/r-debug:latest
 
-RUN true
+COPY date.txt /date.txt
 
 RUN apt-get install -y libglpk-dev libgmp-dev libarpack2-dev
 
