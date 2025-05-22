@@ -1,3 +1,13 @@
 FROM ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest
 
-RUN R -q -e 'pak::pak(c("tidyverse/duckplyr", "duckdb/duckdb-r"))'
+RUN \
+  mkdir -p /clone && \
+  cd /clone && \
+  git clone https://github.com/duckdb/duckdb-r.git && \
+  cd duckdb-r && \
+  UserNM=true R CMD INSTALL . --no-byte-compile && \
+  cd .. && \
+  git clone https://github.com/tidyverse/duckplyr.git && \
+  cd duckplyr && \
+  UserNM=true R CMD INSTALL . --no-byte-compile && \
+  cd ..
