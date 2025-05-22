@@ -1,5 +1,7 @@
 FROM ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest
 
+COPY date.txt /date.txt
+
 RUN \
   mkdir -p /clone && \
   cd /clone && \
