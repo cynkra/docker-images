@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-ubuntu24:latest
+FROM ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev:latest
 
 # Get most recent gcc-14 from oracular
 RUN sed -i 's/noble/oracular/g' /etc/apt/sources.list.d/*

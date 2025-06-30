@@ -76,11 +76,19 @@ FIXME
 
 ### [rig-ubuntu24](rig-ubuntu24)
 
-Ubuntu 24.04 with rig.
+Ubuntu 24.04 with rig installed (base image without R).
+
+### [rig-ubuntu24-rrel](rig-ubuntu24-rrel)
+
+Based on rig-ubuntu24, with R release installed.
+
+### [rig-ubuntu24-rdev](rig-ubuntu24-rdev)
+
+Based on rig-ubuntu24, with R devel installed.
 
 ### [rig-ubuntu24-gcc14](rig-ubuntu24-gcc14)
 
-Based on rig-ubuntu24, with GCC 14, to replicate compiler warnings on CRAN.
+Based on rig-ubuntu24-rdev, with GCC 14, to replicate compiler warnings on CRAN.
 
 ### [rig-ubuntu24-gcc14-duckdb](rig-ubuntu24-gcc14-duckdb)
 

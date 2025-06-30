@@ -46,7 +46,8 @@ jobs:
           - rig-ubuntu-duckdb4
           - rig-ubuntu-igraph
           - rig-ubuntu-revdepcheck
-          - rig-ubuntu24-gcc14
+          - rig-ubuntu24-rrel
+          - rig-ubuntu24-rdev
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       image: ${{ matrix.image }}
@@ -57,6 +58,16 @@ jobs:
       matrix:
         image:
           - rig-ubuntu-duckdb-dev
+          - rig-ubuntu24-gcc14
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      image: ${{ matrix.image }}
+
+  stage-4:
+    needs: stage-3
+    strategy:
+      matrix:
+        image:
           - rig-ubuntu24-gcc14-duckdb
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:

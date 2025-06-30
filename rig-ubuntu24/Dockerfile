@@ -20,6 +20,4 @@ RUN curl -Ls https://github.com/r-lib/rig/releases/download/latest/rig-linux-lat
 
 RUN mkdir /root/.R && echo 'MAKEFLAGS=-j4' > /root/.R/Makevars
 
-RUN rig add release && rig add devel
-
 WORKDIR /root/workspace
