@@ -16,7 +16,7 @@ ENV LC_ALL=en_US.UTF-8
 
 RUN /usr/sbin/update-ccache-symlinks
 
-RUN curl -Ls https://github.com/r-lib/rig/releases/download/latest/rig-linux-latest.tar.gz | sudo tar xz -C /usr/local
+RUN curl -Ls https://github.com/r-lib/rig/releases/download/v0.7.1/rig-linux-0.7.1.tar.gz | sudo tar xz -C /usr/local
 
 RUN mkdir /root/.R && echo 'MAKEFLAGS=-j4' > /root/.R/Makevars
 
