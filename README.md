@@ -82,9 +82,17 @@ Ubuntu 24.04 with rig installed (base image without R).
 
 Based on rig-ubuntu24, with R release installed.
 
+### [rig-ubuntu24-rrel-devtools](rig-ubuntu24-rrel-devtools)
+
+Based on rig-ubuntu24-rrel, with devtools, usethis, and languageserver packages installed.
+
 ### [rig-ubuntu24-rdev](rig-ubuntu24-rdev)
 
 Based on rig-ubuntu24, with R devel installed.
+
+### [rig-ubuntu24-rdev-devtools](rig-ubuntu24-rdev-devtools)
+
+Based on rig-ubuntu24-rdev, with devtools, usethis, and languageserver packages installed.
 
 ### [rig-ubuntu24-gcc14](rig-ubuntu24-gcc14)
 

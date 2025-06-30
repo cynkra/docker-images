@@ -59,6 +59,8 @@ jobs:
         image:
           - rig-ubuntu-duckdb-dev
           - rig-ubuntu24-gcc14
+          - rig-ubuntu24-rrel-devtools
+          - rig-ubuntu24-rdev-devtools
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       image: ${{ matrix.image }}
