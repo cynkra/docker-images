@@ -15,19 +15,19 @@
 ## 3. Use Concatenated Commands for Layer Optimization
 
 - **Always concatenate** related RUN commands using `&&` to minimize Docker layers
-- **Always include cleanup** at the end: `rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* && rm -rf /var/tmp/*`
+- **Always include cleanup** at the end. Ubuntu example: `rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* && rm -rf /var/tmp/*`
 - Group logical operations together: system package installation, R package installation, configuration
+- RUN followed by backslash, && \ at the end of each line, true in the last line
 - Example:
 
   ```dockerfile
   # Install system dependencies and R packages, then clean up
-  RUN apt-get update && apt-get install -y \
-      package1 \
-      package2 && \
+  RUN apt-get update && apt-get install -y package1 package2 && \
       R -q -e 'pak::pak(c("pkg1", "pkg2"))' && \
       rm -rf /var/lib/apt/lists/* && \
       rm -rf /tmp/* && \
-      rm -rf /var/tmp/*
+      rm -rf /var/tmp/* && \
+      true
   ```
 
 ## 4. Docker Image Architecture Best Practices
