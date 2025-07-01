@@ -5,7 +5,7 @@ COPY date.txt /date.txt
 # Install system dependencies and rigraph for all R debug variants, then clean up
 RUN \
   apt-get update && \
-  apt-get install -y \ libglpk-dev  libgmp-dev  libarpack2-dev && \
+  apt-get install -y libglpk-dev  libgmp-dev  libarpack2-dev && \
   RD -q -e 'pak::pak("igraph/rigraph", dependencies = TRUE, upgrade = TRUE)' && \
   RDvalgrind -q -e 'pak::pak("igraph/rigraph", dependencies = TRUE, upgrade = TRUE)' && \
   RDsan -q -e 'pak::pak("igraph/rigraph", dependencies = TRUE, upgrade = TRUE)' && \
