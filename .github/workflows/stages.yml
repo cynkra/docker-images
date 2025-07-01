@@ -16,6 +16,7 @@ env:
 jobs:
   stage-1:
     strategy:
+      fail-fast: false
       matrix:
         image:
           # - r-debug # forked from wch/r-debug, not yet ready
@@ -36,6 +37,7 @@ jobs:
   stage-2:
     needs: stage-1
     strategy:
+      fail-fast: false
       matrix:
         image:
           - r-postgres
@@ -54,6 +56,7 @@ jobs:
   stage-3:
     needs: stage-2
     strategy:
+      fail-fast: false
       matrix:
         image:
           - rig-ubuntu-duckdb-dev
@@ -67,6 +70,7 @@ jobs:
   stage-4:
     needs: stage-3
     strategy:
+      fail-fast: false
       matrix:
         image:
           - rig-ubuntu24-gcc14-duckdb
