@@ -1,15 +1,18 @@
 FROM ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev:latest
 
 # Install common development tools
-RUN apt-get update && apt-get install -y \
-    git \
-    vim \
-    nano \
-    htop \
-    tree \
-    wget \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN \
+  apt-get update && \
+  apt-get install -y \ git  vim  nano  htop  tree  wget  ca-certificates && \
+  rm -rf /var/lib/apt/lists/* && \
+  true
 
-# Install R development packages
-RUN R-devel -q -e 'pak::pak(c("devtools", "usethis", "languageserver"))'
+
+# Install R development packages and clean up
+RUN \
+  R-devel -q -e 'pak::pak(c("devtools", "usethis", "languageserver"))' && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /tmp/* && \
+  rm -rf /var/tmp/* && \
+  true
+

@@ -2,6 +2,7 @@ FROM ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest
 
 COPY date.txt /date.txt
 
+# Clone and install development versions of duckdb-r and duckplyr, then clean up
 RUN \
   mkdir -p /clone && \
   cd /clone && \
@@ -12,4 +13,9 @@ RUN \
   git clone https://github.com/tidyverse/duckplyr.git && \
   cd duckplyr && \
   UserNM=true R CMD INSTALL . --no-byte-compile && \
-  cd ..
+  cd / && \
+  rm -rf /clone && \
+  rm -rf /tmp/* && \
+  rm -rf /var/tmp/* && \
+  true
+

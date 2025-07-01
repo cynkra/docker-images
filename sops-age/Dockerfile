@@ -2,13 +2,10 @@
 FROM alpine:latest
 
 # Install required packages
-RUN apk add --no-cache \
-    git \
-    curl \
-    bash \
-    jq \
-    age \
-    sops
+RUN \
+  apk add --no-cache git curl bash jq age sops && \
+  true
+
 
 # Set default working directory
 WORKDIR /repo

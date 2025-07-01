@@ -12,9 +12,33 @@
 - These files are used for build cache invalidation to ensure fresh package installations
 - When date.txt changes, it forces rebuilds of the entire pipeline
 
-## 3. Docker Image Architecture Best Practices
+## 3. Use Concatenated Commands for Layer Optimization
+
+- **Always concatenate** related RUN commands using `&&` to minimize Docker layers
+- **Always include cleanup** at the end: `rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* && rm -rf /var/tmp/*`
+- Group logical operations together: system package installation, R package installation, configuration
+- Example:
+
+  ```dockerfile
+  # Install system dependencies and R packages, then clean up
+  RUN apt-get update && apt-get install -y \
+      package1 \
+      package2 && \
+      R -q -e 'pak::pak(c("pkg1", "pkg2"))' && \
+      rm -rf /var/lib/apt/lists/* && \
+      rm -rf /tmp/* && \
+      rm -rf /var/tmp/*
+  ```
+
+## 4. Docker Image Architecture Best Practices
 
 - Maintain logical build pipeline staging based on dependencies
 - Use minimal image layers and appropriate base images
 - Separate concerns: base images, R variants, specialized tools
 - Document image purposes and dependencies clearly
+
+## 5. Always Update CLAUDE.md
+
+- **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
+- Include any new best practices, patterns, or important considerations discovered during development
+- Keep this file as a comprehensive guide for future maintenance and development
