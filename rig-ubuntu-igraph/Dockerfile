@@ -3,7 +3,7 @@ FROM ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 # Install system dependencies and R packages, then clean up
 RUN \
   apt-get update && \
-  apt-get install -y \ cmake  flex  bison  libglpk-dev  libgmp-dev  libarpack2-dev  python3-venv && \
+  apt-get install -y cmake flex bison libglpk-dev libgmp-dev libarpack2-dev python3-venv && \
   R -q -e 'pak::pak(c("igraph", "cpp11", "devtools"), dependencies = TRUE)' && \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /tmp/* && \
