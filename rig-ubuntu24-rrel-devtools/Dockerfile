@@ -3,7 +3,7 @@ FROM ghcr.io/cynkra/docker-images/rig-ubuntu24-rrel:latest
 # Install common development tools
 RUN \
   apt-get update && \
-  apt-get install -y git vim nano htop tree wget ca-certificates && \
+  apt-get install -y git vim nano htop tree wget ca-certificates wget gpg gnupg gnupg2 && \
   rm -rf /var/lib/apt/lists/* && \
   true
 
