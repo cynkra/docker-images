@@ -18,8 +18,3 @@
 - Use minimal image layers and appropriate base images
 - Separate concerns: base images, R variants, specialized tools
 - Document image purposes and dependencies clearly
-
-## Future Work Recommendations
-
-1. Explore adding common development tools (git, vim, etc.) to devtools variants
-2. Document the cache invalidation strategy using date.txt in README.md

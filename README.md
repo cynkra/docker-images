@@ -16,6 +16,12 @@ This repository contains customized Docker images, built on a regular schedule u
 3. Remove the directory name from the `stages.yml` file.
 4. Remove the image from this file.
 
+## Cache Invalidation Strategy
+
+Several Docker images in this repository use a `date.txt` file for cache invalidation to ensure fresh package installations. The `COPY date.txt /date.txt` instruction forces Docker to rebuild the entire pipeline from that point when the date.txt file changes.
+
+**Important**: Do not remove `COPY date.txt /date.txt` lines from Dockerfiles as they are essential for proper cache invalidation.
+
 ## Images
 
 ### [dm](dm)
@@ -84,7 +90,7 @@ Based on rig-ubuntu24, with R release installed.
 
 ### [rig-ubuntu24-rrel-devtools](rig-ubuntu24-rrel-devtools)
 
-Based on rig-ubuntu24-rrel, with devtools, usethis, and languageserver packages installed.
+Based on rig-ubuntu24-rrel, with devtools, usethis, and languageserver packages installed. Also includes common development tools: git, vim, nano, htop, tree, wget, and ca-certificates.
 
 ### [rig-ubuntu24-rdev](rig-ubuntu24-rdev)
 
@@ -92,7 +98,7 @@ Based on rig-ubuntu24, with R devel installed.
 
 ### [rig-ubuntu24-rdev-devtools](rig-ubuntu24-rdev-devtools)
 
-Based on rig-ubuntu24-rdev, with devtools, usethis, and languageserver packages installed.
+Based on rig-ubuntu24-rdev, with devtools, usethis, and languageserver packages installed. Also includes common development tools: git, vim, nano, htop, tree, wget, and ca-certificates.
 
 ### [rig-ubuntu24-gcc14](rig-ubuntu24-gcc14)
 
