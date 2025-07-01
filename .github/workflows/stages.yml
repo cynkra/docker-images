@@ -18,7 +18,6 @@ jobs:
     strategy:
       matrix:
         image:
-          - r-4-duckdb
           # - r-debug # forked from wch/r-debug, not yet ready
           - r-minimal
           - rchk-igraph
