@@ -68,8 +68,6 @@ jobs:
         uses: actions/attest-build-provenance@v1
         # Only on main branch
         if: github.ref == 'refs/heads/main'
-        env:
-          REGISTRY: ghcr.io
         with:
           subject-name: ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image }}
           subject-digest: ${{ steps.push.outputs.digest }}
@@ -80,6 +78,6 @@ jobs:
         # Only on main branch
         if: github.ref == 'refs/heads/main'
         with:
-          subject-name: ${{ github.repository_owner }}/${{ inputs.image }}
+          subject-name: docker.io/${{ github.repository_owner }}/${{ inputs.image }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
