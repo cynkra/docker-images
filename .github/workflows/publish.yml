@@ -21,24 +21,29 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Write date file
-        run: |
-          date -Idate > ${{ inputs.image }}/date.txt
-        shell: bash
+
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       # setup buildx is needed to use cache
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Write date file
+        run: |
+          date -Idate > ${{ inputs.image }}/date.txt
+        shell: bash
+
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
@@ -62,6 +67,7 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/${{ inputs.image }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
       - name: Generate artifact attestation for Docker Hub
         uses: actions/attest-build-provenance@v1
         # Only on main branch
