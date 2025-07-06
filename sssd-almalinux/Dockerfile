@@ -21,3 +21,7 @@ RUN dnf update -y && \
     curl -sSL https://github.com/krallin/tini/releases/download/v0.19.0/tini -o /usr/local/bin/tini && \
     chmod +x /usr/local/bin/tini && \
     true
+
+RUN \
+  dnf install -y dbus-daemon && \
+  true
