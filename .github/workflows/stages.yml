@@ -29,6 +29,7 @@ jobs:
           - rig-ubuntu24
           - rigraph-san
           - sops-age
+          - sssd-almalinux
           - tofutf
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
