@@ -14,7 +14,10 @@ RUN dnf update -y && \
     oddjob-mkhomedir \
     adcli \
     samba-common-tools \
-    tini \
     systemd \
     procps-ng \
-    && dnf clean all
+    && \
+    dnf clean all && \
+    curl -sSL https://raw.githubusercontent.com/krallin/tini/releases/download/v0.19.0/tini -o /usr/local/bin/tini && \
+    chmod +x /usr/local/bin/tini && \
+    true
