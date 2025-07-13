@@ -3,7 +3,7 @@ FROM ghcr.io/cynkra/docker-images/rig-alma9-rrel:latest
 COPY date.txt /date.txt
 
 RUN \
-  dnf install -y git && \
+  dnf install -y git diffutils && \
   true
 
 RUN \
