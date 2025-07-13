@@ -12,15 +12,27 @@ help:
 	@echo "  clean    - Remove generated files"
 	@echo "  help     - Show this help message"
 
+.venv:
+	@echo "Creating Python virtual environment"
+	@python3.11 -m venv .venv
+	@touch requirements.txt
+	@echo "To activate the virtual environment, run 'source .venv/bin/activate'"
+
+.venv/pyvenv.cfg: requirements.txt .venv
+	@echo "Installing requirements"
+	@source .venv/bin/activate && pip install -r $<
+	@touch $@
+
+
 # Generate stages.yml file
-stages:
+stages: .venv/pyvenv.cfg
 	@echo "Generating stages.yml from Dockerfiles..."
-	python3 generate_stages.py
+	@source .venv/bin/activate && python3 generate_stages.py
 
 # Generate only the analysis report
-analysis:
+analysis: .venv/pyvenv.cfg
 	@echo "Generating dependency analysis..."
-	python3 -c "from generate_stages import DockerImageAnalyzer; import pathlib; analyzer = DockerImageAnalyzer('.'); report = analyzer.generate_comprehensive_analysis(); pathlib.Path('DOCKER_DEPENDENCY_ANALYSIS.md').write_text(report, encoding='utf-8'); print('Analysis written to DOCKER_DEPENDENCY_ANALYSIS.md')"
+	@source .venv/bin/activate && python3 -c "from generate_stages import DockerImageAnalyzer; import pathlib; analyzer = DockerImageAnalyzer('.'); report = analyzer.generate_comprehensive_analysis(); pathlib.Path('DOCKER_DEPENDENCY_ANALYSIS.md').write_text(report, encoding='utf-8'); print('Analysis written to DOCKER_DEPENDENCY_ANALYSIS.md')"
 
 # Clean generated files
 clean:
