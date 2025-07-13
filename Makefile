@@ -2,6 +2,8 @@
 
 .PHONY: stages analysis clean help
 
+all: stages analysis
+
 # Default target
 help:
 	@echo "Available targets:"
