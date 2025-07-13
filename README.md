@@ -72,11 +72,6 @@ AlmaLinux 9 with R release installed via rig. Ready-to-use R environment for pro
 **Dependency**: debian
 Debian-based rig environment for compatibility testing and specialized Debian workflows.
 
-### [rig-centos7](rig-centos7)
-
-**Dependency**: centos:7
-CentOS 7-based rig environment for legacy enterprise compatibility testing.
-
 ### [rig-rocky8](rig-rocky8)
 
 **Dependency**: rockylinux:8

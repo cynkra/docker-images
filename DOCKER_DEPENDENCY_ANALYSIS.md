@@ -2,7 +2,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 28
+- Total Dockerfiles found: 27
 - Images with local dependencies: 16
 - Build stages required: 4
 
@@ -16,7 +16,6 @@
 ✓ rig-alma9 ← almalinux/9-base (external)
 ✓ rig-alma9-rrel ← rig-alma9 ← ghcr.io/cynkra/docker-images/rig-alma9:latest
 ✓ rig-alma9-rrel-coinor ← rig-alma9-rrel ← ghcr.io/cynkra/docker-images/rig-alma9-rrel:latest
-✓ rig-centos7 ← centos:centos7 (external)
 ✓ rig-debian ← debian:bookworm (external)
 ✓ rig-rocky8 ← rockylinux:8 (external)
 ✓ rig-ubuntu ← ubuntu:22.04 (external)
@@ -78,7 +77,6 @@
 - `almalinux/9-base` used by: rig-alma9
 - `almalinux:9` used by: sssd-almalinux
 - `alpine:latest` used by: sops-age
-- `centos:centos7` used by: rig-centos7
 - `debian:bookworm` used by: rig-debian
 - `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` used by: tofutf
 - `kalibera/rchk:latest` used by: rchk-igraph
