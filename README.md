@@ -57,6 +57,16 @@ PostgreSQL-enabled R environment with postgresql-client and essential system too
 **Dependency**: kalibera/rchk:latest
 R check environment with igraph dependencies, based on kalibera/rchk. Includes libglpk-dev for graph optimization algorithms. Used for rigorous package checking and validation.
 
+### [rig-alma9](rig-alma9)
+
+**Dependency**: almalinux/9-base
+AlmaLinux 9 with rig installed. Includes essential system packages (curl, sudo, locales, ccache), proper locale configuration (en_US.UTF-8), and optimized R build configuration (MAKEFLAGS=-j4). Foundation image without R installed.
+
+### [rig-alma9-rrel](rig-alma9-rrel)
+
+**Dependency**: rig-alma9
+AlmaLinux 9 with R release installed via rig. Ready-to-use R environment for production workflows.
+
 ### [rig-debian](rig-debian)
 
 **Dependency**: debian
