@@ -68,7 +68,7 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - rig-alma9-rrel
+          - rig-alma9-rrel-coinor
           - rig-ubuntu-duckdb-dev
           - rig-ubuntu24-gcc14
           - rig-ubuntu24-rrel-devtools
