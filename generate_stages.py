@@ -307,15 +307,15 @@ class DockerImageAnalyzer:
         report.append("")
 
         # Summary
-        report.append("## Summary")
+        report.append("## Summary\n")
         report.append(f"- Total Dockerfiles found: {len(dockerfiles)}")
         report.append(f"- Images with local dependencies: {len([img for img in dependencies if dependencies[img]])}")
         report.append(f"- Build stages required: {len(stages)}")
         report.append("")
 
         # Dependency Tree
-        report.append("## Dependency Tree")
-        report.append("```")
+        report.append("## Dependency Tree\n")
+        report.append("```text")
         for image in sorted(dockerfiles.keys()):
             base = base_images.get(image, "unknown")
             local_dep = self.normalize_image_name(base) if base else None
@@ -328,11 +328,12 @@ class DockerImageAnalyzer:
         report.append("")
 
         # Build Order
-        report.append("## Build Order (Topological Sort)")
+        report.append("## Build Order (Topological Sort)\n")
         for i, stage in enumerate(stages, 1):
-            report.append(f"### Stage {i}")
+            report.append(f"### Stage {i}\n")
             for img in stage:
                 report.append(f"- {img}")
+            report.append("")
         report.append("")
 
         # External Dependencies
@@ -343,7 +344,7 @@ class DockerImageAnalyzer:
                 external_deps.add(base)
 
         if external_deps:
-            report.append("## External Dependencies")
+            report.append("## External Dependencies\n")
             for dep in sorted(external_deps):
                 images_using = [img for img, base in base_images.items()
                               if base == dep]
