@@ -47,6 +47,7 @@ jobs:
         image:
           - r-postgres
           - dm
+          - rig-alma9-rrel
           - rig-ubuntu-dbi
           - rig-ubuntu-duckdb
           - rig-ubuntu-duckdb4
