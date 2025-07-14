@@ -6,5 +6,3 @@ RUN \
   apt update && \
   apt-get install -y ttf-mscorefonts-installer && \
   true
-
-WORKDIR /root/workspace
