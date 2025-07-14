@@ -1,7 +1,7 @@
 on:
   workflow_call:
     inputs:
-      image:
+      path:
         required: true
         type: string
     secrets:
@@ -46,20 +46,20 @@ jobs:
 
       - name: Write date file
         run: |
-          date -Idate > ${{ inputs.image }}/date.txt
+          date -Idate > ${{ inputs.path }}/date.txt
         shell: bash
 
       - name: Build and push Docker image
         id: push
         uses: docker/build-push-action@v6
         with:
-          context: ${{ inputs.image }}
+          context: ${{ inputs.path }}
           pull: true
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
-            ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image }}:latest
-            ${{ github.repository_owner }}/${{ inputs.image }}:latest
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image }}:latest
+            ghcr.io/${{ env.REPO_NAME }}/${{ replace(inputs.path, '/', '-') }}:latest
+            ${{ github.repository_owner }}/${{ replace(inputs.path, '/', '-') }}:latest
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_NAME }}/${{ replace(inputs.path, '/', '-') }}:latest
           cache-to: type=inline
 
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
@@ -69,7 +69,7 @@ jobs:
         # Only on main branch
         if: github.ref == 'refs/heads/main'
         with:
-          subject-name: ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image }}
+          subject-name: ghcr.io/${{ env.REPO_NAME }}/${{ replace(inputs.path, '/', '-') }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
@@ -78,6 +78,6 @@ jobs:
         # Only on main branch
         if: github.ref == 'refs/heads/main'
         with:
-          subject-name: docker.io/${{ github.repository_owner }}/${{ inputs.image }}
+          subject-name: docker.io/${{ github.repository_owner }}/${{ replace(inputs.path, '/', '-') }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
