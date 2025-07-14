@@ -331,7 +331,8 @@ class DockerImageAnalyzer:
             job_config.update({
                 'uses': 'cynkra/docker-images/.github/workflows/publish.yml@main',
                 'with': {
-                    'path': dir_path
+                    'path': dir_path,
+                    'image_name': image
                 },
                 'secrets': {
                     'DOCKERHUB_USERNAME': '${{ secrets.DOCKERHUB_USERNAME }}',

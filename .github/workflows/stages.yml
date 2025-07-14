@@ -18,6 +18,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-minimal
+      image_name: r-minimal
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -26,6 +27,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rchk-igraph
+      image_name: rchk-igraph
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -34,6 +36,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-alma9
+      image_name: rig-alma9
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -44,6 +47,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-alma9/rrel
+      image_name: rig-alma9-rrel
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -54,6 +58,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-alma9/rrel/coinor
+      image_name: rig-alma9-rrel-coinor
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -62,6 +67,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-debian
+      image_name: rig-debian
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -70,6 +76,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-rocky8
+      image_name: rig-rocky8
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -78,6 +85,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu
+      image_name: rig-ubuntu
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -88,6 +96,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/dbi
+      image_name: rig-ubuntu-dbi
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -98,6 +107,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/dm
+      image_name: rig-ubuntu-dm
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -108,6 +118,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/duckdb
+      image_name: rig-ubuntu-duckdb
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -118,6 +129,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/duckdb/dev
+      image_name: rig-ubuntu-duckdb-dev
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -128,6 +140,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/duckdb4
+      image_name: rig-ubuntu-duckdb4
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -138,6 +151,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/igraph
+      image_name: rig-ubuntu-igraph
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -148,6 +162,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/r-postgres
+      image_name: rig-ubuntu-r-postgres
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -158,6 +173,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/revdepcheck
+      image_name: rig-ubuntu-revdepcheck
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -166,6 +182,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu24
+      image_name: rig-ubuntu24
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -176,6 +193,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu24/rdev
+      image_name: rig-ubuntu24-rdev
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -186,6 +204,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu24/rdev/devtools
+      image_name: rig-ubuntu24-rdev-devtools
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -196,6 +215,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu24/rdev/gcc14
+      image_name: rig-ubuntu24-rdev-gcc14
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -206,6 +226,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu24/rdev/gcc14/duckdb
+      image_name: rig-ubuntu24-rdev-gcc14-duckdb
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -216,6 +237,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu24/rrel
+      image_name: rig-ubuntu24-rrel
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -226,6 +248,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu24/rrel/devtools
+      image_name: rig-ubuntu24-rrel-devtools
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -234,6 +257,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rigraph-san
+      image_name: rigraph-san
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -242,6 +266,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: sops-age
+      image_name: sops-age
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -250,6 +275,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: sssd-almalinux
+      image_name: sssd-almalinux
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -258,6 +284,7 @@ jobs:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: tofutf
+      image_name: tofutf
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
