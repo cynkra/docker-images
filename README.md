@@ -31,6 +31,32 @@ This repository follows specific patterns for optimal Docker image construction:
 3. **Logical Grouping**: Operations are grouped logically (system packages, R packages, configuration) within single RUN instructions
 4. **Package Management**: R packages are installed using `pak::pak()` for better performance and dependency resolution
 
+## Automated FROM Instruction Management
+
+This repository includes automated tools for managing FROM instructions in Dockerfiles according to directory hierarchy:
+
+- **Root-level images** (e.g., `rig-ubuntu`, `rig-debian`) use external base images and their FROM instructions should not be modified
+- **Nested images** (e.g., `rig-ubuntu/duckdb`, `rig-ubuntu/duckdb/dev`) should inherit from their parent directory image
+
+### Available Commands
+
+```bash
+# Check what FROM instructions would be updated (dry run)
+make check-from
+
+# Update FROM instructions according to hierarchy
+make update-from
+
+# Generate dependency analysis with FROM validation
+make analysis
+```
+
+The system automatically:
+
+- Validates that nested images inherit from the correct parent image
+- Updates FROM instructions to follow the directory hierarchy convention
+- Provides clear reporting of any inconsistencies
+
 ## Images
 
 ### [dm](dm)

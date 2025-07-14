@@ -85,3 +85,41 @@
 - `ubuntu:24.04` used by: rig-ubuntu24
 - `ubuntu:latest` used by: r-minimal
 - `wch1/r-debug:latest` used by: rigraph-san
+
+## FROM Instruction Validation
+
+This section shows the expected FROM instructions based on directory hierarchy:
+
+- `r-minimal` (root): FROM `ubuntu:latest` ✓
+- `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
+- `rig-alma9` (root): FROM `almalinux/9-base` ✓
+- `rig-alma9-rrel`: FROM `ghcr.io/cynkra/docker-images/rig-alma9:latest` ✓
+- `rig-alma9-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/rig-alma9-rrel:latest` ✓
+- `rig-debian` (root): FROM `debian:bookworm` ✓
+- `rig-rocky8` (root): FROM `rockylinux:8` ✓
+- `rig-ubuntu` (root): FROM `ubuntu:22.04` ✓
+- `rig-ubuntu-dbi`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-dm`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-duckdb`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-duckdb-dev`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest` ✓
+- `rig-ubuntu-duckdb4`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-igraph`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-r-postgres`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-revdepcheck`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu24` (root): FROM `ubuntu:24.04` ✓
+- `rig-ubuntu24-rdev`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu24:latest` ✓
+- `rig-ubuntu24-rdev-devtools`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev:latest` ✓
+- `rig-ubuntu24-rdev-gcc14`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev:latest` ✓
+- `rig-ubuntu24-rdev-gcc14-duckdb`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev-gcc14:latest` ✓
+- `rig-ubuntu24-rrel`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu24:latest` ✓
+- `rig-ubuntu24-rrel-devtools`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu24-rrel:latest` ✓
+- `rigraph-san` (root): FROM `wch1/r-debug:latest` ✓
+- `sops-age` (root): FROM `alpine:latest` ✓
+- `sssd-almalinux` (root): FROM `almalinux:9` ✓
+- `tofutf` (root): FROM `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` ✓
+
+To update FROM instructions automatically, run:
+```bash
+make check-from   # dry run
+make update-from  # apply changes
+```

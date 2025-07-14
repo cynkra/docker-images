@@ -432,29 +432,61 @@ class DockerImageAnalyzer:
                 report.append(f"- `{dep}` used by: {', '.join(images_using)}")
             report.append("")
 
+        # FROM Instruction Validation
+        report.append("## FROM Instruction Validation\n")
+        report.append("This section shows the expected FROM instructions based on directory hierarchy:")
+        report.append("")
+
+        dockerfiles_with_paths = self.find_dockerfiles_with_paths()
+        for image_name, (dockerfile_path, dir_path, _) in sorted(dockerfiles_with_paths.items()):
+            image_path = Path(dir_path)
+            parent_path = image_path.parent
+            current_from = self.extract_base_image(dockerfile_path)
+
+            if parent_path == Path('.'):
+                # Root level image
+                report.append(f"- `{image_name}` (root): FROM `{current_from}` ✓")
+            else:
+                # Nested image - should inherit from parent
+                parent_image_name = self.path_to_image_name(self.root_dir / parent_path)
+                expected_from = f"{self.registry}/cynkra/docker-images/{parent_image_name}:latest"
+
+                if current_from == expected_from:
+                    report.append(f"- `{image_name}`: FROM `{current_from}` ✓")
+                else:
+                    report.append(f"- `{image_name}`: FROM `{current_from}` ❌ (should be `{expected_from}`)")
+
+        report.append("")
+        report.append("To update FROM instructions automatically, run:")
+        report.append("```bash")
+        report.append("make check-from   # dry run")
+        report.append("make update-from  # apply changes")
+        report.append("```")
+        report.append("")
+
         return "\n".join(report)
 
     def update_dockerfile_from_instructions(self, dry_run: bool = False) -> Dict[str, str]:
         """
         Update FROM instructions in Dockerfiles according to directory hierarchy.
-        
+
         Args:
             dry_run: If True, only show what would be changed without making changes
-            
+
         Returns:
             Dict mapping dockerfile path to the change that was made (or would be made)
         """
         dockerfiles = self.find_dockerfiles_with_paths()
         changes = {}
-        
+
         for _, (dockerfile_path, dir_path, _) in dockerfiles.items():
             # Get the parent directory
             image_path = Path(dir_path)
             parent_path = image_path.parent
-            
+
             # Determine what the FROM instruction should be
             expected_from = None
-            
+
             if parent_path == Path('.'):
                 # This is a root-level image, don't change it (it should use external base)
                 continue
@@ -462,55 +494,54 @@ class DockerImageAnalyzer:
                 # This is a nested image, it should inherit from parent
                 parent_image_name = self.path_to_image_name(self.root_dir / parent_path)
                 expected_from = f"{self.registry}/cynkra/docker-images/{parent_image_name}:latest"
-            
+
             # Read current FROM instruction
             current_from = self.extract_base_image(dockerfile_path)
-            
+
             if current_from != expected_from:
                 change_msg = f"FROM {current_from} -> FROM {expected_from}"
                 changes[str(dockerfile_path)] = change_msg
-                
+
                 if not dry_run:
                     # Update the Dockerfile
                     self._update_from_instruction(dockerfile_path, expected_from)
                     print(f"Updated {dockerfile_path}: {change_msg}")
                 else:
                     print(f"Would update {dockerfile_path}: {change_msg}")
-        
+
         return changes
-    
+
     def _update_from_instruction(self, dockerfile_path: Path, new_from: str) -> None:
         """Update the FROM instruction in a Dockerfile."""
         try:
             with open(dockerfile_path, 'r', encoding='utf-8') as f:
                 lines = f.readlines()
-            
+
             # Find and update the FROM line
             for i, line in enumerate(lines):
                 if line.strip().startswith('FROM '):
                     lines[i] = f"FROM {new_from}\n"
                     break
-            
+
             # Write back to file
             with open(dockerfile_path, 'w', encoding='utf-8') as f:
                 f.writelines(lines)
-                
+
         except (IOError, OSError) as e:
             print(f"Error updating {dockerfile_path}: {e}")
 
-    # ...existing code...
 def main():
     """Main function."""
     parser = argparse.ArgumentParser(description='Docker image dependency analyzer and workflow generator')
-    parser.add_argument('--update-from', action='store_true', 
+    parser.add_argument('--update-from', action='store_true',
                        help='Update FROM instructions in Dockerfiles according to directory hierarchy')
     parser.add_argument('--dry-run', action='store_true',
                        help='Show what would be changed without making changes (use with --update-from)')
     parser.add_argument('--analysis-only', action='store_true',
                        help='Generate only the analysis report')
-    
+
     args = parser.parse_args()
-    
+
     script_dir = Path(__file__).parent
     analyzer = DockerImageAnalyzer(str(script_dir))
 
