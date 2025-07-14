@@ -81,11 +81,49 @@ class DockerImageAnalyzer:
         """Find all Dockerfiles and their corresponding image names."""
         dockerfiles = {}
 
-        for dockerfile in self.root_dir.glob("*/Dockerfile"):
-            image_name = dockerfile.parent.name
+        # Find all Dockerfiles recursively
+        for dockerfile in self.root_dir.rglob("Dockerfile"):
+            # Skip .git and other hidden directories
+            if any(part.startswith('.') for part in dockerfile.parts):
+                continue
+
+            # Generate image name from directory path
+            image_name = self.path_to_image_name(dockerfile.parent)
             dockerfiles[image_name] = dockerfile
 
         return dockerfiles
+
+    def find_dockerfiles_with_paths(self) -> Dict[str, Tuple[Path, str]]:
+        """Find all Dockerfiles with their paths and directory paths for workflow."""
+        dockerfiles = {}
+
+        # Find all Dockerfiles recursively
+        for dockerfile in self.root_dir.rglob("Dockerfile"):
+            # Skip .git and other hidden directories
+            if any(part.startswith('.') for part in dockerfile.parts):
+                continue
+
+            # Generate image name from directory path
+            image_name = self.path_to_image_name(dockerfile.parent)
+            dir_path = self.path_to_directory_path(dockerfile.parent)
+            dockerfiles[image_name] = (dockerfile, dir_path)
+
+        return dockerfiles
+
+    def path_to_image_name(self, path: Path) -> str:
+        """Convert a directory path to an image name."""
+        # Get relative path from root
+        rel_path = path.relative_to(self.root_dir)
+
+        # Convert path segments to image name with dashes
+        # e.g., rig-ubuntu/duckdb/dev -> rig-ubuntu-duckdb-dev
+        return str(rel_path).replace('/', '-')
+
+    def path_to_directory_path(self, path: Path) -> str:
+        """Convert a directory path to the image directory path for workflow."""
+        # Get relative path from root for use in workflow
+        rel_path = path.relative_to(self.root_dir)
+        return str(rel_path)
 
     def extract_base_image(self, dockerfile_path: Path) -> Optional[str]:
         """Extract the base image from a Dockerfile."""
@@ -124,6 +162,24 @@ class DockerImageAnalyzer:
             return local_name
 
         # If it's not from our registry, it's an external dependency
+        return None
+
+    def image_name_to_path(self, image_name: str) -> Optional[Path]:
+        """Convert an image name back to its directory path."""
+        # Handle legacy flat names and new nested names
+        path_str = image_name.replace('-', '/')
+
+        # Try the converted path first
+        candidate_path = self.root_dir / path_str
+        if (candidate_path / "Dockerfile").exists():
+            return candidate_path
+
+        # Fall back to checking all known dockerfiles
+        dockerfiles = self.find_dockerfiles()
+        for name, dockerfile_path in dockerfiles.items():
+            if name == image_name:
+                return dockerfile_path.parent
+
         return None
 
     def build_dependency_graph(self) -> Tuple[Dict[str, Set[str]], Dict[str, str]]:
@@ -216,9 +272,9 @@ class DockerImageAnalyzer:
         """Generate the fine-grained stages configuration."""
         dependencies, _ = self.build_dependency_graph()
 
-        # Get all images from Dockerfiles (source of truth)
-        dockerfiles = self.find_dockerfiles()
-        all_images = set(dockerfiles.keys())
+        # Get all images from Dockerfiles (source of truth) with their directory paths
+        dockerfiles_with_paths = self.find_dockerfiles_with_paths()
+        all_images = set(dockerfiles_with_paths.keys())
 
         # Create new configuration
         config = {
@@ -242,6 +298,7 @@ class DockerImageAnalyzer:
         # Generate jobs for each image
         for image in sorted(all_images):
             job_name = to_job_name(image)
+            _, dir_path = dockerfiles_with_paths[image]
 
             job_config = {}
 
@@ -251,9 +308,10 @@ class DockerImageAnalyzer:
                 job_config['needs'] = [to_job_name(dep) for dep in sorted(image_deps)]
 
             # Then add the rest of the job configuration
+            # Use the directory path as the image parameter
             job_config.update({
                 'uses': 'cynkra/docker-images/.github/workflows/publish.yml@main',
-                'with': {'image': image},
+                'with': {'image': dir_path},
                 'secrets': {
                     'DOCKERHUB_USERNAME': '${{ secrets.DOCKERHUB_USERNAME }}',
                     'DOCKERHUB_TOKEN': '${{ secrets.DOCKERHUB_TOKEN }}'

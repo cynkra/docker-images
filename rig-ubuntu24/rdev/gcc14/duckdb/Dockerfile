@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-ubuntu24-gcc14:latest
+FROM ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev-gcc14:latest
 
 # Install system dependencies and R packages, then clean up
 RUN \
