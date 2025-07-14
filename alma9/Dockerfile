@@ -5,6 +5,7 @@ COPY date.txt /date.txt
 # Install system packages, configure locale, install rig, and set up R configuration
 RUN \
   dnf update -y && \
+  dnf upgrade -y && \
   dnf install -y epel-release && \
   dnf install -y glibc-langpack-en && \
   dnf clean all && \

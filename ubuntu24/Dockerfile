@@ -5,6 +5,7 @@ COPY date.txt /date.txt
 # Install system packages, configure locale, install rig, and set up R configuration
 RUN \
   apt-get update && \
+  apt-get upgrade -y && \
   apt-get install -y locales && \
   sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
   locale-gen && \
