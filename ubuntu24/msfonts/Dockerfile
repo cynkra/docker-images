@@ -4,5 +4,5 @@ FROM ghcr.io/cynkra/docker-images/ubuntu24:latest
 RUN \
   echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
   apt update && \
-  apt-get install -y ttf-mscorefonts-installer && \
+  apt-get install -y --no-install-recommends ttf-mscorefonts-installer && \
   true
