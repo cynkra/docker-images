@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev:latest
+FROM ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
 
 # Install common development tools
 RUN \
@@ -10,7 +10,7 @@ RUN \
 
 # Install R development packages and clean up
 RUN \
-  R-devel -q -e 'pak::pak(c("devtools", "usethis", "languageserver"))' && \
+  R -q -e 'pak::pak(c("devtools", "usethis", "languageserver"))' && \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /tmp/* && \
   rm -rf /var/tmp/* && \

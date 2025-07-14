@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-ubuntu24-rdev:latest
+FROM ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
 
 # Install GCC 14, configure alternatives, and set compiler flags
 RUN \
