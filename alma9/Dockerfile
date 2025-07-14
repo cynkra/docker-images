@@ -6,6 +6,7 @@ COPY date.txt /date.txt
 RUN \
   dnf update -y && \
   dnf install -y epel-release && \
+  dnf install -y glibc-langpack-en && \
   dnf clean all && \
   rm -rf /tmp/* && \
   rm -rf /var/tmp/* && \

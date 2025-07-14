@@ -5,7 +5,7 @@ COPY date.txt /date.txt
 # Install system packages, configure locale, install rig, and set up R configuration
 RUN \
   dnf update -y && \
-  dnf install -y sudo glibc-langpack-en ccache && \
+  dnf install -y sudo ccache && \
   dnf clean all && \
   ln -s /usr/bin/ccache /usr/local/bin/gcc && \
   ln -s /usr/bin/ccache /usr/local/bin/g++ && \
