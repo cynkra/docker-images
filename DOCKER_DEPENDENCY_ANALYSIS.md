@@ -2,8 +2,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 29
-- Images with local dependencies: 18
+- Total Dockerfiles found: 30
+- Images with local dependencies: 19
 - Build stages required: 5
 
 ## Dependency Tree
@@ -31,6 +31,7 @@
 ✓ sssd-almalinux ← almalinux:9 (external)
 ✓ tofutf ← ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7 (external)
 ✓ ubuntu24 ← ubuntu:24.04 (external)
+✓ ubuntu24-msfonts ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig-rdev ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
 ✓ ubuntu24-rig-rdev-devtools ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
@@ -58,6 +59,7 @@
 - rig-ubuntu-igraph
 - rig-ubuntu-r-postgres
 - rig-ubuntu-revdepcheck
+- ubuntu24-msfonts
 - ubuntu24-rig
 
 ### Stage 3
@@ -119,6 +121,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `sssd-almalinux` (root): FROM `almalinux:9` ✓
 - `tofutf` (root): FROM `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` ✓
 - `ubuntu24` (root): FROM `ubuntu:24.04` ✓
+- `ubuntu24-msfonts`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig:latest` ✓
 - `ubuntu24-rig-rdev-devtools`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ✓
