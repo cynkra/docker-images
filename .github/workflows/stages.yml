@@ -14,6 +14,15 @@ env:
   REPO_NAME: ${{ github.repository }}
 
 jobs:
+  alma9:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: alma9
+      image_name: alma9
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   r-minimal:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -178,81 +187,6 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  rig-ubuntu24:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-ubuntu24
-      image_name: rig-ubuntu24
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  rdev-rig-ubuntu24:
-    needs:
-      - rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-ubuntu24/rdev
-      image_name: rig-ubuntu24-rdev
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  devtools-rdev-rig-ubuntu24:
-    needs:
-      - rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-ubuntu24/rdev/devtools
-      image_name: rig-ubuntu24-rdev-devtools
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  gcc14-rdev-rig-ubuntu24:
-    needs:
-      - rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-ubuntu24/rdev/gcc14
-      image_name: rig-ubuntu24-rdev-gcc14
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  duckdb-gcc14-rdev-rig-ubuntu24:
-    needs:
-      - gcc14-rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-ubuntu24/rdev/gcc14/duckdb
-      image_name: rig-ubuntu24-rdev-gcc14-duckdb
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  rrel-rig-ubuntu24:
-    needs:
-      - rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-ubuntu24/rrel
-      image_name: rig-ubuntu24-rrel
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  devtools-rrel-rig-ubuntu24:
-    needs:
-      - rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-ubuntu24/rrel/devtools
-      image_name: rig-ubuntu24-rrel-devtools
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
   rigraph-san:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -285,6 +219,92 @@ jobs:
     with:
       path: tofutf
       image_name: tofutf
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  ubuntu24:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24
+      image_name: ubuntu24
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rig-ubuntu24:
+    needs:
+      - ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig
+      image_name: ubuntu24-rig
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rdev-rig-ubuntu24:
+    needs:
+      - rig-ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig/rdev
+      image_name: ubuntu24-rig-rdev
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  devtools-rdev-rig-ubuntu24:
+    needs:
+      - rdev-rig-ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig/rdev/devtools
+      image_name: ubuntu24-rig-rdev-devtools
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  gcc14-rdev-rig-ubuntu24:
+    needs:
+      - rdev-rig-ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig/rdev/gcc14
+      image_name: ubuntu24-rig-rdev-gcc14
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  duckdb-gcc14-rdev-rig-ubuntu24:
+    needs:
+      - gcc14-rdev-rig-ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig/rdev/gcc14/duckdb
+      image_name: ubuntu24-rig-rdev-gcc14-duckdb
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rrel-rig-ubuntu24:
+    needs:
+      - rig-ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig/rrel
+      image_name: ubuntu24-rig-rrel
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  devtools-rrel-rig-ubuntu24:
+    needs:
+      - rrel-rig-ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig/rrel/devtools
+      image_name: ubuntu24-rig-rrel-devtools
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
