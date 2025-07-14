@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Set, Tuple, Optional
 from collections import defaultdict, deque
 import yaml
+import argparse
 
 
 class DockerImageAnalyzer:
@@ -433,24 +434,113 @@ class DockerImageAnalyzer:
 
         return "\n".join(report)
 
+    def update_dockerfile_from_instructions(self, dry_run: bool = False) -> Dict[str, str]:
+        """
+        Update FROM instructions in Dockerfiles according to directory hierarchy.
+        
+        Args:
+            dry_run: If True, only show what would be changed without making changes
+            
+        Returns:
+            Dict mapping dockerfile path to the change that was made (or would be made)
+        """
+        dockerfiles = self.find_dockerfiles_with_paths()
+        changes = {}
+        
+        for _, (dockerfile_path, dir_path, _) in dockerfiles.items():
+            # Get the parent directory
+            image_path = Path(dir_path)
+            parent_path = image_path.parent
+            
+            # Determine what the FROM instruction should be
+            expected_from = None
+            
+            if parent_path == Path('.'):
+                # This is a root-level image, don't change it (it should use external base)
+                continue
+            else:
+                # This is a nested image, it should inherit from parent
+                parent_image_name = self.path_to_image_name(self.root_dir / parent_path)
+                expected_from = f"{self.registry}/cynkra/docker-images/{parent_image_name}:latest"
+            
+            # Read current FROM instruction
+            current_from = self.extract_base_image(dockerfile_path)
+            
+            if current_from != expected_from:
+                change_msg = f"FROM {current_from} -> FROM {expected_from}"
+                changes[str(dockerfile_path)] = change_msg
+                
+                if not dry_run:
+                    # Update the Dockerfile
+                    self._update_from_instruction(dockerfile_path, expected_from)
+                    print(f"Updated {dockerfile_path}: {change_msg}")
+                else:
+                    print(f"Would update {dockerfile_path}: {change_msg}")
+        
+        return changes
+    
+    def _update_from_instruction(self, dockerfile_path: Path, new_from: str) -> None:
+        """Update the FROM instruction in a Dockerfile."""
+        try:
+            with open(dockerfile_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+            
+            # Find and update the FROM line
+            for i, line in enumerate(lines):
+                if line.strip().startswith('FROM '):
+                    lines[i] = f"FROM {new_from}\n"
+                    break
+            
+            # Write back to file
+            with open(dockerfile_path, 'w', encoding='utf-8') as f:
+                f.writelines(lines)
+                
+        except (IOError, OSError) as e:
+            print(f"Error updating {dockerfile_path}: {e}")
 
+    # ...existing code...
 def main():
     """Main function."""
+    parser = argparse.ArgumentParser(description='Docker image dependency analyzer and workflow generator')
+    parser.add_argument('--update-from', action='store_true', 
+                       help='Update FROM instructions in Dockerfiles according to directory hierarchy')
+    parser.add_argument('--dry-run', action='store_true',
+                       help='Show what would be changed without making changes (use with --update-from)')
+    parser.add_argument('--analysis-only', action='store_true',
+                       help='Generate only the analysis report')
+    
+    args = parser.parse_args()
+    
     script_dir = Path(__file__).parent
     analyzer = DockerImageAnalyzer(str(script_dir))
+
+    if args.update_from:
+        print("Updating FROM instructions in Dockerfiles...")
+        changes = analyzer.update_dockerfile_from_instructions(dry_run=args.dry_run)
+        if changes:
+            if args.dry_run:
+                print(f"\nWould make {len(changes)} changes:")
+            else:
+                print(f"\nMade {len(changes)} changes:")
+            for path, change in changes.items():
+                print(f"  {path}: {change}")
+        else:
+            print("No changes needed - all FROM instructions are already correct.")
+        return
 
     print("Analyzing Docker image dependencies...")
     analyzer.print_dependency_info()
 
-    print("Generating stages.yml...")
-    config = analyzer.generate_fine_grained_stages()
+    if not args.analysis_only:
+        print("Generating stages.yml...")
+        config = analyzer.generate_fine_grained_stages()
 
-    # Write to file
-    output_file = script_dir / ".github" / "workflows" / "stages.yml"
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(analyzer.format_yaml_output(config) + "\n")
+        # Write to file
+        output_file = script_dir / ".github" / "workflows" / "stages.yml"
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(analyzer.format_yaml_output(config) + "\n")
 
-    print(f"Stages configuration written to: {output_file}")
+        print(f"Stages configuration written to: {output_file}")
 
     # Generate analysis report
     print("Generating analysis report...")

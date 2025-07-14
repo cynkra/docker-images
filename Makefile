@@ -1,16 +1,18 @@
 # Makefile for Docker Image Dependency Management
 
-.PHONY: stages analysis clean help
+.PHONY: stages analysis clean help update-from check-from
 
 all: stages analysis
 
 # Default target
 help:
 	@echo "Available targets:"
-	@echo "  stages   - Generate stages.yml from Dockerfiles"
-	@echo "  analysis - Generate dependency analysis report"
-	@echo "  clean    - Remove generated files"
-	@echo "  help     - Show this help message"
+	@echo "  stages     - Generate stages.yml from Dockerfiles"
+	@echo "  analysis   - Generate dependency analysis report"
+	@echo "  update-from - Update FROM instructions in Dockerfiles according to hierarchy"
+	@echo "  check-from  - Check what FROM instructions would be updated (dry run)"
+	@echo "  clean      - Remove generated files"
+	@echo "  help       - Show this help message"
 
 .venv:
 	@echo "Creating Python virtual environment"
@@ -45,3 +47,13 @@ clean:
 validate: stages
 	@echo "Validating generated YAML..."
 	python3 -c "import yaml; yaml.safe_load(open('.github/workflows/stages.yml')); print('✓ YAML syntax is valid')"
+
+# Update FROM instructions in Dockerfiles according to directory hierarchy
+update-from: .venv/pyvenv.cfg
+	@echo "Updating FROM instructions in Dockerfiles..."
+	@source .venv/bin/activate && python3 generate_stages.py --update-from
+
+# Check what FROM instructions would be updated (dry run)
+check-from: .venv/pyvenv.cfg
+	@echo "Checking FROM instructions in Dockerfiles..."
+	@source .venv/bin/activate && python3 generate_stages.py --update-from --dry-run
