@@ -37,7 +37,11 @@
 - Separate concerns: base images, R variants, specialized tools
 - Document image purposes and dependencies clearly
 
-## 5. Always Update CLAUDE.md
+## 5. Formatting
+
+- Use pylint and black for Python code formatting
+
+## 6. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development
