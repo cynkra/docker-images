@@ -426,7 +426,7 @@ def main():
     # Write to file
     output_file = script_dir / ".github" / "workflows" / "stages.yml"
     with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(analyzer.format_yaml_output(config))
+        f.write(analyzer.format_yaml_output(config) + "\n")
 
     print(f"Stages configuration written to: {output_file}")
 
