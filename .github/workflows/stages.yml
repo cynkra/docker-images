@@ -23,6 +23,39 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  rig-alma9:
+    needs:
+      - alma9
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: alma9/rig
+      image_name: alma9-rig
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rrel-rig-alma9:
+    needs:
+      - rig-alma9
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: alma9/rig/rrel
+      image_name: alma9-rig-rrel
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  coinor-rrel-rig-alma9:
+    needs:
+      - rrel-rig-alma9
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: alma9/rig/rrel/coinor
+      image_name: alma9-rig-rrel-coinor
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   r-minimal:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -37,37 +70,6 @@ jobs:
     with:
       path: rchk-igraph
       image_name: rchk-igraph
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  rig-alma9:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-alma9
-      image_name: rig-alma9
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  rrel-rig-alma9:
-    needs:
-      - rig-alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-alma9/rrel
-      image_name: rig-alma9-rrel
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  coinor-rrel-rig-alma9:
-    needs:
-      - rrel-rig-alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rig-alma9/rrel/coinor
-      image_name: rig-alma9-rrel-coinor
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

@@ -3,18 +3,18 @@
 ## Summary
 
 - Total Dockerfiles found: 29
-- Images with local dependencies: 17
+- Images with local dependencies: 18
 - Build stages required: 5
 
 ## Dependency Tree
 
 ```text
 ✓ alma9 ← almalinux/9-base (external)
+✓ alma9-rig ← alma9 ← ghcr.io/cynkra/docker-images/alma9:latest
+✓ alma9-rig-rrel ← alma9-rig ← ghcr.io/cynkra/docker-images/alma9-rig:latest
+✓ alma9-rig-rrel-coinor ← alma9-rig-rrel ← ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
-✓ rig-alma9 ← almalinux/9-base (external)
-✓ rig-alma9-rrel ← rig-alma9 ← ghcr.io/cynkra/docker-images/rig-alma9:latest
-✓ rig-alma9-rrel-coinor ← rig-alma9-rrel ← ghcr.io/cynkra/docker-images/rig-alma9-rrel:latest
 ✓ rig-debian ← debian:bookworm (external)
 ✓ rig-rocky8 ← rockylinux:8 (external)
 ✓ rig-ubuntu ← ubuntu:22.04 (external)
@@ -44,13 +44,13 @@
 
 ### Stage 1
 
-- rig-alma9
+- alma9
 - rig-ubuntu
 - ubuntu24
 
 ### Stage 2
 
-- rig-alma9-rrel
+- alma9-rig
 - rig-ubuntu-dbi
 - rig-ubuntu-dm
 - rig-ubuntu-duckdb
@@ -62,13 +62,14 @@
 
 ### Stage 3
 
-- rig-alma9-rrel-coinor
+- alma9-rig-rrel
 - rig-ubuntu-duckdb-dev
 - ubuntu24-rig-rdev
 - ubuntu24-rig-rrel
 
 ### Stage 4
 
+- alma9-rig-rrel-coinor
 - ubuntu24-rig-rdev-devtools
 - ubuntu24-rig-rdev-gcc14
 - ubuntu24-rig-rrel-devtools
@@ -80,7 +81,7 @@
 
 ## External Dependencies
 
-- `almalinux/9-base` used by: alma9, rig-alma9
+- `almalinux/9-base` used by: alma9
 - `almalinux:9` used by: sssd-almalinux
 - `alpine:latest` used by: sops-age
 - `debian:bookworm` used by: rig-debian
@@ -97,11 +98,11 @@
 This section shows the expected FROM instructions based on directory hierarchy:
 
 - `alma9` (root): FROM `almalinux/9-base` ✓
+- `alma9-rig`: FROM `ghcr.io/cynkra/docker-images/alma9:latest` ✓
+- `alma9-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/alma9-rig:latest` ✓
+- `alma9-rig-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
-- `rig-alma9` (root): FROM `almalinux/9-base` ✓
-- `rig-alma9-rrel`: FROM `ghcr.io/cynkra/docker-images/rig-alma9:latest` ✓
-- `rig-alma9-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/rig-alma9-rrel:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓
 - `rig-rocky8` (root): FROM `rockylinux:8` ✓
 - `rig-ubuntu` (root): FROM `ubuntu:22.04` ✓

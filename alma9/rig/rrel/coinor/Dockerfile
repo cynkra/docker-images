@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-alma9-rrel:latest
+FROM ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
 
 COPY date.txt /date.txt
 

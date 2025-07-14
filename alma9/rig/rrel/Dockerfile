@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/rig-alma9:latest
+FROM ghcr.io/cynkra/docker-images/alma9-rig:latest
 
 RUN \
   rig add release && \
