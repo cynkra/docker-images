@@ -321,3 +321,12 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  dm-devtools-rrel-rig-ubuntu24:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: ubuntu24/rig/rrel/devtools/dm
+      image_name: ubuntu24-rig-rrel-devtools-dm
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
