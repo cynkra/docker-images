@@ -2,8 +2,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 32
-- Images with local dependencies: 21
+- Total Dockerfiles found: 34
+- Images with local dependencies: 23
 - Build stages required: 5
 
 ## Dependency Tree
@@ -39,6 +39,8 @@
 ✓ ubuntu24-rig-rdev-gcc14 ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
 ✓ ubuntu24-rig-rdev-gcc14-duckdb ← ubuntu24-rig-rdev-gcc14 ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-gcc14:latest
 ✓ ubuntu24-rig-rrel ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
+✓ ubuntu24-rig-rrel-dc ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
+✓ ubuntu24-rig-rrel-dc-dt ← ubuntu24-rig-rdev-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest
 ✓ ubuntu24-rig-rrel-devtools ← ubuntu24-rig-rrel ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
 ✓ ubuntu24-rig-rrel-devtools-dm ← ubuntu24-rig-rrel-devtools ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-devtools:latest
 ```
@@ -76,12 +78,14 @@
 - alma9-rig-rrel-coinor
 - ubuntu24-rig-rdev-dc
 - ubuntu24-rig-rdev-gcc14
+- ubuntu24-rig-rrel-dc
 - ubuntu24-rig-rrel-devtools
 
 ### Stage 5
 
 - ubuntu24-rig-rdev-dc-dt
 - ubuntu24-rig-rdev-gcc14-duckdb
+- ubuntu24-rig-rrel-dc-dt
 - ubuntu24-rig-rrel-devtools-dm
 
 
@@ -133,6 +137,8 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `ubuntu24-rig-rdev-gcc14`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ✓
 - `ubuntu24-rig-rdev-gcc14-duckdb`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-gcc14:latest` ✓
 - `ubuntu24-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig:latest` ✓
+- `ubuntu24-rig-rrel-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ❌ (should be `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest`)
+- `ubuntu24-rig-rrel-dc-dt`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest` ❌ (should be `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest`)
 - `ubuntu24-rig-rrel-devtools`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest` ✓
 - `ubuntu24-rig-rrel-devtools-dm`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-devtools:latest` ✓
 
