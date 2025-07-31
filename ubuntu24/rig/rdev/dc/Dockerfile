@@ -28,4 +28,5 @@ RUN \
   mkdir .R && \
   echo 'MAKEFLAGS=-j4' > .R/Makevars && \
   touch .hushlogin && \
+  curl -s https://raw.githubusercontent.com/krlmlr/scriptlets/main/bootstrap | sh && \
   true
