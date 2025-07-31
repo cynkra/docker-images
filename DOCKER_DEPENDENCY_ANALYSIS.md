@@ -41,6 +41,7 @@
 ✓ ubuntu24-rig-rdev-gcc14-duckdb ← ubuntu24-rig-rdev-gcc14 ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-gcc14:latest
 ✓ ubuntu24-rig-rrel ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
 ✓ ubuntu24-rig-rrel-dc ← ubuntu24-rig-rrel ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
+  └─ COPY --from dust ← ghcr.io/cynkra/docker-images/dust:latest
 ✓ ubuntu24-rig-rrel-dc-dt ← ubuntu24-rig-rrel-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest
 ✓ ubuntu24-rig-rrel-devtools ← ubuntu24-rig-rrel ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
 ✓ ubuntu24-rig-rrel-devtools-dm ← ubuntu24-rig-rrel-devtools ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-devtools:latest
@@ -51,6 +52,7 @@
 ### Stage 1
 
 - alma9
+- dust
 - rig-ubuntu
 - ubuntu24
 
@@ -92,6 +94,8 @@
 
 ## External Dependencies
 
+### FROM Dependencies
+
 - `almalinux/9-base` used by: alma9
 - `almalinux:9` used by: sssd-almalinux
 - `alpine:latest` used by: sops-age
@@ -104,6 +108,10 @@
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
 - `wch1/r-debug:latest` used by: rigraph-san
+
+### COPY --from Dependencies
+
+- `dust-builder` used by: dust
 
 ## FROM Instruction Validation
 

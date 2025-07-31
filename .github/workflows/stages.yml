@@ -333,6 +333,7 @@ jobs:
 
   dc-rrel-rig-ubuntu24:
     needs:
+      - dust
       - rrel-rig-ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
