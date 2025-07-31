@@ -12,7 +12,13 @@ RUN \
   ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 && \
   ACCEPT_EULA=Y apt-get install -y mssql-tools18 && \
   ln -s /opt/mssql-tools18/bin/* /usr/local/bin/ && \
+  cd /opt/microsoft/msodbcsql18/lib64 && \
+  ln -s libmsodbcsql-18.*.so.* libmsodbcsql-18.so && \
+  ln -s libmsodbcsql-18.*.so.* libmsodbcsql.so && \
+  cd - && \
+  \
   apt-get install -y unixodbc-dev && \
+  \
   ( echo "[ODBC Driver 18 for SQL Server]"; \
     echo "Description=Microsoft ODBC Driver 18 for SQL Server"; \
     echo "Driver=/opt/microsoft/msodbcsql18/lib64/libmsodbcsql-18.so"; \
@@ -22,6 +28,7 @@ RUN \
     echo "Driver=ODBC Driver 18 for SQL Server"; \
     echo "Server=localhost"; \
     echo "Port=1433" ) > /etc/odbc.ini && \
+  \
   apt-cleanup.sh && \
   true
 
