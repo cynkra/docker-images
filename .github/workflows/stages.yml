@@ -289,6 +289,7 @@ jobs:
 
   dc-rdev-rig-ubuntu24:
     needs:
+      - dust
       - rdev-rig-ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -365,24 +366,13 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  devtools-rrel-rig-ubuntu24:
+  dm-dt-dc-rrel-rig-ubuntu24:
     needs:
-      - rrel-rig-ubuntu24
+      - dt-dc-rrel-rig-ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
-      path: ubuntu24/rig/rrel/devtools
-      image_name: ubuntu24-rig-rrel-devtools
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  dm-devtools-rrel-rig-ubuntu24:
-    needs:
-      - devtools-rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: ubuntu24/rig/rrel/devtools/dm
-      image_name: ubuntu24-rig-rrel-devtools-dm
+      path: ubuntu24/rig/rrel/dc/dt/dm
+      image_name: ubuntu24-rig-rrel-dc-dt-dm
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
