@@ -615,10 +615,10 @@ class DockerImageAnalyzer:
 
         for image_name, (dockerfile_path, _, _) in dockerfiles_with_paths.items():
             makefile_path = dockerfile_path.parent / "Makefile"
-            
+
             # Generate Makefile content
             makefile_content = self._generate_makefile_content(image_name)
-            
+
             if dry_run:
                 print(f"Would create: {makefile_path}")
                 count += 1
@@ -637,17 +637,17 @@ class DockerImageAnalyzer:
         """Generate the content for a Makefile."""
         # Use the full image name with registry for consistency
         full_image_name = f"{self.registry}/cynkra/docker-images/{image_name}"
-        
+
         # Get the base image for this image to generate pull-parent target
         dockerfiles = self.find_dockerfiles()
         dockerfile_path = dockerfiles.get(image_name)
         base_image = None
         parent_pull_command = ""
-        
+
         if dockerfile_path:
             base_image = self.extract_base_image(dockerfile_path)
             local_parent = self.normalize_image_name(base_image) if base_image else None
-            
+
             if local_parent and local_parent in dockerfiles:
                 # It's a local parent image from our registry
                 parent_pull_command = f"docker pull {base_image}"
@@ -659,7 +659,7 @@ class DockerImageAnalyzer:
                 parent_pull_command = "@echo \"No parent image found or needed\""
         else:
             parent_pull_command = "@echo \"No parent image found or needed\""
-        
+
         content = f"""# Makefile for Docker image: {image_name}
 # Generated automatically - do not edit manually
 
@@ -692,12 +692,12 @@ pull-parent:
 \t{parent_pull_command}
 
 # Run interactive bash as regular user
-run: build
+run:
 \t@echo "Starting interactive bash session in {full_image_name}:latest"
 \tdocker run --rm -it {full_image_name}:latest /bin/bash
 
 # Run interactive bash as root user
-run-root: build
+run-root:
 \t@echo "Starting interactive bash session as root in {full_image_name}:latest"
 \tdocker run --rm -it --user root {full_image_name}:latest /bin/bash
 
