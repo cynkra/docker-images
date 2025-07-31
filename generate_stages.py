@@ -638,15 +638,39 @@ class DockerImageAnalyzer:
         # Use the full image name with registry for consistency
         full_image_name = f"{self.registry}/cynkra/docker-images/{image_name}"
         
+        # Get the base image for this image to generate pull-parent target
+        dockerfiles = self.find_dockerfiles()
+        dockerfile_path = dockerfiles.get(image_name)
+        base_image = None
+        parent_pull_command = ""
+        
+        if dockerfile_path:
+            base_image = self.extract_base_image(dockerfile_path)
+            local_parent = self.normalize_image_name(base_image) if base_image else None
+            
+            if local_parent and local_parent in dockerfiles:
+                # It's a local parent image from our registry
+                parent_pull_command = f"docker pull {base_image}"
+            elif base_image:
+                # It's an external parent image
+                parent_pull_command = f"docker pull {base_image}"
+            else:
+                # No parent found, use a generic message
+                parent_pull_command = "@echo \"No parent image found or needed\""
+        else:
+            parent_pull_command = "@echo \"No parent image found or needed\""
+        
         content = f"""# Makefile for Docker image: {image_name}
 # Generated automatically - do not edit manually
 
-.PHONY: build run run-root clean help
+.PHONY: build pull pull-parent run run-root clean help
 
 # Default target
 help:
 \t@echo "Available targets for {image_name}:"
 \t@echo "  build      - Build the Docker image"
+\t@echo "  pull       - Pull the Docker image from registry"
+\t@echo "  pull-parent - Pull the parent image this image depends on"
 \t@echo "  run        - Run interactive bash as regular user"
 \t@echo "  run-root   - Run interactive bash as root user"
 \t@echo "  clean      - Remove the Docker image"
@@ -656,6 +680,16 @@ help:
 build:
 \t@echo "Building Docker image: {full_image_name}:latest"
 \tdocker build -t {full_image_name}:latest .
+
+# Pull the Docker image from registry
+pull:
+\t@echo "Pulling Docker image: {full_image_name}:latest"
+\tdocker pull {full_image_name}:latest
+
+# Pull the parent image this image depends on
+pull-parent:
+\t@echo "Pulling parent image: {base_image if base_image else 'none'}"
+\t{parent_pull_command}
 
 # Run interactive bash as regular user
 run: build
