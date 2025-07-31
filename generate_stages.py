@@ -431,7 +431,7 @@ class DockerImageAnalyzer:
         for image in sorted(dockerfiles.keys()):
             base = base_images.get(image, "unknown")
             local_dep = self.normalize_image_name(base) if base else None
-            
+
             # Get dockerfile path for this image
             dockerfile_path = dockerfiles[image]
             copy_from_deps = self.extract_copy_from_dependencies(dockerfile_path)
@@ -446,7 +446,7 @@ class DockerImageAnalyzer:
                 report.append(f"✓ {image} ← {local_dep} ← {base}")
             else:
                 report.append(f"✓ {image} ← {base} (external)")
-            
+
             # Show COPY --from dependencies
             for local_copy_dep, original_copy_dep in local_copy_deps:
                 report.append(f"  └─ COPY --from {local_copy_dep} ← {original_copy_dep}")
@@ -465,7 +465,7 @@ class DockerImageAnalyzer:
         # External Dependencies
         external_deps = set()
         external_copy_deps = set()
-        
+
         # Collect external FROM dependencies
         for image, base in base_images.items():
             local_dep = self.normalize_image_name(base) if base else None
@@ -482,7 +482,7 @@ class DockerImageAnalyzer:
 
         if external_deps or external_copy_deps:
             report.append("## External Dependencies\n")
-            
+
             if external_deps:
                 report.append("### FROM Dependencies\n")
                 for dep in sorted(external_deps):
@@ -490,7 +490,7 @@ class DockerImageAnalyzer:
                                   if base == dep]
                     report.append(f"- `{dep}` used by: {', '.join(images_using)}")
                 report.append("")
-            
+
             if external_copy_deps:
                 report.append("### COPY --from Dependencies\n")
                 for dep in sorted(external_copy_deps):
