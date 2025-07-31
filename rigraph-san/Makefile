@@ -1,12 +1,14 @@
 # Makefile for Docker image: rigraph-san
 # Generated automatically - do not edit manually
 
-.PHONY: build run run-root clean help
+.PHONY: build pull pull-parent run run-root clean help
 
 # Default target
 help:
 	@echo "Available targets for rigraph-san:"
 	@echo "  build      - Build the Docker image"
+	@echo "  pull       - Pull the Docker image from registry"
+	@echo "  pull-parent - Pull the parent image this image depends on"
 	@echo "  run        - Run interactive bash as regular user"
 	@echo "  run-root   - Run interactive bash as root user"
 	@echo "  clean      - Remove the Docker image"
@@ -16,6 +18,16 @@ help:
 build:
 	@echo "Building Docker image: ghcr.io/cynkra/docker-images/rigraph-san:latest"
 	docker build -t ghcr.io/cynkra/docker-images/rigraph-san:latest .
+
+# Pull the Docker image from registry
+pull:
+	@echo "Pulling Docker image: ghcr.io/cynkra/docker-images/rigraph-san:latest"
+	docker pull ghcr.io/cynkra/docker-images/rigraph-san:latest
+
+# Pull the parent image this image depends on
+pull-parent:
+	@echo "Pulling parent image: wch1/r-debug:latest"
+	docker pull wch1/r-debug:latest
 
 # Run interactive bash as regular user
 run: build
