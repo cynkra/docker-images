@@ -6,7 +6,7 @@ COPY date.txt /date.txt
 RUN \
   apt-get update && \
   apt-get upgrade -y && \
-  apt-get install -y locales && \
+  apt-get install -y  --no-install-recommends locales && \
   sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
   locale-gen && \
   rm -rf /var/lib/apt/lists/* && \
