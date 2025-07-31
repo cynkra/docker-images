@@ -8,7 +8,7 @@ RUN \
   chmod +x /usr/local/bin/dust && \
   \
   apt-get update && \
-  apt-get install -y --no-install-recommends git vim-tiny htop tree wget ca-certificates wget gpg gnupg gnupg2 silversearcher-ag fd-find sudo && \
+  apt-get install -y --no-install-recommends git less vim-tiny htop tree wget ca-certificates wget gpg gnupg gnupg2 silversearcher-ag fd-find sudo && \
   update-alternatives --set editor /usr/bin/vim.tiny && \
   \
   curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh && \
@@ -26,9 +26,11 @@ WORKDIR /home/ubuntu
 
 ENV TESTTHAT_CPUS=4
 
+# FIXME: Bring back .Rprofile when getOption("repos") issue is understood
 RUN \
   mkdir .R && \
   echo 'MAKEFLAGS=-j4' > .R/Makevars && \
   touch .hushlogin && \
   curl -s https://raw.githubusercontent.com/krlmlr/scriptlets/main/bootstrap | sh && \
+  rm .Rprofile && \
   true
