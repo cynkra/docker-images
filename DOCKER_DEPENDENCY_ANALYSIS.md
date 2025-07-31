@@ -2,8 +2,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 35
-- Images with local dependencies: 23
+- Total Dockerfiles found: 36
+- Images with local dependencies: 24
 - Build stages required: 5
 
 ## Dependency Tree
@@ -13,7 +13,9 @@
 ✓ alma9-rig ← alma9 ← ghcr.io/cynkra/docker-images/alma9:latest
 ✓ alma9-rig-rrel ← alma9-rig ← ghcr.io/cynkra/docker-images/alma9-rig:latest
 ✓ alma9-rig-rrel-coinor ← alma9-rig-rrel ← ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
-✓ dust ← rust:latest (external)
+✓ build-dust ← rust:latest (external)
+✓ dust ← scratch (external)
+  └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
@@ -52,13 +54,14 @@
 ### Stage 1
 
 - alma9
-- dust
+- build-dust
 - rig-ubuntu
 - ubuntu24
 
 ### Stage 2
 
 - alma9-rig
+- dust
 - rig-ubuntu-dbi
 - rig-ubuntu-dm
 - rig-ubuntu-duckdb
@@ -103,15 +106,12 @@
 - `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` used by: tofutf
 - `kalibera/rchk:latest` used by: rchk-igraph
 - `rockylinux:8` used by: rig-rocky8
-- `rust:latest` used by: dust
+- `rust:latest` used by: build-dust
+- `scratch` used by: dust
 - `ubuntu:22.04` used by: rig-ubuntu
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
 - `wch1/r-debug:latest` used by: rigraph-san
-
-### COPY --from Dependencies
-
-- `dust-builder` used by: dust
 
 ## FROM Instruction Validation
 
@@ -121,7 +121,8 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `alma9-rig`: FROM `ghcr.io/cynkra/docker-images/alma9:latest` ✓
 - `alma9-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/alma9-rig:latest` ✓
 - `alma9-rig-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest` ✓
-- `dust` (root): FROM `rust:latest` ✓
+- `build-dust` (root): FROM `rust:latest` ✓
+- `dust` (root): FROM `scratch` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓
