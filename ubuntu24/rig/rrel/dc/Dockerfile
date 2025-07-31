@@ -24,6 +24,8 @@ USER ubuntu
 
 WORKDIR /home/ubuntu
 
+ENV TESTTHAT_CPUS=4
+
 RUN \
   mkdir .R && \
   echo 'MAKEFLAGS=-j4' > .R/Makevars && \
