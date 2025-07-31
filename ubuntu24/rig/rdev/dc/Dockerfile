@@ -12,6 +12,7 @@ RUN \
   update-alternatives --set editor /usr/bin/vim.tiny && \
   \
   curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh && \
+  mv /root/.local/bin/air /usr/local/bin/ && \
   \
   apt-cleanup.sh && \
   \
