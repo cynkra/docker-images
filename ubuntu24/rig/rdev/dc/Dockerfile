@@ -4,15 +4,16 @@ FROM ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
 RUN \
   apt-get update && \
   apt-get install -y git vim nano htop tree wget ca-certificates wget gpg gnupg gnupg2 && \
+  update-alternatives --set editor /usr/bin/vim.basic && \
   rm -rf /var/lib/apt/lists/* && \
   true
 
+USER ubuntu
 
-# Install R development packages and clean up
+WORKDIR /home/ubuntu
+
 RUN \
-  R-devel -q -e 'pak::pak(c("devtools", "usethis", "languageserver"))' && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /tmp/* && \
-  rm -rf /var/tmp/* && \
+  mkdir .R && \
+  echo 'MAKEFLAGS=-j4' > .R/Makevars && \
+  touch .hushlogin && \
   true
-

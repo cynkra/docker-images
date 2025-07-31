@@ -4,9 +4,9 @@ FROM ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
 RUN \
   apt-get update && \
   apt-get install -y git vim nano htop tree wget ca-certificates wget gpg gnupg gnupg2 && \
+  update-alternatives --set editor /usr/bin/vim.basic && \
   rm -rf /var/lib/apt/lists/* && \
   true
-
 
 # Install R development packages and clean up
 RUN \

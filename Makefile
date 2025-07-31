@@ -2,6 +2,8 @@
 
 .PHONY: stages analysis clean help update-from check-from
 
+.NOTPARALLEL:
+
 all: stages analysis
 
 # Default target
