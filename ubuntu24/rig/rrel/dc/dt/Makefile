@@ -17,7 +17,9 @@ help:
 # Build the Docker image
 build:
 	@echo "Building Docker image: ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest"
-	docker build -t ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest .
+	@echo "Creating date file for cache invalidation..."
+	@date > date.txt
+	@trap 'rm -f date.txt' EXIT; docker build -t ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest .
 
 # Pull the Docker image from registry
 pull:
