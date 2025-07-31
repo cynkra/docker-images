@@ -30,12 +30,12 @@ pull-parent:
 	docker pull wch1/r-debug:latest
 
 # Run interactive bash as regular user
-run: build
+run:
 	@echo "Starting interactive bash session in ghcr.io/cynkra/docker-images/rigraph-san:latest"
 	docker run --rm -it ghcr.io/cynkra/docker-images/rigraph-san:latest /bin/bash
 
 # Run interactive bash as root user
-run-root: build
+run-root:
 	@echo "Starting interactive bash session as root in ghcr.io/cynkra/docker-images/rigraph-san:latest"
 	docker run --rm -it --user root ghcr.io/cynkra/docker-images/rigraph-san:latest /bin/bash
 
