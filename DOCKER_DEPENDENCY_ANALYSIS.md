@@ -2,7 +2,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 34
+- Total Dockerfiles found: 35
 - Images with local dependencies: 23
 - Build stages required: 5
 
@@ -13,6 +13,7 @@
 ✓ alma9-rig ← alma9 ← ghcr.io/cynkra/docker-images/alma9:latest
 ✓ alma9-rig-rrel ← alma9-rig ← ghcr.io/cynkra/docker-images/alma9-rig:latest
 ✓ alma9-rig-rrel-coinor ← alma9-rig-rrel ← ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
+✓ dust ← rust:latest (external)
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
@@ -39,8 +40,8 @@
 ✓ ubuntu24-rig-rdev-gcc14 ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
 ✓ ubuntu24-rig-rdev-gcc14-duckdb ← ubuntu24-rig-rdev-gcc14 ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-gcc14:latest
 ✓ ubuntu24-rig-rrel ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
-✓ ubuntu24-rig-rrel-dc ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
-✓ ubuntu24-rig-rrel-dc-dt ← ubuntu24-rig-rdev-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest
+✓ ubuntu24-rig-rrel-dc ← ubuntu24-rig-rrel ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
+✓ ubuntu24-rig-rrel-dc-dt ← ubuntu24-rig-rrel-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest
 ✓ ubuntu24-rig-rrel-devtools ← ubuntu24-rig-rrel ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
 ✓ ubuntu24-rig-rrel-devtools-dm ← ubuntu24-rig-rrel-devtools ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-devtools:latest
 ```
@@ -98,6 +99,7 @@
 - `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` used by: tofutf
 - `kalibera/rchk:latest` used by: rchk-igraph
 - `rockylinux:8` used by: rig-rocky8
+- `rust:latest` used by: dust
 - `ubuntu:22.04` used by: rig-ubuntu
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
@@ -111,6 +113,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `alma9-rig`: FROM `ghcr.io/cynkra/docker-images/alma9:latest` ✓
 - `alma9-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/alma9-rig:latest` ✓
 - `alma9-rig-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest` ✓
+- `dust` (root): FROM `rust:latest` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓
@@ -137,8 +140,8 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `ubuntu24-rig-rdev-gcc14`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ✓
 - `ubuntu24-rig-rdev-gcc14-duckdb`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-gcc14:latest` ✓
 - `ubuntu24-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig:latest` ✓
-- `ubuntu24-rig-rrel-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ❌ (should be `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest`)
-- `ubuntu24-rig-rrel-dc-dt`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest` ❌ (should be `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest`)
+- `ubuntu24-rig-rrel-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest` ✓
+- `ubuntu24-rig-rrel-dc-dt`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest` ✓
 - `ubuntu24-rig-rrel-devtools`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest` ✓
 - `ubuntu24-rig-rrel-devtools-dm`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-devtools:latest` ✓
 
