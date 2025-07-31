@@ -600,6 +600,80 @@ class DockerImageAnalyzer:
         except (IOError, OSError) as e:
             print(f"Error updating {dockerfile_path}: {e}")
 
+    def generate_makefiles(self, dry_run: bool = False) -> int:
+        """
+        Generate Makefiles alongside each Dockerfile with build, run, and run-root targets.
+
+        Args:
+            dry_run: If True, only show what would be generated without creating files
+
+        Returns:
+            Number of Makefiles generated (or would be generated)
+        """
+        dockerfiles_with_paths = self.find_dockerfiles_with_paths()
+        count = 0
+
+        for image_name, (dockerfile_path, _, _) in dockerfiles_with_paths.items():
+            makefile_path = dockerfile_path.parent / "Makefile"
+            
+            # Generate Makefile content
+            makefile_content = self._generate_makefile_content(image_name)
+            
+            if dry_run:
+                print(f"Would create: {makefile_path}")
+                count += 1
+            else:
+                try:
+                    with open(makefile_path, 'w', encoding='utf-8') as f:
+                        f.write(makefile_content)
+                    print(f"Generated: {makefile_path}")
+                    count += 1
+                except (IOError, OSError) as e:
+                    print(f"Error creating {makefile_path}: {e}")
+
+        return count
+
+    def _generate_makefile_content(self, image_name: str) -> str:
+        """Generate the content for a Makefile."""
+        # Use the full image name with registry for consistency
+        full_image_name = f"{self.registry}/cynkra/docker-images/{image_name}"
+        
+        content = f"""# Makefile for Docker image: {image_name}
+# Generated automatically - do not edit manually
+
+.PHONY: build run run-root clean help
+
+# Default target
+help:
+\t@echo "Available targets for {image_name}:"
+\t@echo "  build      - Build the Docker image"
+\t@echo "  run        - Run interactive bash as regular user"
+\t@echo "  run-root   - Run interactive bash as root user"
+\t@echo "  clean      - Remove the Docker image"
+\t@echo "  help       - Show this help message"
+
+# Build the Docker image
+build:
+\t@echo "Building Docker image: {full_image_name}:latest"
+\tdocker build -t {full_image_name}:latest .
+
+# Run interactive bash as regular user
+run: build
+\t@echo "Starting interactive bash session in {full_image_name}:latest"
+\tdocker run --rm -it {full_image_name}:latest /bin/bash
+
+# Run interactive bash as root user
+run-root: build
+\t@echo "Starting interactive bash session as root in {full_image_name}:latest"
+\tdocker run --rm -it --user root {full_image_name}:latest /bin/bash
+
+# Remove the Docker image
+clean:
+\t@echo "Removing Docker image: {full_image_name}:latest"
+\tdocker rmi {full_image_name}:latest || true
+"""
+        return content
+
 def main():
     """Main function."""
     parser = argparse.ArgumentParser(description='Docker image dependency analyzer and workflow generator')
@@ -609,11 +683,22 @@ def main():
                        help='Show what would be changed without making changes (use with --update-from)')
     parser.add_argument('--analysis-only', action='store_true',
                        help='Generate only the analysis report')
+    parser.add_argument('--generate-makefiles', action='store_true',
+                       help='Generate Makefiles alongside each Dockerfile')
 
     args = parser.parse_args()
 
     script_dir = Path(__file__).parent
     analyzer = DockerImageAnalyzer(str(script_dir))
+
+    if args.generate_makefiles:
+        print("Generating Makefiles for all Dockerfiles...")
+        count = analyzer.generate_makefiles(dry_run=args.dry_run)
+        if args.dry_run:
+            print(f"Would generate {count} Makefiles.")
+        else:
+            print(f"Generated {count} Makefiles.")
+        return
 
     if args.update_from:
         print("Updating FROM instructions in Dockerfiles...")

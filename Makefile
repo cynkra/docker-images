@@ -1,10 +1,10 @@
 # Makefile for Docker Image Dependency Management
 
-.PHONY: stages analysis clean help update-from check-from
+.PHONY: stages analysis clean help update-from check-from generate-makefiles
 
 .NOTPARALLEL:
 
-all: stages analysis
+all: stages analysis generate-makefiles
 
 # Default target
 help:
@@ -13,6 +13,7 @@ help:
 	@echo "  analysis   - Generate dependency analysis report"
 	@echo "  update-from - Update FROM instructions in Dockerfiles according to hierarchy"
 	@echo "  check-from  - Check what FROM instructions would be updated (dry run)"
+	@echo "  generate-makefiles - Generate Makefiles alongside each Dockerfile"
 	@echo "  clean      - Remove generated files"
 	@echo "  help       - Show this help message"
 
@@ -59,3 +60,8 @@ update-from: .venv/pyvenv.cfg
 check-from: .venv/pyvenv.cfg
 	@echo "Checking FROM instructions in Dockerfiles..."
 	@source .venv/bin/activate && python3 generate_stages.py --update-from --dry-run
+
+# Generate Makefiles alongside each Dockerfile
+generate-makefiles: .venv/pyvenv.cfg
+	@echo "Generating Makefiles for all Dockerfiles..."
+	@source .venv/bin/activate && python3 generate_stages.py --generate-makefiles
