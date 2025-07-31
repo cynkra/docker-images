@@ -679,7 +679,9 @@ help:
 # Build the Docker image
 build:
 \t@echo "Building Docker image: {full_image_name}:latest"
-\tdocker build -t {full_image_name}:latest .
+\t@echo "Creating date file for cache invalidation..."
+\t@date > date.txt
+\t@trap 'rm -f date.txt' EXIT; docker build -t {full_image_name}:latest .
 
 # Pull the Docker image from registry
 pull:
