@@ -18,7 +18,7 @@ help:
 build:
 	@echo "Building Docker image: ghcr.io/cynkra/docker-images/rig-debian:latest"
 	@echo "Creating date file for cache invalidation..."
-	@date > date.txt
+	@date -Idate > date.txt
 	@trap 'rm -f date.txt' EXIT; docker build -t ghcr.io/cynkra/docker-images/rig-debian:latest .
 
 # Pull the Docker image from registry
