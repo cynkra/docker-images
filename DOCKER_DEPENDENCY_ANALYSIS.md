@@ -2,7 +2,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 35
+- Total Dockerfiles found: 36
 - Images with local dependencies: 23
 - Build stages required: 6
 
@@ -14,6 +14,7 @@
 ✓ alma9-rig-rrel ← alma9-rig ← ghcr.io/cynkra/docker-images/alma9-rig:latest
 ✓ alma9-rig-rrel-coinor ← alma9-rig-rrel ← ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
 ✓ build-dust ← rust:latest (external)
+✓ clang18-duckdb ← rhub/clang18 (external)
 ✓ dust ← scratch (external)
   └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
 ✓ r-minimal ← ubuntu:latest (external)
@@ -107,6 +108,7 @@
 - `debian:bookworm` used by: rig-debian
 - `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` used by: tofutf
 - `kalibera/rchk:latest` used by: rchk-igraph
+- `rhub/clang18` used by: clang18-duckdb
 - `rockylinux:8` used by: rig-rocky8
 - `rust:latest` used by: build-dust
 - `scratch` used by: dust
@@ -124,6 +126,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `alma9-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/alma9-rig:latest` ✓
 - `alma9-rig-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest` ✓
 - `build-dust` (root): FROM `rust:latest` ✓
+- `clang18-duckdb` (root): FROM `rhub/clang18` ✓
 - `dust` (root): FROM `scratch` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓

@@ -65,6 +65,15 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  clang18-duckdb:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang18-duckdb
+      image_name: clang18-duckdb
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   dust:
     needs:
       - build-dust
