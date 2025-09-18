@@ -385,3 +385,67 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  r-debug-r-devel:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: r-debug/r-devel
+      image_name: r-debug-r-devel
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  r-debug-valgrind:
+    needs:
+      - r-debug-r-devel
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: r-debug/valgrind
+      image_name: r-debug-valgrind
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  r-debug-san:
+    needs:
+      - r-debug-valgrind
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: r-debug/san
+      image_name: r-debug-san
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  r-debug-csan:
+    needs:
+      - r-debug-san
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: r-debug/csan
+      image_name: r-debug-csan
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  r-debug-strictbarrier:
+    needs:
+      - r-debug-csan
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: r-debug/strictbarrier
+      image_name: r-debug-strictbarrier
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  r-debug-threadcheck:
+    needs:
+      - r-debug-strictbarrier
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: r-debug/threadcheck
+      image_name: r-debug-threadcheck
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

@@ -73,6 +73,20 @@ Development environment for working with DuckDB using R 4.x. Includes necessary 
 **Dependency**: ubuntu:latest
 Minimal Ubuntu-based image with basic setup. Serves as a lightweight base for specialized use cases.
 
+### [r-debug](r-debug)
+
+**Dependency**: ubuntu:22.04
+Comprehensive debugging environment for R memory problems and low-level issues. Contains multiple instrumented builds of R-devel:
+
+- `r-debug-r-devel`: Base R-devel without optimizations (-O0) for debugging
+- `r-debug-valgrind`: R-devel with valgrind level 2 instrumentation
+- `r-debug-san`: R-devel with GCC Address Sanitizer and Undefined Behavior Sanitizer
+- `r-debug-csan`: R-devel with Clang sanitizers
+- `r-debug-strictbarrier`: R-devel with strict barrier checking
+- `r-debug-threadcheck`: R-devel with thread safety checking
+
+Each variant provides specialized debugging capabilities for detecting memory errors, undefined behavior, and thread safety issues. Based on Winston Chang's original r-debug Docker images.
+
 ### [r-postgres](r-postgres)
 
 **Dependency**: rig-ubuntu
