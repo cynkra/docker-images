@@ -28,8 +28,8 @@ pull:
 
 # Pull the parent image this image depends on
 pull-parent:
-	@echo "Pulling parent image: cynkra/r-debug-r-devel"
-	docker pull cynkra/r-debug-r-devel
+	@echo "Pulling parent image: ghcr.io/cynkra/docker-images/cynkra/r-debug-r-devel"
+	docker pull ghcr.io/cynkra/docker-images/cynkra/r-debug-r-devel
 
 # Run interactive bash as regular user
 run:
