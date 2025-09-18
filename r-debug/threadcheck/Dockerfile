@@ -5,7 +5,7 @@
 #   docker run --rm -ti --name rd-threadcheck cynkra/r-debug-threadcheck
 #   RDthreadcheck # to start R-devel with thread checking
 
-FROM cynkra/r-debug-strictbarrier
+FROM ghcr.io/cynkra/docker-images/cynkra/r-debug-strictbarrier
 
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"
