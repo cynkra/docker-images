@@ -2,7 +2,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 36
+- Total Dockerfiles found: 42
 - Images with local dependencies: 23
 - Build stages required: 6
 
@@ -17,6 +17,12 @@
 ✓ clang18-duckdb ← rhub/clang18 (external)
 ✓ dust ← scratch (external)
   └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
+✓ r-debug-csan ← cynkra/r-debug-san (external)
+✓ r-debug-r-devel ← ubuntu:22.04 (external)
+✓ r-debug-san ← cynkra/r-debug-valgrind (external)
+✓ r-debug-strictbarrier ← cynkra/r-debug-csan (external)
+✓ r-debug-threadcheck ← cynkra/r-debug-strictbarrier (external)
+✓ r-debug-valgrind ← cynkra/r-debug-r-devel (external)
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
@@ -105,6 +111,11 @@
 - `almalinux/9-base` used by: alma9
 - `almalinux:9` used by: sssd-almalinux
 - `alpine:latest` used by: sops-age
+- `cynkra/r-debug-csan` used by: r-debug-strictbarrier
+- `cynkra/r-debug-r-devel` used by: r-debug-valgrind
+- `cynkra/r-debug-san` used by: r-debug-csan
+- `cynkra/r-debug-strictbarrier` used by: r-debug-threadcheck
+- `cynkra/r-debug-valgrind` used by: r-debug-san
 - `debian:bookworm` used by: rig-debian
 - `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` used by: tofutf
 - `kalibera/rchk:latest` used by: rchk-igraph
@@ -112,7 +123,7 @@
 - `rockylinux:8` used by: rig-rocky8
 - `rust:latest` used by: build-dust
 - `scratch` used by: dust
-- `ubuntu:22.04` used by: rig-ubuntu
+- `ubuntu:22.04` used by: rig-ubuntu, r-debug-r-devel
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
 - `wch1/r-debug:latest` used by: rigraph-san
@@ -128,6 +139,12 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `build-dust` (root): FROM `rust:latest` ✓
 - `clang18-duckdb` (root): FROM `rhub/clang18` ✓
 - `dust` (root): FROM `scratch` ✓
+- `r-debug-csan`: FROM `cynkra/r-debug-san` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
+- `r-debug-r-devel`: FROM `ubuntu:22.04` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
+- `r-debug-san`: FROM `cynkra/r-debug-valgrind` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
+- `r-debug-strictbarrier`: FROM `cynkra/r-debug-csan` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
+- `r-debug-threadcheck`: FROM `cynkra/r-debug-strictbarrier` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
+- `r-debug-valgrind`: FROM `cynkra/r-debug-r-devel` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓

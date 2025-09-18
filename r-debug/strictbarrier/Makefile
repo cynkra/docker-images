@@ -18,34 +18,30 @@ help:
 build:
 	@echo "Building Docker image: ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
 	@echo "Creating date file for cache invalidation..."
-	@date > date.txt
-	@docker build -t ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest .
-	@echo "Build completed: ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
+	@date -Idate > date.txt
+	@trap 'rm -f date.txt' EXIT; docker build -t ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest .
 
 # Pull the Docker image from registry
 pull:
 	@echo "Pulling Docker image: ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
-	@docker pull ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest
+	docker pull ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest
 
-# Pull the parent image
+# Pull the parent image this image depends on
 pull-parent:
-	@echo "Pulling parent image: ghcr.io/cynkra/docker-images/r-debug-csan:latest"
-	@docker pull ghcr.io/cynkra/docker-images/r-debug-csan:latest
+	@echo "Pulling parent image: cynkra/r-debug-csan"
+	docker pull cynkra/r-debug-csan
 
 # Run interactive bash as regular user
 run:
-	@echo "Running interactive container with ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
-	@docker run --rm -it ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest /bin/bash
+	@echo "Starting interactive bash session in ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
+	docker run --rm -it ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest /bin/bash
 
 # Run interactive bash as root user
 run-root:
-	@echo "Running interactive container as root with ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
-	@docker run --rm -it --user root ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest /bin/bash
+	@echo "Starting interactive bash session as root in ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
+	docker run --rm -it --user root ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest /bin/bash
 
 # Remove the Docker image
 clean:
 	@echo "Removing Docker image: ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest"
-	@docker rmi ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest || true
-
-# Build dependencies (for automated builds)
-.build-deps: ../csan/.build-deps
+	docker rmi ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest || true
