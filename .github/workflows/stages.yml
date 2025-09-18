@@ -86,6 +86,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   csan-r-debug:
+    needs:
+      - san-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/csan
@@ -104,6 +106,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   san-r-debug:
+    needs:
+      - valgrind-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/san
@@ -113,6 +117,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   strictbarrier-r-debug:
+    needs:
+      - csan-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/strictbarrier
@@ -122,6 +128,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   threadcheck-r-debug:
+    needs:
+      - strictbarrier-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/threadcheck
@@ -131,6 +139,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   valgrind-r-debug:
+    needs:
+      - r-devel-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/valgrind

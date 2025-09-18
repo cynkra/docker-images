@@ -5,7 +5,7 @@
 #   docker run --rm -ti --name rd-strictbarrier cynkra/r-debug-strictbarrier
 #   RDstrictbarrier # to start R-devel with strict barrier checking
 
-FROM ghcr.io/cynkra/docker-images/cynkra/r-debug-csan
+FROM ghcr.io/cynkra/docker-images/r-debug-csan
 
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"
