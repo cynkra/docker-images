@@ -2,7 +2,7 @@ FROM ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
 
 # Install GCC 14, configure alternatives, and set compiler flags
 RUN \
-  sed -i 's/noble/oracular/g' /etc/apt/sources.list.d/* && \
+  sed -i 's/noble/plucky/g' /etc/apt/sources.list.d/* && \
   apt-get update && \
   apt-get install -y gcc-14 g++-14 cpp-14 && \
   update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100 && \
