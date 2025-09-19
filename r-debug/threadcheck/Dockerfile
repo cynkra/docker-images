@@ -5,20 +5,13 @@
 #   docker run --rm -ti --name rd-threadcheck cynkra/r-debug-threadcheck
 #   RDthreadcheck # to start R-devel with thread checking
 
-FROM ghcr.io/cynkra/docker-images/r-debug-strictbarrier
+FROM ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest
 
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"
 
-COPY assertthread.patch /tmp/
-
 # RDthreadcheck: Make sure that R's memory management functions are called
 # only from the main R thread.
-RUN /tmp/buildR.sh threadcheck && \
-    rm -rf /tmp/* && \
-    rm -rf /var/tmp/* && \
-    true
-
-RUN RDthreadcheck -q -e 'pak::pak("pak")' && \
-    RDthreadcheck -q -e 'pak::pak(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))' && \
-    true
+RUN /tmp/buildR.sh threadcheck
+RUN RDthreadcheck -q -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev")'
+RUN RDthreadcheck -q -e 'pak::pkg_install(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))'

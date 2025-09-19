@@ -5,17 +5,12 @@
 #   docker run --rm -ti --name rd-valgrind cynkra/r-debug-valgrind
 #   RDvalgrind # to start R-devel with valgrind instrumentation
 
-FROM ghcr.io/cynkra/docker-images/r-debug-r-devel
+FROM ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
 
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"
 
 # RDvalgrind: Install R-devel with valgrind level 2 instrumentation
-RUN /tmp/buildR.sh valgrind && \
-    rm -rf /tmp/* && \
-    rm -rf /var/tmp/* && \
-    true
-
-RUN RDvalgrind -q -e 'pak::pak("pak")' && \
-    RDvalgrind -q -e 'pak::pak(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))' && \
-    true
+RUN /tmp/buildR.sh valgrind
+RUN RDvalgrind -q -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev")'
+RUN RDvalgrind -q -e 'pak::pkg_install(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))'

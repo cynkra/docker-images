@@ -14,25 +14,23 @@ COPY date.txt /date.txt
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"
 
-# ===============================================================================
+# =====================================================================
 # R
-# ===============================================================================
+# =====================================================================
 
 # Don't print "debconf: unable to initialize frontend: Dialog" messages
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Need this to add R repo
-RUN apt-get update && apt-get install -y software-properties-common wget dirmngr && \
-    # LLVM-15
-    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
-    add-apt-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-15 main" && \
-    # Add R apt repository
-    wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc && \
-    add-apt-repository "deb http://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/* && \
-    rm -rf /var/tmp/* && \
-    true
+RUN apt-get update && apt-get install -y software-properties-common wget dirmngr
+
+# LLVM-15
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN add-apt-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-15 main"
+
+# Add R apt repository
+RUN wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+RUN add-apt-repository "deb http://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
 
 # Install basic stuff, R, and other packages that are useful for compiling R
 # and R packages.
@@ -74,52 +72,44 @@ RUN apt-get update && apt-get install -y \
     valgrind \
     clang-15 \
     lldb-15 \
-    devscripts && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/* && \
-    rm -rf /var/tmp/* && \
-    true
+    devscripts
 
-RUN locale-gen en_US.utf8 && \
-    /usr/sbin/update-locale LANG=en_US.UTF-8 && \
-    true
+RUN locale-gen en_US.utf8 \
+    && /usr/sbin/update-locale LANG=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 800 \
-        --slave /usr/bin/g++ g++ /usr/bin/g++-12 && \
-    true
+    --slave /usr/bin/g++ g++ /usr/bin/g++-12
 
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-15 800 \
-        --slave /usr/bin/clang++ clang++ /usr/bin/clang++-15 \
-        --slave /usr/bin/llvm-symbolizer llvm-symbolizer /usr/bin/llvm-symbolizer-15 && \
-    true
+    --slave /usr/bin/clang++ clang++ /usr/bin/clang++-15 \
+    --slave /usr/bin/llvm-symbolizer llvm-symbolizer /usr/bin/llvm-symbolizer-15
+
 
 RUN echo 'options(\n\
   repos = c(CRAN = "https://cloud.r-project.org/"),\n\
   download.file.method = "libcurl",\n\
   # Detect number of physical cores\n\
   Ncpus = parallel::detectCores(logical=FALSE)\n\
-)' >> /etc/R/Rprofile.site && \
-    true
+)' >> /etc/R/Rprofile.site
+
 
 # Install TinyTeX (subset of TeXLive)
 # From FAQ 5 and 6 here: https://yihui.name/tinytex/faq/
 # Also install ae, parskip, and listings packages to build R vignettes
 RUN wget -qO- \
     "https://yihui.org/gh/tinytex/tools/install-unx.sh" | \
-        sh -s - --admin --no-path && \
-    ~/.TinyTeX/bin/*/tlmgr path add && \
-    tlmgr install metafont mfware inconsolata tex ae parskip listings xcolor \
-            epstopdf-pkg pdftexcmds kvoptions texlive-scripts grfext && \
-    tlmgr path add && \
-    R -q -e "pak::pak('tinytex'); tinytex::r_texmf()" && \
-    rm -rf /tmp/* && \
-    rm -rf /var/tmp/* && \
-    true
+    sh -s - --admin --no-path \
+    && ~/.TinyTeX/bin/*/tlmgr path add \
+    && tlmgr install metafont mfware inconsolata tex ae parskip listings xcolor \
+             epstopdf-pkg pdftexcmds kvoptions texlive-scripts grfext \
+    && tlmgr path add \
+    && Rscript -e "install.packages('tinytex'); tinytex::r_texmf()"
 
-# ===============================================================================
+
+# =====================================================================
 # Install various versions of R-devel
-# ===============================================================================
+# =====================================================================
 
 # Environment variables from http://www.stats.ox.ac.uk/pub/bdr/memtests/README.txt
 ENV ASAN_OPTIONS 'detect_leaks=0:detect_odr_violation=0'
@@ -128,12 +118,11 @@ ENV RJAVA_JVM_STACK_WORKAROUND 0
 ENV RGL_USE_NULL true
 ENV R_DONT_USE_TK true
 
+
 # Clone R-devel and download recommended packages
-RUN cd /tmp && \
-    git clone --depth 1 https://github.com/wch/r-source.git && \
-    r-source/tools/rsync-recommended && \
-    rm -rf /tmp/r-source && \
-    true
+RUN cd /tmp \
+    && git clone --depth 1 https://github.com/wch/r-source.git \
+    && r-source/tools/rsync-recommended
 
 COPY buildR.sh /tmp
 
@@ -153,18 +142,13 @@ COPY buildR.sh /tmp
 # (*especially* Rcpp), are often of interest -- they are installed for each
 # RD* installation, and code is compiled with whatever compiler settings are
 # used for each RD* installation.
-RUN /tmp/buildR.sh && \
-    rm -rf /tmp/* && \
-    rm -rf /var/tmp/* && \
-    true
+RUN /tmp/buildR.sh
 
 # Install some commonly-used packages to a location used by all the RD*
 # installations. These packages do not have compiled code and do not depend on
 # packages that have compiled code.
-RUN RD -q -e 'pak::pak("pak", "/usr/local/RD/lib/R/library")' && \
-    RD -q -e 'pak::pak(c("BH", "R6", "magrittr"), "/usr/local/RD/lib/R/library")' && \
-    true
+RUN RD -q -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/", "/usr/local/RD/lib/R/library")'
+RUN RD -q -e 'pak::pkg_install(c("BH", "R6", "magrittr"), "/usr/local/RD/lib/R/library")'
 
 # Finally, install some common packages specific to this build of R.
-RUN RD -q -e 'pak::pak(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))' && \
-    true
+RUN RD -q -e 'pak::pkg_install(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))'
