@@ -90,7 +90,7 @@ jobs:
 
   csan-r-debug:
     needs:
-      - san-r-debug
+      - r-devel-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/csan
@@ -110,7 +110,7 @@ jobs:
 
   san-r-debug:
     needs:
-      - valgrind-r-debug
+      - r-devel-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/san
@@ -121,7 +121,7 @@ jobs:
 
   strictbarrier-r-debug:
     needs:
-      - csan-r-debug
+      - r-devel-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/strictbarrier
@@ -132,7 +132,7 @@ jobs:
 
   threadcheck-r-debug:
     needs:
-      - strictbarrier-r-debug
+      - r-devel-r-debug
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-debug/threadcheck
