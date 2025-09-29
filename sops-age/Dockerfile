@@ -3,6 +3,8 @@ FROM alpine:latest
 # Original entrypoint: none
 # Original CMD: /bin/sh
 
+COPY date.txt /date.txt
+
 # Install required dependencies
 # Extract only the age and age-keygen binaries from the .tar.gz
 RUN \
