@@ -9,7 +9,7 @@ COPY date.txt /date.txt
 # Extract only the age and age-keygen binaries from the .tar.gz
 RUN \
     apk add --no-cache bash curl gnupg && \
-    curl -Lo /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.9.4/sops-v3.9.4.linux.amd64 && \
+    curl -Lo /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64 && \
     chmod +x /usr/local/bin/sops && \
     curl -Lo /root/age.tar.gz https://github.com/FiloSottile/age/releases/download/v1.2.1/age-v1.2.1-linux-amd64.tar.gz && \
     tar -xzf /root/age.tar.gz -C /root age && \
