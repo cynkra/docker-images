@@ -29,6 +29,7 @@ jobs:
       id-token: write
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - runner: ubuntu-24.04
