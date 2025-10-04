@@ -742,23 +742,23 @@ pull-parent-arm64:
 
 # Run interactive bash as regular user (amd64)
 run-amd64:
-\t@echo "Starting interactive bash session in {full_image_name}:latest-amd64"
-\tdocker run --rm -it {full_image_name}:latest-amd64 /bin/bash
+\t@echo "Starting interactive bash session in {full_image_name}:latest"
+\tdocker run --platform linux/amd64 --rm -it {full_image_name}:latest /bin/bash
 
 # Run interactive bash as regular user (arm64)
 run-arm64:
-\t@echo "Starting interactive bash session in {full_image_name}:latest-arm64"
-\tdocker run --rm -it {full_image_name}:latest-arm64 /bin/bash
+\t@echo "Starting interactive bash session in {full_image_name}:latest"
+\tdocker run --platform linux/arm64 --rm -it {full_image_name}:latest /bin/bash
 
 # Run interactive bash as root user (amd64)
 run-root-amd64:
-\t@echo "Starting interactive bash session as root in {full_image_name}:latest-amd64"
-\tdocker run --rm -it --user root {full_image_name}:latest-amd64 /bin/bash
+\t@echo "Starting interactive bash session as root in {full_image_name}:latest"
+\tdocker run --platform linux/amd64 --rm -it --user root {full_image_name}:latest /bin/bash
 
 # Run interactive bash as root user (arm64)
 run-root-arm64:
-\t@echo "Starting interactive bash session as root in {full_image_name}:latest-arm64"
-\tdocker run --rm -it --user root {full_image_name}:latest-arm64 /bin/bash
+\t@echo "Starting interactive bash session as root in {full_image_name}:latest"
+\tdocker run --platform linux/arm64 --rm -it --user root {full_image_name}:latest /bin/bash
 
 # Remove the Docker image (both architectures)
 clean: clean-amd64 clean-arm64

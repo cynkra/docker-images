@@ -72,23 +72,23 @@ pull-parent-arm64:
 
 # Run interactive bash as regular user (amd64)
 run-amd64:
-	@echo "Starting interactive bash session in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-amd64"
-	docker run --rm -it ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-amd64 /bin/bash
+	@echo "Starting interactive bash session in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest"
+	docker run --platform linux/amd64 --rm -it ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest /bin/bash
 
 # Run interactive bash as regular user (arm64)
 run-arm64:
-	@echo "Starting interactive bash session in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-arm64"
-	docker run --rm -it ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-arm64 /bin/bash
+	@echo "Starting interactive bash session in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest"
+	docker run --platform linux/arm64 --rm -it ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest /bin/bash
 
 # Run interactive bash as root user (amd64)
 run-root-amd64:
-	@echo "Starting interactive bash session as root in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-amd64"
-	docker run --rm -it --user root ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-amd64 /bin/bash
+	@echo "Starting interactive bash session as root in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest"
+	docker run --platform linux/amd64 --rm -it --user root ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest /bin/bash
 
 # Run interactive bash as root user (arm64)
 run-root-arm64:
-	@echo "Starting interactive bash session as root in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-arm64"
-	docker run --rm -it --user root ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest-arm64 /bin/bash
+	@echo "Starting interactive bash session as root in ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest"
+	docker run --platform linux/arm64 --rm -it --user root ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest /bin/bash
 
 # Remove the Docker image (both architectures)
 clean: clean-amd64 clean-arm64
