@@ -7,6 +7,9 @@ RUN \
   dnf update -y && \
   dnf install -y sudo ccache && \
   dnf clean all && \
+  true
+
+RUN \
   ln -s /usr/bin/ccache /usr/local/bin/gcc && \
   ln -s /usr/bin/ccache /usr/local/bin/g++ && \
   if [ "$TARGETARCH" = "arm64" ]; then \
