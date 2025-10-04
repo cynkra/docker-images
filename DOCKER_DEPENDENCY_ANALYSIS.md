@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 25
-- Images with local dependencies: 19
+- Total Dockerfiles found: 26
+- Images with local dependencies: 20
 - Build stages required: 6
 
 ## Dependency Tree
@@ -40,6 +40,7 @@
   └─ COPY --from dust ← ghcr.io/cynkra/docker-images/dust:latest
 ✓ ubuntu24-rig-rrel-dc-dt ← ubuntu24-rig-rrel-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest
 ✓ ubuntu24-rig-rrel-dc-dt-dm ← ubuntu24-rig-rrel-dc-dt ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest
+✓ ubuntu24-rig-rrel-dc-dt-pkgcache ← ubuntu24-rig-rrel-dc-dt ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest
 ```
 
 ## Build Order (Topological Sort)
@@ -84,6 +85,7 @@
 ### Stage 6
 
 - ubuntu24-rig-rrel-dc-dt-dm
+- ubuntu24-rig-rrel-dc-dt-pkgcache
 
 
 ## External Dependencies
@@ -127,6 +129,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `ubuntu24-rig-rrel-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest` ✓
 - `ubuntu24-rig-rrel-dc-dt`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest` ✓
 - `ubuntu24-rig-rrel-dc-dt-dm`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest` ✓
+- `ubuntu24-rig-rrel-dc-dt-pkgcache`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest` ✓
 
 To update FROM instructions automatically, run:
 ```bash
