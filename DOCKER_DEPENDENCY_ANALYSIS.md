@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 23
-- Images with local dependencies: 18
+- Total Dockerfiles found: 25
+- Images with local dependencies: 19
 - Build stages required: 6
 
 ## Dependency Tree
@@ -16,6 +16,9 @@
 ✓ alma9-rig ← alma9 ← ghcr.io/cynkra/docker-images/alma9:latest
 ✓ alma9-rig-rrel ← alma9-rig ← ghcr.io/cynkra/docker-images/alma9-rig:latest
 ✓ alma9-rig-rrel-coinor ← alma9-rig-rrel ← ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
+✓ build-dust ← rust:latest (external)
+✓ dust ← scratch (external)
+  └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
 ✓ r-debug-csan ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
 ✓ r-debug-r-devel ← ubuntu:22.04 (external)
 ✓ r-debug-san ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
@@ -28,11 +31,13 @@
 ✓ ubuntu24-rig ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig-rdev ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
 ✓ ubuntu24-rig-rdev-dc ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
+  └─ COPY --from dust ← ghcr.io/cynkra/docker-images/dust:latest
 ✓ ubuntu24-rig-rdev-dc-dt ← ubuntu24-rig-rdev-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest
 ✓ ubuntu24-rig-rdev-gcc14 ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
 ✓ ubuntu24-rig-rdev-gcc14-duckdb ← ubuntu24-rig-rdev-gcc14 ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-gcc14:latest
 ✓ ubuntu24-rig-rrel ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
 ✓ ubuntu24-rig-rrel-dc ← ubuntu24-rig-rrel ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest
+  └─ COPY --from dust ← ghcr.io/cynkra/docker-images/dust:latest
 ✓ ubuntu24-rig-rrel-dc-dt ← ubuntu24-rig-rrel-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest
 ✓ ubuntu24-rig-rrel-dc-dt-dm ← ubuntu24-rig-rrel-dc-dt ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest
 ```
@@ -42,12 +47,14 @@
 ### Stage 1
 
 - alma9
+- build-dust
 - r-debug-r-devel
 - ubuntu24
 
 ### Stage 2
 
 - alma9-rig
+- dust
 - r-debug-csan
 - r-debug-san
 - r-debug-strictbarrier
@@ -85,6 +92,8 @@
 
 - `almalinux/9-base` used by: alma9
 - `almalinux:9` used by: sssd-almalinux
+- `rust:latest` used by: build-dust
+- `scratch` used by: dust
 - `ubuntu:22.04` used by: r-debug-r-devel
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
@@ -97,6 +106,8 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `alma9-rig`: FROM `ghcr.io/cynkra/docker-images/alma9:latest` ✓
 - `alma9-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/alma9-rig:latest` ✓
 - `alma9-rig-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest` ✓
+- `build-dust` (root): FROM `rust:latest` ✓
+- `dust` (root): FROM `scratch` ✓
 - `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-debug-r-devel`: FROM `ubuntu:22.04` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-debug-san`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
