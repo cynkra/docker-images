@@ -71,7 +71,7 @@ jobs:
           context: ${{ inputs.path }}
           platforms: ${{ matrix.platform }}
           pull: true
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm' }}
           tags: |
             ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
             ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
@@ -86,7 +86,7 @@ jobs:
       - name: Generate artifact attestation for GitHub Container Registry
         uses: actions/attest-build-provenance@v1
         # Only on main branch
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm'
         with:
           subject-name: ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}
           subject-digest: ${{ steps.push.outputs.digest }}
@@ -95,7 +95,7 @@ jobs:
       - name: Generate artifact attestation for Docker Hub
         uses: actions/attest-build-provenance@v1
         # Only on main branch
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm'
         with:
           subject-name: docker.io/${{ github.repository_owner }}/${{ inputs.image_name }}
           subject-digest: ${{ steps.push.outputs.digest }}
