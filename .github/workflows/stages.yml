@@ -19,7 +19,7 @@ env:
 
 jobs:
   alma9:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: alma9
       image_name: alma9
@@ -30,7 +30,7 @@ jobs:
   rig-alma9:
     needs:
       - alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: alma9/rig
       image_name: alma9-rig
@@ -41,7 +41,7 @@ jobs:
   rrel-rig-alma9:
     needs:
       - rig-alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: alma9/rig/rrel
       image_name: alma9-rig-rrel
@@ -52,7 +52,7 @@ jobs:
   coinor-rrel-rig-alma9:
     needs:
       - rrel-rig-alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: alma9/rig/rrel/coinor
       image_name: alma9-rig-rrel-coinor
@@ -61,7 +61,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-dust:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: build-dust
       image_name: build-dust
@@ -70,7 +70,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   clang18-duckdb:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: clang18-duckdb
       image_name: clang18-duckdb
@@ -81,7 +81,7 @@ jobs:
   dust:
     needs:
       - build-dust
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: dust
       image_name: dust
@@ -92,7 +92,7 @@ jobs:
   csan-r-debug:
     needs:
       - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: r-debug/csan
       image_name: r-debug-csan
@@ -101,7 +101,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   r-devel-r-debug:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: r-debug/r-devel
       image_name: r-debug-r-devel
@@ -112,7 +112,7 @@ jobs:
   san-r-debug:
     needs:
       - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: r-debug/san
       image_name: r-debug-san
@@ -123,7 +123,7 @@ jobs:
   strictbarrier-r-debug:
     needs:
       - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: r-debug/strictbarrier
       image_name: r-debug-strictbarrier
@@ -134,7 +134,7 @@ jobs:
   threadcheck-r-debug:
     needs:
       - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: r-debug/threadcheck
       image_name: r-debug-threadcheck
@@ -145,7 +145,7 @@ jobs:
   valgrind-r-debug:
     needs:
       - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: r-debug/valgrind
       image_name: r-debug-valgrind
@@ -154,7 +154,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   r-minimal:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: r-minimal
       image_name: r-minimal
@@ -163,7 +163,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rchk-igraph:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rchk-igraph
       image_name: rchk-igraph
@@ -172,7 +172,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-debian:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-debian
       image_name: rig-debian
@@ -181,7 +181,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-rocky8:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-rocky8
       image_name: rig-rocky8
@@ -190,7 +190,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-ubuntu:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu
       image_name: rig-ubuntu
@@ -201,7 +201,7 @@ jobs:
   dbi-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/dbi
       image_name: rig-ubuntu-dbi
@@ -212,7 +212,7 @@ jobs:
   dm-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/dm
       image_name: rig-ubuntu-dm
@@ -223,7 +223,7 @@ jobs:
   duckdb-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/duckdb
       image_name: rig-ubuntu-duckdb
@@ -234,7 +234,7 @@ jobs:
   dev-duckdb-rig-ubuntu:
     needs:
       - duckdb-rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/duckdb/dev
       image_name: rig-ubuntu-duckdb-dev
@@ -245,7 +245,7 @@ jobs:
   duckdb4-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/duckdb4
       image_name: rig-ubuntu-duckdb4
@@ -256,7 +256,7 @@ jobs:
   igraph-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/igraph
       image_name: rig-ubuntu-igraph
@@ -267,7 +267,7 @@ jobs:
   r-postgres-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/r-postgres
       image_name: rig-ubuntu-r-postgres
@@ -278,7 +278,7 @@ jobs:
   revdepcheck-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rig-ubuntu/revdepcheck
       image_name: rig-ubuntu-revdepcheck
@@ -287,7 +287,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rigraph-san:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: rigraph-san
       image_name: rigraph-san
@@ -296,7 +296,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   sops-age:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: sops-age
       image_name: sops-age
@@ -305,7 +305,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   sssd-almalinux:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: sssd-almalinux
       image_name: sssd-almalinux
@@ -314,7 +314,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   tofutf:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: tofutf
       image_name: tofutf
@@ -323,7 +323,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   ubuntu24:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24
       image_name: ubuntu24
@@ -334,7 +334,7 @@ jobs:
   msfonts-ubuntu24:
     needs:
       - ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/msfonts
       image_name: ubuntu24-msfonts
@@ -345,7 +345,7 @@ jobs:
   rig-ubuntu24:
     needs:
       - ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig
       image_name: ubuntu24-rig
@@ -356,7 +356,7 @@ jobs:
   rdev-rig-ubuntu24:
     needs:
       - rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rdev
       image_name: ubuntu24-rig-rdev
@@ -368,7 +368,7 @@ jobs:
     needs:
       - dust
       - rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rdev/dc
       image_name: ubuntu24-rig-rdev-dc
@@ -379,7 +379,7 @@ jobs:
   dt-dc-rdev-rig-ubuntu24:
     needs:
       - dc-rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rdev/dc/dt
       image_name: ubuntu24-rig-rdev-dc-dt
@@ -390,7 +390,7 @@ jobs:
   gcc14-rdev-rig-ubuntu24:
     needs:
       - rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rdev/gcc14
       image_name: ubuntu24-rig-rdev-gcc14
@@ -401,7 +401,7 @@ jobs:
   duckdb-gcc14-rdev-rig-ubuntu24:
     needs:
       - gcc14-rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rdev/gcc14/duckdb
       image_name: ubuntu24-rig-rdev-gcc14-duckdb
@@ -412,7 +412,7 @@ jobs:
   rrel-rig-ubuntu24:
     needs:
       - rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rrel
       image_name: ubuntu24-rig-rrel
@@ -424,7 +424,7 @@ jobs:
     needs:
       - dust
       - rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rrel/dc
       image_name: ubuntu24-rig-rrel-dc
@@ -435,7 +435,7 @@ jobs:
   dt-dc-rrel-rig-ubuntu24:
     needs:
       - dc-rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rrel/dc/dt
       image_name: ubuntu24-rig-rrel-dc-dt
@@ -446,7 +446,7 @@ jobs:
   dm-dt-dc-rrel-rig-ubuntu24:
     needs:
       - dt-dc-rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref }}
     with:
       path: ubuntu24/rig/rrel/dc/dt/dm
       image_name: ubuntu24-rig-rrel-dc-dt-dm
