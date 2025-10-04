@@ -20,7 +20,7 @@ env:
 
 jobs:
   img:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
