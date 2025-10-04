@@ -331,7 +331,7 @@ class DockerImageAnalyzer:
         config = {
             'name': 'Create and publish a Docker image',
             'on': {
-                'push': {'branches': ['main', 'dev']},
+                'push': {'branches': ['main', 'dev', 'arm']},
                 'workflow_dispatch': None,
                 'schedule': [{'cron': '0 0 * * *'}]
             },
@@ -365,7 +365,7 @@ class DockerImageAnalyzer:
             # Then add the rest of the job configuration
             # Use the directory path as the parameter - image name can be derived from path
             job_config.update({
-                'uses': 'cynkra/docker-images/.github/workflows/publish.yml@main',
+                'uses': 'cynkra/docker-images/.github/workflows/publish.yml@${{ github.ref_name }}',
                 'with': {
                     'path': dir_path,
                     'image_name': image
