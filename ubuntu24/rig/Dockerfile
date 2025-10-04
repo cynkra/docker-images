@@ -6,7 +6,7 @@ RUN \
   apt-get install -y --no-install-recommends curl sudo ccache ca-certificates && \
   /usr/sbin/update-ccache-symlinks && \
   \
-  curl -Ls https://github.com/r-lib/rig/releases/download/v0.7.1/rig-linux-0.7.1.tar.gz | sudo tar xz -C /usr/local && \
+  curl -Ls https://github.com/r-lib/rig/releases/download/v0.7.1/rig-linux-arm64-0.7.1.tar.gz | sudo tar xz -C /usr/local && \
   \
   mkdir /root/.R && \
   echo 'MAKEFLAGS=-j4' > /root/.R/Makevars && \
