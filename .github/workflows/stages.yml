@@ -60,15 +60,6 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  dust:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
-    with:
-      path: dust
-      image_name: dust
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
   csan-r-debug:
     needs:
       - r-devel-r-debug
@@ -160,17 +151,6 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  msfonts-ubuntu24:
-    needs:
-      - ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
-    with:
-      path: ubuntu24/msfonts
-      image_name: ubuntu24-msfonts
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
   rig-ubuntu24:
     needs:
       - ubuntu24
@@ -195,7 +175,6 @@ jobs:
 
   dc-rdev-rig-ubuntu24:
     needs:
-      - dust
       - rdev-rig-ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
@@ -251,7 +230,6 @@ jobs:
 
   dc-rrel-rig-ubuntu24:
     needs:
-      - dust
       - rrel-rig-ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
