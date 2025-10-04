@@ -2,6 +2,8 @@ FROM ghcr.io/cynkra/docker-images/alma9:latest
 
 COPY date.txt /date.txt
 
+ARG TARGETARCH=arm64
+
 # Install system packages, configure locale, install rig, and set up R configuration
 RUN \
   dnf update -y && \
