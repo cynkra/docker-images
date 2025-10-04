@@ -54,11 +54,35 @@
 - Separate concerns: base images, R variants, specialized tools
 - Document image purposes and dependencies clearly
 
-## 6. Formatting
+## 6. Multi-Architecture Builds
+
+- All images are built for both **amd64** and **arm64** architectures
+- The workflow automatically provides `TARGETARCH` and `TARGETPLATFORM` build arguments
+- **To use architecture information in your Dockerfile:**
+
+  ```dockerfile
+  # Declare the build arguments
+  ARG TARGETARCH
+  ARG TARGETPLATFORM
+
+  # Use them in RUN commands
+  RUN echo "Building for ${TARGETARCH} on ${TARGETPLATFORM}"
+
+  # For architecture-specific logic
+  RUN if [ "$TARGETARCH" = "arm64" ]; then \
+        echo "ARM64-specific setup"; \
+      fi
+  ```
+
+- See `MULTI_ARCH_USAGE.md` for complete examples and patterns
+- Architecture-specific tags (e.g., `latest-amd64`, `latest-arm64`) are created during build
+- A unified manifest combines both architectures under the `latest` tag
+
+## 7. Formatting
 
 - Use pylint and black for Python code formatting
 
-## 7. Always Update CLAUDE.md
+## 8. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development

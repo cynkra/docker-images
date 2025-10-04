@@ -77,6 +77,9 @@ jobs:
             ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
           cache-to: type=inline
+          build-args: |
+            TARGETARCH=${{ matrix.arch }}
+            TARGETPLATFORM=${{ matrix.platform }}
 
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
       # We can use that to get from the image to the source code that was used to build it.
