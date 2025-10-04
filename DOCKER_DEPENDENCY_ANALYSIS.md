@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 26
+- Total Dockerfiles found: 27
 - Images with local dependencies: 20
 - Build stages required: 6
 
@@ -26,6 +26,7 @@
 ✓ r-debug-threadcheck ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
 ✓ r-debug-valgrind ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
 ✓ r-minimal ← ubuntu:latest (external)
+✓ sops-age ← alpine:latest (external)
 ✓ sssd-almalinux ← almalinux:9 (external)
 ✓ ubuntu24 ← ubuntu:24.04 (external)
 ✓ ubuntu24-rig ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
@@ -94,6 +95,7 @@
 
 - `almalinux/9-base` used by: alma9
 - `almalinux:9` used by: sssd-almalinux
+- `alpine:latest` used by: sops-age
 - `rust:latest` used by: build-dust
 - `scratch` used by: dust
 - `ubuntu:22.04` used by: r-debug-r-devel
@@ -117,6 +119,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `r-debug-threadcheck`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-debug-valgrind`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
+- `sops-age` (root): FROM `alpine:latest` ✓
 - `sssd-almalinux` (root): FROM `almalinux:9` ✓
 - `ubuntu24` (root): FROM `ubuntu:24.04` ✓
 - `ubuntu24-rig`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
