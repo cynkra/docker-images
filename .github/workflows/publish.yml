@@ -105,7 +105,7 @@ jobs:
     needs: img
     runs-on: ubuntu-24.04
     # Only on main branch
-    if: github.ref == 'refs/heads/main' or github.ref == 'refs/heads/arm'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm'
     permissions:
       contents: read
       packages: write
