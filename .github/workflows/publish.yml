@@ -20,7 +20,7 @@ env:
 
 jobs:
   img:
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-24.04${{ matrix.arch == 'arm64' && '-arm' || '' }}
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
@@ -31,13 +31,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - runner: ubuntu-24.04
-            platform: linux/amd64
-            arch: amd64
-          - runner: ubuntu-24.04-arm
-            platform: linux/arm64
-            arch: arm64
+        arch:
+          - amd64
+          - arm64
 
     steps:
       - name: Checkout repository
@@ -70,7 +66,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.path }}
-          platforms: ${{ matrix.platform }}
+          platforms: linux/${{ matrix.arch }}
           pull: true
           push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm' }}
           tags: |
@@ -80,7 +76,6 @@ jobs:
           cache-to: type=inline
           build-args: |
             TARGETARCH=${{ matrix.arch }}
-            TARGETPLATFORM=${{ matrix.platform }}
 
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
       # We can use that to get from the image to the source code that was used to build it.
