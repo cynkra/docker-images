@@ -112,11 +112,11 @@ RUN wget -qO- \
 # =====================================================================
 
 # Environment variables from http://www.stats.ox.ac.uk/pub/bdr/memtests/README.txt
-ENV ASAN_OPTIONS 'detect_leaks=0:detect_odr_violation=0'
-ENV UBSAN_OPTIONS 'print_stacktrace=1'
-ENV RJAVA_JVM_STACK_WORKAROUND 0
-ENV RGL_USE_NULL true
-ENV R_DONT_USE_TK true
+ENV ASAN_OPTIONS='detect_leaks=0:detect_odr_violation=0'
+ENV UBSAN_OPTIONS='print_stacktrace=1'
+ENV RJAVA_JVM_STACK_WORKAROUND=0
+ENV RGL_USE_NULL=true
+ENV R_DONT_USE_TK=true
 
 
 # Clone R-devel and download recommended packages
