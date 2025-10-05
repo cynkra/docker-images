@@ -85,7 +85,7 @@ Comprehensive debugging environment for R memory problems and low-level issues. 
 - `r-debug-strictbarrier`: R-devel with strict barrier checking
 - `r-debug-threadcheck`: R-devel with thread safety checking
 
-Each variant provides specialized debugging capabilities for detecting memory errors, undefined behavior, and thread safety issues. Based on Winston Chang's original r-debug Docker images.
+Each variant provides specialized debugging capabilities for detecting memory errors, undefined behavior, and thread safety issues. Based on Winston Chang's original r-debug Docker images from <https://github.com/wch/r-debug>.
 
 ### [r-postgres](r-postgres)
 
