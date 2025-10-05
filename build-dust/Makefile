@@ -31,14 +31,14 @@ build-amd64:
 	@echo "Building Docker image for amd64: ghcr.io/cynkra/docker-images/build-dust:latest-amd64"
 	@echo "Creating date file for cache invalidation..."
 	@date -Idate > date.txt
-	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 --build-arg TARGETPLATFORM=linux/amd64 -t ghcr.io/cynkra/docker-images/build-dust:latest-amd64 .
+	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/build-dust:latest-amd64 .
 
 # Build the Docker image for arm64 platform
 build-arm64:
 	@echo "Building Docker image for arm64: ghcr.io/cynkra/docker-images/build-dust:latest-arm64"
 	@echo "Creating date file for cache invalidation..."
 	@date -Idate > date.txt
-	@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 --build-arg TARGETPLATFORM=linux/arm64 -t ghcr.io/cynkra/docker-images/build-dust:latest-arm64 .
+	@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 -t ghcr.io/cynkra/docker-images/build-dust:latest-arm64 .
 
 # Pull the Docker image from registry (manifest)
 pull:

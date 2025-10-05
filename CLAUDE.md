@@ -57,16 +57,15 @@
 ## 6. Multi-Architecture Builds
 
 - All images are built for both **amd64** and **arm64** architectures
-- The workflow automatically provides `TARGETARCH` and `TARGETPLATFORM` build arguments
+- The workflow automatically provides the `TARGETARCH` build argument
 - **To use architecture information in your Dockerfile:**
 
   ```dockerfile
   # Declare the build arguments
   ARG TARGETARCH
-  ARG TARGETPLATFORM
 
   # Use them in RUN commands
-  RUN echo "Building for ${TARGETARCH} on ${TARGETPLATFORM}"
+  RUN echo "Building for ${TARGETARCH}"
 
   # For architecture-specific logic
   RUN if [ "$TARGETARCH" = "arm64" ]; then \
