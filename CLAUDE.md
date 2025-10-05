@@ -56,7 +56,7 @@
 
 ## 6. Multi-Architecture Builds
 
-- All images are built for both **amd64** and **arm64** architectures
+- By default, all images are built for both **amd64** and **arm64** architectures
 - The workflow automatically provides the `TARGETARCH` build argument
 - **To use architecture information in your Dockerfile:**
 
@@ -73,11 +73,77 @@
       fi
   ```
 
-- See `MULTI_ARCH_USAGE.md` for complete examples and patterns
-- Architecture-specific tags (e.g., `latest-amd64`, `latest-arm64`) are created during build
-- A unified manifest combines both architectures under the `latest` tag
+- See `.github/ARCHITECTURE_SUPPORT.md` for comprehensive documentation on architecture support and restrictions
 
-## 7. Formatting
+### 6.1 Understanding Multi-Platform Image Tags
+
+**IMPORTANT**: We build **multi-platform images with manifests**. Here's what that means:
+
+- During build, architecture-specific images are created with tags like `latest-amd64` and `latest-arm64`
+- A **manifest** is then created that combines both architectures under the `latest` tag
+- When using the images, prefer `image:latest`** - Docker will automatically pull the correct architecture
+
+### 6.2 Restricting Architecture Support
+
+Sometimes an image cannot be built for all architectures due to dependencies or platform limitations.
+
+- **To restrict an image to specific architectures**, add a comment at the top of the Dockerfile:
+
+  ```dockerfile
+  # arch: amd64
+  ```
+
+  or for multiple architectures:
+
+  ```dockerfile
+  # arch: amd64, arm64
+  ```
+
+- This comment must appear within the first 10 lines of the Dockerfile
+- The `generate_stages.py` script will automatically detect this and:
+    - Generate the appropriate workflow configuration to build only specified architectures
+    - Generate Makefiles with only the relevant architecture-specific targets
+    - The manifest will only include the available architectures
+- **Example use case**: `rig-debian` is restricted to amd64 because certain dependencies are not available on arm64
+- After adding or modifying arch comments, regenerate with `make stages` and `make generate-makefiles`
+- **Important**: Even with restricted architectures, always use `image:latest` tag - the manifest handles the arch limitation automatically
+
+## 7. Python Code Best Practices
+
+### 7.1 Error Handling: Fail Fast
+
+**DO NOT catch exceptions for file I/O operations in `generate_stages.py`**
+
+- **Principle**: Let the script fail fast with clear error messages when something goes wrong
+- **Rationale**:
+    - If a Dockerfile doesn't exist or can't be read, it's a serious error that needs immediate attention
+    - Catching and logging exceptions silently can hide problems and lead to incorrect generated files
+    - Python's default exception messages are clear and include stack traces for debugging
+- **Examples:**
+
+  ```python
+  # ✅ CORRECT - Let it fail with clear error
+  def extract_base_image(self, dockerfile_path: Path) -> Optional[str]:
+      with open(dockerfile_path, 'r', encoding='utf-8') as f:
+          for line in f:
+              # process line...
+      return None
+
+  # ❌ WRONG - Silently catches errors and continues
+  def extract_base_image(self, dockerfile_path: Path) -> Optional[str]:
+      try:
+          with open(dockerfile_path, 'r', encoding='utf-8') as f:
+              for line in f:
+                  # process line...
+      except (IOError, OSError) as e:
+          print(f"Error reading {dockerfile_path}: {e}")
+      return None
+  ```
+
+- **When to catch exceptions**: Only when you have a specific recovery strategy or when the error is expected and handleable
+- **General rule**: If you can't do something meaningful to recover from an error, don't catch it
+
+### 7.2 Formatting
 
 - Use pylint and black for Python code formatting
 
