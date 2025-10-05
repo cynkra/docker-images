@@ -9,6 +9,10 @@ on:
       image_name:
         required: true
         type: string
+      architectures:
+        required: false
+        type: string
+        default: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME:
         required: true
@@ -31,9 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch:
-          - amd64
-          - arm64
+        arch: ${{ fromJSON(inputs.architectures) }}
 
     steps:
       - name: Checkout repository
