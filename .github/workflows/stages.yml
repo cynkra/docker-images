@@ -166,6 +166,16 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  rig-debian:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: rig-debian
+      image_name: rig-debian
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   sops-age:
     uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
