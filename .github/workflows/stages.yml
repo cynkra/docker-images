@@ -118,6 +118,18 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  igraph-csan-r-debug:
+    needs:
+      - csan-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/csan/igraph
+      image_name: r-debug-csan-igraph
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   san-r-debug:
     needs:
       - r-debug
@@ -125,6 +137,18 @@ jobs:
     with:
       path: r-debug/san
       image_name: r-debug-san
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  igraph-san-r-debug:
+    needs:
+      - san-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/san/igraph
+      image_name: r-debug-san-igraph
       architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -142,6 +166,18 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  igraph-strictbarrier-r-debug:
+    needs:
+      - strictbarrier-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/strictbarrier/igraph
+      image_name: r-debug-strictbarrier-igraph
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   threadcheck-r-debug:
     needs:
       - r-debug
@@ -154,6 +190,18 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  igraph-threadcheck-r-debug:
+    needs:
+      - threadcheck-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/threadcheck/igraph
+      image_name: r-debug-threadcheck-igraph
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   valgrind-r-debug:
     needs:
       - r-debug
@@ -161,6 +209,18 @@ jobs:
     with:
       path: r-debug/valgrind
       image_name: r-debug-valgrind
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  igraph-valgrind-r-debug:
+    needs:
+      - valgrind-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/valgrind/igraph
+      image_name: r-debug-valgrind-igraph
       architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

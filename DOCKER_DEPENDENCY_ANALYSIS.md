@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 42
-- Images with local dependencies: 29
+- Total Dockerfiles found: 47
+- Images with local dependencies: 34
 - Build stages required: 6
 
 ## Dependency Tree
@@ -22,10 +22,15 @@
   └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
 ✓ r-debug ← ubuntu:22.04 (external)
 ✓ r-debug-csan ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-csan-igraph ← r-debug-csan ← ghcr.io/cynkra/docker-images/r-debug-csan:latest
 ✓ r-debug-san ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-san-igraph ← r-debug-san ← ghcr.io/cynkra/docker-images/r-debug-san:latest
 ✓ r-debug-strictbarrier ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-strictbarrier-igraph ← r-debug-strictbarrier ← ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest
 ✓ r-debug-threadcheck ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-threadcheck-igraph ← r-debug-threadcheck ← ghcr.io/cynkra/docker-images/r-debug-threadcheck:latest
 ✓ r-debug-valgrind ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-valgrind-igraph ← r-debug-valgrind ← ghcr.io/cynkra/docker-images/r-debug-valgrind:latest
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
@@ -91,6 +96,11 @@
 ### Stage 3
 
 - alma9-rig-rrel
+- r-debug-csan-igraph
+- r-debug-san-igraph
+- r-debug-strictbarrier-igraph
+- r-debug-threadcheck-igraph
+- r-debug-valgrind-igraph
 - rig-ubuntu-duckdb-dev
 - ubuntu24-rig-rdev
 - ubuntu24-rig-rrel
@@ -145,10 +155,15 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `dust` (root): FROM `scratch` ✓
 - `r-debug` (root): FROM `ubuntu:22.04` ✓
 - `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-csan-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-csan:latest` ✓
 - `r-debug-san`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-san-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-san:latest` ✓
 - `r-debug-strictbarrier`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-strictbarrier-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest` ✓
 - `r-debug-threadcheck`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-threadcheck-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-threadcheck:latest` ✓
 - `r-debug-valgrind`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-valgrind-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-valgrind:latest` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓
