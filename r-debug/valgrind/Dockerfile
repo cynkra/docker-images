@@ -5,7 +5,7 @@
 #   docker run --rm -ti --name rd-valgrind cynkra/r-debug-valgrind
 #   RDvalgrind # to start R-devel with valgrind instrumentation
 
-FROM ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
+FROM ghcr.io/cynkra/docker-images/r-debug:latest
 
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"

@@ -5,7 +5,7 @@
 #   docker run --rm -ti --name rd-san cynkra/r-debug-san
 #   RDsan # to start R-devel with sanitizers
 
-FROM ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
+FROM ghcr.io/cynkra/docker-images/r-debug:latest
 
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"
