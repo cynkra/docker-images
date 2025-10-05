@@ -121,7 +121,30 @@ RUN \
 # From FAQ 5 and 6 here: https://yihui.name/tinytex/faq/
 # Also install ae, parskip, and listings packages to build R vignettes
 RUN \
-    wget -qO- "https://yihui.org/gh/tinytex/tools/install-unx.sh" | sh -s - --admin --no-path && \
+    url="https://yihui.org/gh/tinytex/tools/install-unx.sh" && \
+    attempt=0 && \
+    max_attempts=10 && \
+    delay=1 && \
+    max_delay=1024 && \
+    while [ $attempt -lt $max_attempts ]; do \
+        if wget -qO /tmp/install-unx.sh "$url"; then \
+            break; \
+        fi; \
+        attempt=$((attempt + 1)); \
+        if [ $attempt -lt $max_attempts ]; then \
+            echo "Download failed (attempt $attempt/$max_attempts). Retrying in ${delay}s..." >&2; \
+            sleep $delay; \
+            delay=$((delay * 2)); \
+            if [ $delay -gt $max_delay ]; then \
+                delay=$max_delay; \
+            fi; \
+        else \
+            echo "Download failed after $max_attempts attempts." >&2; \
+            exit 1; \
+        fi; \
+    done && \
+    sh /tmp/install-unx.sh --admin --no-path && \
+    rm /tmp/install-unx.sh && \
     ~/.TinyTeX/bin/*/tlmgr path add && \
     tlmgr install metafont mfware inconsolata tex ae parskip listings xcolor epstopdf-pkg pdftexcmds kvoptions texlive-scripts grfext && \
     tlmgr path add && \
