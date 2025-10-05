@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 28
-- Images with local dependencies: 20
+- Total Dockerfiles found: 42
+- Images with local dependencies: 29
 - Build stages required: 6
 
 ## Dependency Tree
@@ -17,6 +17,7 @@
 ✓ alma9-rig-rrel ← alma9-rig ← ghcr.io/cynkra/docker-images/alma9-rig:latest
 ✓ alma9-rig-rrel-coinor ← alma9-rig-rrel ← ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
 ✓ build-dust ← rust:latest (external)
+✓ clang18-duckdb ← rhub/clang18 (external)
 ✓ dust ← scratch (external)
   └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
 ✓ r-debug-csan ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
@@ -26,10 +27,23 @@
 ✓ r-debug-threadcheck ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
 ✓ r-debug-valgrind ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
 ✓ r-minimal ← ubuntu:latest (external)
+✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
+✓ rig-rocky8 ← rockylinux:8 (external)
+✓ rig-ubuntu ← ubuntu:22.04 (external)
+✓ rig-ubuntu-dbi ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
+✓ rig-ubuntu-dm ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
+✓ rig-ubuntu-duckdb ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
+✓ rig-ubuntu-duckdb-dev ← rig-ubuntu-duckdb ← ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest
+✓ rig-ubuntu-duckdb4 ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
+✓ rig-ubuntu-igraph ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
+✓ rig-ubuntu-r-postgres ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
+✓ rig-ubuntu-revdepcheck ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 ✓ sops-age ← alpine:latest (external)
 ✓ sssd-almalinux ← almalinux:9 (external)
+✓ tofutf ← ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7 (external)
 ✓ ubuntu24 ← ubuntu:24.04 (external)
+✓ ubuntu24-msfonts ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig-rdev ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
 ✓ ubuntu24-rig-rdev-dc ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
@@ -52,6 +66,7 @@
 - alma9
 - build-dust
 - r-debug-r-devel
+- rig-ubuntu
 - ubuntu24
 
 ### Stage 2
@@ -63,11 +78,20 @@
 - r-debug-strictbarrier
 - r-debug-threadcheck
 - r-debug-valgrind
+- rig-ubuntu-dbi
+- rig-ubuntu-dm
+- rig-ubuntu-duckdb
+- rig-ubuntu-duckdb4
+- rig-ubuntu-igraph
+- rig-ubuntu-r-postgres
+- rig-ubuntu-revdepcheck
+- ubuntu24-msfonts
 - ubuntu24-rig
 
 ### Stage 3
 
 - alma9-rig-rrel
+- rig-ubuntu-duckdb-dev
 - ubuntu24-rig-rdev
 - ubuntu24-rig-rrel
 
@@ -98,9 +122,13 @@
 - `almalinux:9` used by: sssd-almalinux
 - `alpine:latest` used by: sops-age
 - `debian:bookworm` used by: rig-debian
+- `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` used by: tofutf
+- `kalibera/rchk:latest` used by: rchk-igraph
+- `rhub/clang18` used by: clang18-duckdb
+- `rockylinux:8` used by: rig-rocky8
 - `rust:latest` used by: build-dust
 - `scratch` used by: dust
-- `ubuntu:22.04` used by: r-debug-r-devel
+- `ubuntu:22.04` used by: rig-ubuntu, r-debug-r-devel
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
 
@@ -113,6 +141,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `alma9-rig-rrel`: FROM `ghcr.io/cynkra/docker-images/alma9-rig:latest` ✓
 - `alma9-rig-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest` ✓
 - `build-dust` (root): FROM `rust:latest` ✓
+- `clang18-duckdb` (root): FROM `rhub/clang18` ✓
 - `dust` (root): FROM `scratch` ✓
 - `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-debug-r-devel`: FROM `ubuntu:22.04` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
@@ -121,10 +150,23 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `r-debug-threadcheck`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-debug-valgrind`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
+- `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓
+- `rig-rocky8` (root): FROM `rockylinux:8` ✓
+- `rig-ubuntu` (root): FROM `ubuntu:22.04` ✓
+- `rig-ubuntu-dbi`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-dm`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-duckdb`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-duckdb-dev`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest` ✓
+- `rig-ubuntu-duckdb4`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-igraph`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-r-postgres`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
+- `rig-ubuntu-revdepcheck`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
 - `sops-age` (root): FROM `alpine:latest` ✓
 - `sssd-almalinux` (root): FROM `almalinux:9` ✓
+- `tofutf` (root): FROM `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` ✓
 - `ubuntu24` (root): FROM `ubuntu:24.04` ✓
+- `ubuntu24-msfonts`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig:latest` ✓
 - `ubuntu24-rig-rdev-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ✓
