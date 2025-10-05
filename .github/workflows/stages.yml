@@ -23,6 +23,7 @@ jobs:
     with:
       path: alma9
       image_name: alma9
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -34,6 +35,7 @@ jobs:
     with:
       path: alma9/rig
       image_name: alma9-rig
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -45,6 +47,7 @@ jobs:
     with:
       path: alma9/rig/rrel
       image_name: alma9-rig-rrel
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -56,6 +59,7 @@ jobs:
     with:
       path: alma9/rig/rrel/coinor
       image_name: alma9-rig-rrel-coinor
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -65,6 +69,7 @@ jobs:
     with:
       path: build-dust
       image_name: build-dust
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -76,6 +81,7 @@ jobs:
     with:
       path: dust
       image_name: dust
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -87,6 +93,7 @@ jobs:
     with:
       path: r-debug/csan
       image_name: r-debug-csan
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -96,6 +103,7 @@ jobs:
     with:
       path: r-debug/r-devel
       image_name: r-debug-r-devel
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -107,6 +115,7 @@ jobs:
     with:
       path: r-debug/san
       image_name: r-debug-san
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -118,6 +127,7 @@ jobs:
     with:
       path: r-debug/strictbarrier
       image_name: r-debug-strictbarrier
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -129,6 +139,7 @@ jobs:
     with:
       path: r-debug/threadcheck
       image_name: r-debug-threadcheck
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -140,6 +151,7 @@ jobs:
     with:
       path: r-debug/valgrind
       image_name: r-debug-valgrind
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -149,6 +161,7 @@ jobs:
     with:
       path: r-minimal
       image_name: r-minimal
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -158,6 +171,7 @@ jobs:
     with:
       path: sops-age
       image_name: sops-age
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -167,6 +181,7 @@ jobs:
     with:
       path: sssd-almalinux
       image_name: sssd-almalinux
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -176,6 +191,7 @@ jobs:
     with:
       path: ubuntu24
       image_name: ubuntu24
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -187,6 +203,7 @@ jobs:
     with:
       path: ubuntu24/rig
       image_name: ubuntu24-rig
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -198,6 +215,7 @@ jobs:
     with:
       path: ubuntu24/rig/rdev
       image_name: ubuntu24-rig-rdev
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -210,6 +228,7 @@ jobs:
     with:
       path: ubuntu24/rig/rdev/dc
       image_name: ubuntu24-rig-rdev-dc
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -221,6 +240,7 @@ jobs:
     with:
       path: ubuntu24/rig/rdev/dc/dt
       image_name: ubuntu24-rig-rdev-dc-dt
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -232,6 +252,7 @@ jobs:
     with:
       path: ubuntu24/rig/rdev/gcc14
       image_name: ubuntu24-rig-rdev-gcc14
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -243,6 +264,7 @@ jobs:
     with:
       path: ubuntu24/rig/rdev/gcc14/duckdb
       image_name: ubuntu24-rig-rdev-gcc14-duckdb
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -254,6 +276,7 @@ jobs:
     with:
       path: ubuntu24/rig/rrel
       image_name: ubuntu24-rig-rrel
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -266,6 +289,7 @@ jobs:
     with:
       path: ubuntu24/rig/rrel/dc
       image_name: ubuntu24-rig-rrel-dc
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -277,6 +301,7 @@ jobs:
     with:
       path: ubuntu24/rig/rrel/dc/dt
       image_name: ubuntu24-rig-rrel-dc-dt
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -288,6 +313,7 @@ jobs:
     with:
       path: ubuntu24/rig/rrel/dc/dt/dm
       image_name: ubuntu24-rig-rrel-dc-dt-dm
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -299,6 +325,7 @@ jobs:
     with:
       path: ubuntu24/rig/rrel/dc/dt/pkgcache
       image_name: ubuntu24-rig-rrel-dc-dt-pkgcache
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

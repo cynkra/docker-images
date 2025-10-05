@@ -10,9 +10,8 @@ on:
         required: true
         type: string
       architectures:
-        required: false
+        required: true
         type: string
-        default: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME:
         required: true

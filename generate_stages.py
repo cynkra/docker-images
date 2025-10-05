@@ -368,7 +368,8 @@ class DockerImageAnalyzer:
                 'uses': 'cynkra/docker-images/.github/workflows/publish.yml@arm',
                 'with': {
                     'path': dir_path,
-                    'image_name': image
+                    'image_name': image,
+                    'architectures': '\'["amd64", "arm64"]\''
                 },
                 'secrets': {
                     'DOCKERHUB_USERNAME': '${{ secrets.DOCKERHUB_USERNAME }}',
