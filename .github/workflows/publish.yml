@@ -124,12 +124,18 @@ jobs:
 
       - name: Create and push manifest for GitHub Container Registry
         run: |
-          docker buildx imagetools create -t ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest \
-            ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-amd64 \
-            ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-arm64
+          ARCHS='${{ inputs.architectures }}'
+          IMAGES=""
+          for arch in $(echo $ARCHS | jq -r '.[]'); do
+            IMAGES="$IMAGES ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-$arch"
+          done
+          docker buildx imagetools create -t ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest $IMAGES
 
       - name: Create and push manifest for Docker Hub
         run: |
-          docker buildx imagetools create -t ${{ github.repository_owner }}/${{ inputs.image_name }}:latest \
-            ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-amd64 \
-            ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-arm64
+          ARCHS='${{ inputs.architectures }}'
+          IMAGES=""
+          for arch in $(echo $ARCHS | jq -r '.[]'); do
+            IMAGES="$IMAGES ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-$arch"
+          done
+          docker buildx imagetools create -t ${{ github.repository_owner }}/${{ inputs.image_name }}:latest $IMAGES
