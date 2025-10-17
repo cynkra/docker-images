@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 42
-- Images with local dependencies: 28
+- Total Dockerfiles found: 46
+- Images with local dependencies: 33
 - Build stages required: 6
 
 ## Dependency Tree
@@ -20,12 +20,16 @@
 ✓ clang18-duckdb ← rhub/clang18 (external)
 ✓ dust ← scratch (external)
   └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
-✓ r-debug-csan ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
-✓ r-debug-r-devel ← ubuntu:22.04 (external)
-✓ r-debug-san ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
-✓ r-debug-strictbarrier ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
-✓ r-debug-threadcheck ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
-✓ r-debug-valgrind ← r-debug-r-devel ← ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
+✓ r-debug ← ubuntu:22.04 (external)
+✓ r-debug-csan ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-csan-igraph ← r-debug-csan ← ghcr.io/cynkra/docker-images/r-debug-csan:latest
+✓ r-debug-san ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-strictbarrier ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-strictbarrier-igraph ← r-debug-strictbarrier ← ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest
+✓ r-debug-threadcheck ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-threadcheck-igraph ← r-debug-threadcheck ← ghcr.io/cynkra/docker-images/r-debug-threadcheck:latest
+✓ r-debug-valgrind ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
+✓ r-debug-valgrind-igraph ← r-debug-valgrind ← ghcr.io/cynkra/docker-images/r-debug-valgrind:latest
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
@@ -39,7 +43,6 @@
 ✓ rig-ubuntu-igraph ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 ✓ rig-ubuntu-r-postgres ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 ✓ rig-ubuntu-revdepcheck ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
-✓ rigraph-san ← wch1/r-debug:latest (external)
 ✓ sops-age ← alpine:latest (external)
 ✓ sssd-almalinux ← almalinux:9 (external)
 ✓ tofutf ← ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7 (external)
@@ -57,6 +60,7 @@
   └─ COPY --from dust ← ghcr.io/cynkra/docker-images/dust:latest
 ✓ ubuntu24-rig-rrel-dc-dt ← ubuntu24-rig-rrel-dc ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest
 ✓ ubuntu24-rig-rrel-dc-dt-dm ← ubuntu24-rig-rrel-dc-dt ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest
+✓ ubuntu24-rig-rrel-dc-dt-pkgcache ← ubuntu24-rig-rrel-dc-dt ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest
 ```
 
 ## Build Order (Topological Sort)
@@ -65,7 +69,7 @@
 
 - alma9
 - build-dust
-- r-debug-r-devel
+- r-debug
 - rig-ubuntu
 - ubuntu24
 
@@ -91,6 +95,10 @@
 ### Stage 3
 
 - alma9-rig-rrel
+- r-debug-csan-igraph
+- r-debug-strictbarrier-igraph
+- r-debug-threadcheck-igraph
+- r-debug-valgrind-igraph
 - rig-ubuntu-duckdb-dev
 - ubuntu24-rig-rdev
 - ubuntu24-rig-rrel
@@ -111,6 +119,7 @@
 ### Stage 6
 
 - ubuntu24-rig-rrel-dc-dt-dm
+- ubuntu24-rig-rrel-dc-dt-pkgcache
 
 
 ## External Dependencies
@@ -127,10 +136,9 @@
 - `rockylinux:8` used by: rig-rocky8
 - `rust:latest` used by: build-dust
 - `scratch` used by: dust
-- `ubuntu:22.04` used by: rig-ubuntu, r-debug-r-devel
+- `ubuntu:22.04` used by: rig-ubuntu, r-debug
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
-- `wch1/r-debug:latest` used by: rigraph-san
 
 ## FROM Instruction Validation
 
@@ -143,12 +151,16 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `build-dust` (root): FROM `rust:latest` ✓
 - `clang18-duckdb` (root): FROM `rhub/clang18` ✓
 - `dust` (root): FROM `scratch` ✓
-- `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
-- `r-debug-r-devel`: FROM `ubuntu:22.04` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
-- `r-debug-san`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
-- `r-debug-strictbarrier`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
-- `r-debug-threadcheck`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
-- `r-debug-valgrind`: FROM `ghcr.io/cynkra/docker-images/r-debug-r-devel:latest` ❌ (should be `ghcr.io/cynkra/docker-images/r-debug:latest`)
+- `r-debug` (root): FROM `ubuntu:22.04` ✓
+- `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-csan-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-csan:latest` ✓
+- `r-debug-san`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-strictbarrier`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-strictbarrier-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest` ✓
+- `r-debug-threadcheck`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-threadcheck-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-threadcheck:latest` ✓
+- `r-debug-valgrind`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
+- `r-debug-valgrind-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-valgrind:latest` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓
@@ -162,7 +174,6 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `rig-ubuntu-igraph`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
 - `rig-ubuntu-r-postgres`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
 - `rig-ubuntu-revdepcheck`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
-- `rigraph-san` (root): FROM `wch1/r-debug:latest` ✓
 - `sops-age` (root): FROM `alpine:latest` ✓
 - `sssd-almalinux` (root): FROM `almalinux:9` ✓
 - `tofutf` (root): FROM `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` ✓
@@ -178,6 +189,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `ubuntu24-rig-rrel-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel:latest` ✓
 - `ubuntu24-rig-rrel-dc-dt`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc:latest` ✓
 - `ubuntu24-rig-rrel-dc-dt-dm`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest` ✓
+- `ubuntu24-rig-rrel-dc-dt-pkgcache`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rrel-dc-dt:latest` ✓
 
 To update FROM instructions automatically, run:
 ```bash

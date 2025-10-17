@@ -8,6 +8,7 @@ on:
     branches:
       - main
       - dev
+      - arm
   workflow_dispatch: null
   schedule:
     - cron: 0 0 * * *
@@ -18,10 +19,11 @@ env:
 
 jobs:
   alma9:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: alma9
       image_name: alma9
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -29,10 +31,11 @@ jobs:
   rig-alma9:
     needs:
       - alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: alma9/rig
       image_name: alma9-rig
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -40,10 +43,11 @@ jobs:
   rrel-rig-alma9:
     needs:
       - rig-alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: alma9/rig/rrel
       image_name: alma9-rig-rrel
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -51,28 +55,31 @@ jobs:
   coinor-rrel-rig-alma9:
     needs:
       - rrel-rig-alma9
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: alma9/rig/rrel/coinor
       image_name: alma9-rig-rrel-coinor
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-dust:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: build-dust
       image_name: build-dust
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   clang18-duckdb:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: clang18-duckdb
       image_name: clang18-duckdb
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -80,119 +87,179 @@ jobs:
   dust:
     needs:
       - build-dust
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: dust
       image_name: dust
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  r-debug:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug
+      image_name: r-debug
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   csan-r-debug:
     needs:
-      - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+      - r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: r-debug/csan
       image_name: r-debug-csan
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  r-devel-r-debug:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+  igraph-csan-r-debug:
+    needs:
+      - csan-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
-      path: r-debug/r-devel
-      image_name: r-debug-r-devel
+      path: r-debug/csan/igraph
+      image_name: r-debug-csan-igraph
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   san-r-debug:
     needs:
-      - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+      - r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: r-debug/san
       image_name: r-debug-san
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   strictbarrier-r-debug:
     needs:
-      - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+      - r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: r-debug/strictbarrier
       image_name: r-debug-strictbarrier
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  igraph-strictbarrier-r-debug:
+    needs:
+      - strictbarrier-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/strictbarrier/igraph
+      image_name: r-debug-strictbarrier-igraph
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   threadcheck-r-debug:
     needs:
-      - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+      - r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: r-debug/threadcheck
       image_name: r-debug-threadcheck
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  igraph-threadcheck-r-debug:
+    needs:
+      - threadcheck-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/threadcheck/igraph
+      image_name: r-debug-threadcheck-igraph
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   valgrind-r-debug:
     needs:
-      - r-devel-r-debug
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+      - r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: r-debug/valgrind
       image_name: r-debug-valgrind
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  igraph-valgrind-r-debug:
+    needs:
+      - valgrind-r-debug
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: r-debug/valgrind/igraph
+      image_name: r-debug-valgrind-igraph
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   r-minimal:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: r-minimal
       image_name: r-minimal
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rchk-igraph:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rchk-igraph
       image_name: rchk-igraph
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-debian:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-debian
       image_name: rig-debian
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-rocky8:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-rocky8
       image_name: rig-rocky8
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-ubuntu:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu
       image_name: rig-ubuntu
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -200,10 +267,11 @@ jobs:
   dbi-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/dbi
       image_name: rig-ubuntu-dbi
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -211,10 +279,11 @@ jobs:
   dm-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/dm
       image_name: rig-ubuntu-dm
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -222,10 +291,11 @@ jobs:
   duckdb-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/duckdb
       image_name: rig-ubuntu-duckdb
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -233,10 +303,11 @@ jobs:
   dev-duckdb-rig-ubuntu:
     needs:
       - duckdb-rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/duckdb/dev
       image_name: rig-ubuntu-duckdb-dev
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -244,10 +315,11 @@ jobs:
   duckdb4-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/duckdb4
       image_name: rig-ubuntu-duckdb4
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -255,10 +327,11 @@ jobs:
   igraph-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/igraph
       image_name: rig-ubuntu-igraph
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -266,10 +339,11 @@ jobs:
   r-postgres-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/r-postgres
       image_name: rig-ubuntu-r-postgres
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -277,55 +351,51 @@ jobs:
   revdepcheck-rig-ubuntu:
     needs:
       - rig-ubuntu
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: rig-ubuntu/revdepcheck
       image_name: rig-ubuntu-revdepcheck
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  rigraph-san:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: rigraph-san
-      image_name: rigraph-san
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   sops-age:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: sops-age
       image_name: sops-age
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   sssd-almalinux:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: sssd-almalinux
       image_name: sssd-almalinux
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   tofutf:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: tofutf
       image_name: tofutf
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   ubuntu24:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24
       image_name: ubuntu24
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -333,10 +403,11 @@ jobs:
   msfonts-ubuntu24:
     needs:
       - ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/msfonts
       image_name: ubuntu24-msfonts
+      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -344,10 +415,11 @@ jobs:
   rig-ubuntu24:
     needs:
       - ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig
       image_name: ubuntu24-rig
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -355,10 +427,11 @@ jobs:
   rdev-rig-ubuntu24:
     needs:
       - rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rdev
       image_name: ubuntu24-rig-rdev
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -367,10 +440,11 @@ jobs:
     needs:
       - dust
       - rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rdev/dc
       image_name: ubuntu24-rig-rdev-dc
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -378,10 +452,11 @@ jobs:
   dt-dc-rdev-rig-ubuntu24:
     needs:
       - dc-rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rdev/dc/dt
       image_name: ubuntu24-rig-rdev-dc-dt
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -389,10 +464,11 @@ jobs:
   gcc14-rdev-rig-ubuntu24:
     needs:
       - rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rdev/gcc14
       image_name: ubuntu24-rig-rdev-gcc14
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -400,10 +476,11 @@ jobs:
   duckdb-gcc14-rdev-rig-ubuntu24:
     needs:
       - gcc14-rdev-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rdev/gcc14/duckdb
       image_name: ubuntu24-rig-rdev-gcc14-duckdb
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -411,10 +488,11 @@ jobs:
   rrel-rig-ubuntu24:
     needs:
       - rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rrel
       image_name: ubuntu24-rig-rrel
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -423,10 +501,11 @@ jobs:
     needs:
       - dust
       - rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rrel/dc
       image_name: ubuntu24-rig-rrel-dc
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -434,10 +513,11 @@ jobs:
   dt-dc-rrel-rig-ubuntu24:
     needs:
       - dc-rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rrel/dc/dt
       image_name: ubuntu24-rig-rrel-dc-dt
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -445,10 +525,23 @@ jobs:
   dm-dt-dc-rrel-rig-ubuntu24:
     needs:
       - dt-dc-rrel-rig-ubuntu24
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
     with:
       path: ubuntu24/rig/rrel/dc/dt/dm
       image_name: ubuntu24-rig-rrel-dc-dt-dm
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  pkgcache-dt-dc-rrel-rig-ubuntu24:
+    needs:
+      - dt-dc-rrel-rig-ubuntu24
+    uses: cynkra/docker-images/.github/workflows/publish.yml@arm
+    with:
+      path: ubuntu24/rig/rrel/dc/dt/pkgcache
+      image_name: ubuntu24-rig-rrel-dc-dt-pkgcache
+      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

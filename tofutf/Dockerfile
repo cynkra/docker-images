@@ -1,3 +1,5 @@
+# arch: amd64
+
 FROM ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7
 
 # Install 1Password and AWS CLI

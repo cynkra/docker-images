@@ -9,6 +9,9 @@ on:
       image_name:
         required: true
         type: string
+      architectures:
+        required: true
+        type: string
     secrets:
       DOCKERHUB_USERNAME:
         required: true
@@ -20,13 +23,18 @@ env:
 
 jobs:
   img:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04${{ matrix.arch == 'arm64' && '-arm' || '' }}
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: read
       packages: write
       attestations: write
       id-token: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ${{ fromJSON(inputs.architectures) }}
 
     steps:
       - name: Checkout repository
@@ -59,20 +67,23 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.path }}
+          platforms: linux/${{ matrix.arch }}
           pull: true
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm' }}
           tags: |
-            ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest
-            ${{ github.repository_owner }}/${{ inputs.image_name }}:latest
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest
+            ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
+            ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
           cache-to: type=inline
+          build-args: |
+            TARGETARCH=${{ matrix.arch }}
 
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
       # We can use that to get from the image to the source code that was used to build it.
       - name: Generate artifact attestation for GitHub Container Registry
         uses: actions/attest-build-provenance@v1
         # Only on main branch
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm'
         with:
           subject-name: ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}
           subject-digest: ${{ steps.push.outputs.digest }}
@@ -81,8 +92,49 @@ jobs:
       - name: Generate artifact attestation for Docker Hub
         uses: actions/attest-build-provenance@v1
         # Only on main branch
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm'
         with:
           subject-name: docker.io/${{ github.repository_owner }}/${{ inputs.image_name }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
+  manifest:
+    needs: img
+    runs-on: ubuntu-24.04
+    # Only on main branch
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create and push manifest for GitHub Container Registry
+        run: |
+          ARCHS='${{ inputs.architectures }}'
+          IMAGES=""
+          for arch in $(echo $ARCHS | jq -r '.[]'); do
+            IMAGES="$IMAGES ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-$arch"
+          done
+          docker buildx imagetools create -t ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest $IMAGES
+
+      - name: Create and push manifest for Docker Hub
+        run: |
+          ARCHS='${{ inputs.architectures }}'
+          IMAGES=""
+          for arch in $(echo $ARCHS | jq -r '.[]'); do
+            IMAGES="$IMAGES ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-$arch"
+          done
+          docker buildx imagetools create -t ${{ github.repository_owner }}/${{ inputs.image_name }}:latest $IMAGES

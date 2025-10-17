@@ -3,13 +3,27 @@ FROM rust:latest AS dust-builder
 
 COPY date.txt /date.txt
 
+ARG TARGETARCH=arm64
+
 # Install musl target and dependencies for static linking
-RUN rustup target add x86_64-unknown-linux-musl && \
-    apt-get update && \
-    apt-get install -y musl-tools musl-dev && \
-    rm -rf /var/lib/apt/lists/*
+RUN \
+  if [ "$TARGETARCH" = "arm64" ]; then \
+    RUSTARCH=aarch64; \
+  else \
+    RUSTARCH=x86_64; \
+  fi && \
+  rustup target add $RUSTARCH-unknown-linux-musl && \
+  apt-get update && \
+  apt-get install -y musl-tools musl-dev && \
+  rm -rf /var/lib/apt/lists/*
 
 # Build dust with musl target for static linking (no glibc dependency)
-RUN RUSTFLAGS='-C target-feature=+crt-static' cargo install \
-    --target x86_64-unknown-linux-musl \
+RUN \
+  if [ "$TARGETARCH" = "arm64" ]; then \
+    RUSTARCH=aarch64; \
+  else \
+    RUSTARCH=x86_64; \
+  fi && \
+  RUSTFLAGS='-C target-feature=+crt-static' cargo install \
+    --target $RUSTARCH-unknown-linux-musl \
     du-dust

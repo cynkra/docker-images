@@ -146,42 +146,58 @@ class DockerImageAnalyzer:
         rel_path = path.relative_to(self.root_dir)
         return str(rel_path)
 
+    def extract_architectures(self, dockerfile_path: Path) -> List[str]:
+        """
+        Extract supported architectures from Dockerfile comment.
+        Looks for a comment like '# arch: amd64' or '# arch: amd64, arm64' in the first few lines.
+        Returns ['amd64', 'arm64'] by default if no restriction is found.
+        """
+        with open(dockerfile_path, 'r', encoding='utf-8') as f:
+            # Only check first 10 lines for arch comment
+            for i, line in enumerate(f):
+                if i >= 10:
+                    break
+                line = line.strip()
+                if line.startswith('# arch:'):
+                    # Extract architectures after '# arch:'
+                    arch_part = line.split(':', 1)[1].strip()
+                    # Split by comma and clean up whitespace
+                    archs = [arch.strip() for arch in arch_part.split(',')]
+                    return archs
+
+        # Default: support both architectures
+        return ['amd64', 'arm64']
+
     def extract_base_image(self, dockerfile_path: Path) -> Optional[str]:
         """Extract the base image from a Dockerfile."""
-        try:
-            with open(dockerfile_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line.startswith('FROM '):
-                        # Extract the image name from FROM statement
-                        from_parts = line.split()
-                        if len(from_parts) >= 2:
-                            base_image = from_parts[1]
-                            return base_image
-        except (IOError, OSError) as e:
-            print(f"Error reading {dockerfile_path}: {e}")
+        with open(dockerfile_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('FROM '):
+                    # Extract the image name from FROM statement
+                    from_parts = line.split()
+                    if len(from_parts) >= 2:
+                        base_image = from_parts[1]
+                        return base_image
 
         return None
 
     def extract_copy_from_dependencies(self, dockerfile_path: Path) -> List[str]:
         """Extract all COPY --from dependencies from a Dockerfile."""
         dependencies = []
-        try:
-            with open(dockerfile_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line.startswith('COPY --from='):
-                        # Extract the image name from COPY --from statement
-                        # Format: COPY --from=image:tag source dest
-                        parts = line.split()
-                        if len(parts) >= 3:
-                            # Extract the part after --from=
-                            from_part = parts[1]  # --from=image:tag
-                            if '=' in from_part:
-                                image_ref = from_part.split('=', 1)[1]
-                                dependencies.append(image_ref)
-        except (IOError, OSError) as e:
-            print(f"Error reading {dockerfile_path}: {e}")
+        with open(dockerfile_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('COPY --from='):
+                    # Extract the image name from COPY --from statement
+                    # Format: COPY --from=image:tag source dest
+                    parts = line.split()
+                    if len(parts) >= 3:
+                        # Extract the part after --from=
+                        from_part = parts[1]  # --from=image:tag
+                        if '=' in from_part:
+                            image_ref = from_part.split('=', 1)[1]
+                            dependencies.append(image_ref)
 
         return dependencies
 
@@ -312,12 +328,8 @@ class DockerImageAnalyzer:
         """Read the original stages.yml file."""
         stages_file = self.root_dir / ".github" / "workflows" / "stages.yml"
 
-        try:
-            with open(stages_file, 'r', encoding='utf-8') as f:
-                return yaml.safe_load(f)
-        except (IOError, OSError) as e:
-            print(f"Error reading original stages.yml: {e}")
-            return {}
+        with open(stages_file, 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f)
 
     def generate_fine_grained_stages(self) -> dict:
         """Generate the fine-grained stages configuration."""
@@ -331,7 +343,7 @@ class DockerImageAnalyzer:
         config = {
             'name': 'Create and publish a Docker image',
             'on': {
-                'push': {'branches': ['main', 'dev']},
+                'push': {'branches': ['main', 'dev', 'arm']},
                 'workflow_dispatch': None,
                 'schedule': [{'cron': '0 0 * * *'}]
             },
@@ -344,7 +356,7 @@ class DockerImageAnalyzer:
 
         # Generate jobs for each image
         for image in sorted(all_images):
-            _, dir_path, job_name = dockerfiles_with_paths[image]
+            dockerfile_path, dir_path, job_name = dockerfiles_with_paths[image]
 
             job_config = {}
 
@@ -362,13 +374,18 @@ class DockerImageAnalyzer:
                         dep_job_names.append(dep)
                 job_config['needs'] = dep_job_names
 
+            # Extract supported architectures from Dockerfile
+            supported_archs = self.extract_architectures(dockerfile_path)
+            archs_json = '["' + '", "'.join(supported_archs) + '"]'
+
             # Then add the rest of the job configuration
             # Use the directory path as the parameter - image name can be derived from path
             job_config.update({
-                'uses': 'cynkra/docker-images/.github/workflows/publish.yml@main',
+                'uses': 'cynkra/docker-images/.github/workflows/publish.yml@arm',
                 'with': {
                     'path': dir_path,
-                    'image_name': image
+                    'image_name': image,
+                    'architectures': f"'{archs_json}'"
                 },
                 'secrets': {
                     'DOCKERHUB_USERNAME': '${{ secrets.DOCKERHUB_USERNAME }}',
@@ -591,22 +608,18 @@ class DockerImageAnalyzer:
 
     def _update_from_instruction(self, dockerfile_path: Path, new_from: str) -> None:
         """Update the FROM instruction in a Dockerfile."""
-        try:
-            with open(dockerfile_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
+        with open(dockerfile_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
 
-            # Find and update the FROM line
-            for i, line in enumerate(lines):
-                if line.strip().startswith('FROM '):
-                    lines[i] = f"FROM {new_from}\n"
-                    break
+        # Find and update the FROM line
+        for i, line in enumerate(lines):
+            if line.strip().startswith('FROM '):
+                lines[i] = f"FROM {new_from}\n"
+                break
 
-            # Write back to file
-            with open(dockerfile_path, 'w', encoding='utf-8') as f:
-                f.writelines(lines)
-
-        except (IOError, OSError) as e:
-            print(f"Error updating {dockerfile_path}: {e}")
+        # Write back to file
+        with open(dockerfile_path, 'w', encoding='utf-8') as f:
+            f.writelines(lines)
 
     def generate_makefiles(self, dry_run: bool = False) -> int:
         """
@@ -631,13 +644,10 @@ class DockerImageAnalyzer:
                 print(f"Would create: {makefile_path}")
                 count += 1
             else:
-                try:
-                    with open(makefile_path, 'w', encoding='utf-8') as f:
-                        f.write(makefile_content)
-                    print(f"Generated: {makefile_path}")
-                    count += 1
-                except (IOError, OSError) as e:
-                    print(f"Error creating {makefile_path}: {e}")
+                with open(makefile_path, 'w', encoding='utf-8') as f:
+                    f.write(makefile_content)
+                print(f"Generated: {makefile_path}")
+                count += 1
 
         return count
 
@@ -651,9 +661,11 @@ class DockerImageAnalyzer:
         dockerfile_path = dockerfiles.get(image_name)
         base_image = None
         parent_pull_command = ""
+        supported_archs = ['amd64', 'arm64']  # default
 
         if dockerfile_path:
             base_image = self.extract_base_image(dockerfile_path)
+            supported_archs = self.extract_architectures(dockerfile_path)
             local_parent = self.normalize_image_name(base_image) if base_image else None
 
             if local_parent and local_parent in dockerfiles:
@@ -668,55 +680,220 @@ class DockerImageAnalyzer:
         else:
             parent_pull_command = "@echo \"No parent image found or needed\""
 
+        # Determine which architectures to support
+        supports_amd64 = 'amd64' in supported_archs
+        supports_arm64 = 'arm64' in supported_archs
+
+        # Build list of supported architectures for help and build target
+        build_targets = []
+        if supports_amd64:
+            build_targets.append('build-amd64')
+        if supports_arm64:
+            build_targets.append('build-arm64')
+        build_deps = ' '.join(build_targets)
+
+        # Build the architecture notice
+        arch_notice = f"# Supported architectures: {', '.join(supported_archs)}"
+
+        # Start building the Makefile content
+        phony_targets = ['build', 'pull', 'pull-parent', 'clean', 'help']
+        if supports_amd64:
+            phony_targets.extend(['build-amd64', 'pull-amd64', 'pull-parent-amd64', 'run-amd64', 'run-root-amd64', 'clean-amd64'])
+        if supports_arm64:
+            phony_targets.extend(['build-arm64', 'pull-arm64', 'pull-parent-arm64', 'run-arm64', 'run-root-arm64', 'clean-arm64'])
+
         content = f"""# Makefile for Docker image: {image_name}
 # Generated by generate_stages.py, do not edit by hand
 # Run 'make generate-makefiles' to regenerate this file
+{arch_notice}
 
-.PHONY: build pull pull-parent run run-root clean help
+.PHONY: {' '.join(phony_targets)}
 
 # Default target
 help:
 \t@echo "Available targets for {image_name}:"
-\t@echo "  build      - Build the Docker image"
-\t@echo "  pull       - Pull the Docker image from registry"
-\t@echo "  pull-parent - Pull the parent image this image depends on"
-\t@echo "  run        - Run interactive bash as regular user"
-\t@echo "  run-root   - Run interactive bash as root user"
-\t@echo "  clean      - Remove the Docker image"
-\t@echo "  help       - Show this help message"
+\t@echo "  build              - Build the Docker image for supported platform(s)"
+"""
 
-# Build the Docker image
-build:
-\t@echo "Building Docker image: {full_image_name}:latest"
+        if supports_amd64:
+            content += """\t@echo "  build-amd64        - Build the Docker image for amd64 platform"
+"""
+        if supports_arm64:
+            content += """\t@echo "  build-arm64        - Build the Docker image for arm64 platform"
+"""
+
+        content += """\t@echo "  pull               - Pull the Docker image (manifest) from registry"
+"""
+
+        if supports_amd64:
+            content += """\t@echo "  pull-amd64         - Pull the amd64 Docker image from registry"
+"""
+        if supports_arm64:
+            content += """\t@echo "  pull-arm64         - Pull the arm64 Docker image from registry"
+"""
+
+        if supports_amd64:
+            content += """\t@echo "  pull-parent-amd64  - Pull the amd64 parent image this image depends on"
+"""
+        if supports_arm64:
+            content += """\t@echo "  pull-parent-arm64  - Pull the arm64 parent image this image depends on"
+"""
+
+        if supports_amd64:
+            content += """\t@echo "  run-amd64          - Run interactive bash as regular user (amd64)"
+"""
+        if supports_arm64:
+            content += """\t@echo "  run-arm64          - Run interactive bash as regular user (arm64)"
+"""
+
+        if supports_amd64:
+            content += """\t@echo "  run-root-amd64     - Run interactive bash as root user (amd64)"
+"""
+        if supports_arm64:
+            content += """\t@echo "  run-root-arm64     - Run interactive bash as root user (arm64)"
+"""
+
+        if supports_amd64:
+            content += """\t@echo "  clean-amd64        - Remove the amd64 Docker image"
+"""
+        if supports_arm64:
+            content += """\t@echo "  clean-arm64        - Remove the arm64 Docker image"
+"""
+
+        content += """\t@echo "  help               - Show this help message"
+
+# Build the Docker image for supported platform(s)
+build: """ + build_deps + """
+"""
+
+        # Add build targets for each supported architecture
+        if supports_amd64:
+            content += f"""
+# Build the Docker image for amd64 platform
+build-amd64:
+\t@echo "Building Docker image for amd64: {full_image_name}:latest-amd64"
 \t@echo "Creating date file for cache invalidation..."
 \t@date -Idate > date.txt
-\t@trap 'rm -f date.txt' EXIT; docker build -t {full_image_name}:latest .
+\t@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t {full_image_name}:latest-amd64 .
+"""
 
-# Pull the Docker image from registry
+        if supports_arm64:
+            content += f"""
+# Build the Docker image for arm64 platform
+build-arm64:
+\t@echo "Building Docker image for arm64: {full_image_name}:latest-arm64"
+\t@echo "Creating date file for cache invalidation..."
+\t@date -Idate > date.txt
+\t@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 -t {full_image_name}:latest-arm64 .
+"""
+
+        content += f"""
+# Pull the Docker image from registry (manifest)
 pull:
 \t@echo "Pulling Docker image: {full_image_name}:latest"
 \tdocker pull {full_image_name}:latest
+"""
 
+        if supports_amd64:
+            content += f"""
+# Pull the amd64 Docker image from registry
+pull-amd64:
+\t@echo "Pulling amd64 Docker image: {full_image_name}:latest-amd64"
+\tdocker pull {full_image_name}:latest-amd64
+"""
+
+        if supports_arm64:
+            content += f"""
+# Pull the arm64 Docker image from registry
+pull-arm64:
+\t@echo "Pulling arm64 Docker image: {full_image_name}:latest-arm64"
+\tdocker pull {full_image_name}:latest-arm64
+"""
+
+        content += f"""
 # Pull the parent image this image depends on
 pull-parent:
 \t@echo "Pulling parent image: {base_image if base_image else 'none'}"
 \t{parent_pull_command}
-
-# Run interactive bash as regular user
-run:
-\t@echo "Starting interactive bash session in {full_image_name}:latest"
-\tdocker run --rm -it {full_image_name}:latest /bin/bash
-
-# Run interactive bash as root user
-run-root:
-\t@echo "Starting interactive bash session as root in {full_image_name}:latest"
-\tdocker run --rm -it --user root {full_image_name}:latest /bin/bash
-
-# Remove the Docker image
-clean:
-\t@echo "Removing Docker image: {full_image_name}:latest"
-\tdocker rmi {full_image_name}:latest || true
 """
+
+        if supports_amd64:
+            content += f"""
+# Pull the amd64 parent image this image depends on
+pull-parent-amd64:
+\t@echo "Pulling amd64 parent image: {base_image if base_image else 'none'}"
+\t{parent_pull_command.replace('docker pull', 'docker pull --platform linux/amd64')}
+"""
+
+        if supports_arm64:
+            content += f"""
+# Pull the arm64 parent image this image depends on
+pull-parent-arm64:
+\t@echo "Pulling arm64 parent image: {base_image if base_image else 'none'}"
+\t{parent_pull_command.replace('docker pull', 'docker pull --platform linux/arm64')}
+"""
+
+        if supports_amd64:
+            content += f"""
+# Run interactive bash as regular user (amd64)
+run-amd64:
+\t@echo "Starting interactive bash session (amd64) in {full_image_name}:latest"
+\tdocker run --platform linux/amd64 --rm -it {full_image_name}:latest /bin/bash
+"""
+
+        if supports_arm64:
+            content += f"""
+# Run interactive bash as regular user (arm64)
+run-arm64:
+\t@echo "Starting interactive bash session (arm64) in {full_image_name}:latest"
+\tdocker run --platform linux/arm64 --rm -it {full_image_name}:latest /bin/bash
+"""
+
+        if supports_amd64:
+            content += f"""
+# Run interactive bash as root user (amd64)
+run-root-amd64:
+\t@echo "Starting interactive bash session as root (amd64) in {full_image_name}:latest"
+\tdocker run --platform linux/amd64 --rm -it --user root {full_image_name}:latest /bin/bash
+"""
+
+        if supports_arm64:
+            content += f"""
+# Run interactive bash as root user (arm64)
+run-root-arm64:
+\t@echo "Starting interactive bash session as root (arm64) in {full_image_name}:latest"
+\tdocker run --platform linux/arm64 --rm -it --user root {full_image_name}:latest /bin/bash
+"""
+
+        # Build clean dependencies
+        clean_targets = []
+        if supports_amd64:
+            clean_targets.append('clean-amd64')
+        if supports_arm64:
+            clean_targets.append('clean-arm64')
+        clean_deps = ' '.join(clean_targets)
+
+        content += f"""
+# Remove the Docker image (supported architectures)
+clean: {clean_deps}
+"""
+
+        if supports_amd64:
+            content += f"""
+# Remove the amd64 Docker image
+clean-amd64:
+\t@echo "Removing amd64 Docker image: {full_image_name}:latest-amd64"
+\tdocker rmi {full_image_name}:latest-amd64 || true
+"""
+
+        if supports_arm64:
+            content += f"""
+# Remove the arm64 Docker image
+clean-arm64:
+\t@echo "Removing arm64 Docker image: {full_image_name}:latest-arm64"
+\tdocker rmi {full_image_name}:latest-arm64 || true
+"""
+
         return content
 
 def main():

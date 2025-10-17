@@ -1,3 +1,5 @@
+# arch: amd64
+
 FROM ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 
 COPY DESCRIPTION /root/workspace

@@ -1,3 +1,5 @@
+# arch: amd64
+
 FROM rockylinux:8
 
 RUN \

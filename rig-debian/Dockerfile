@@ -1,3 +1,5 @@
+# arch: amd64
+
 # Before changing this to 24.04, check if pak install from binary
 FROM debian:bookworm
 

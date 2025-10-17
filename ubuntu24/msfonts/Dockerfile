@@ -1,3 +1,5 @@
+# arch: amd64
+
 FROM ghcr.io/cynkra/docker-images/ubuntu24:latest
 
 # Install system packages, configure locale, install rig, and set up R configuration

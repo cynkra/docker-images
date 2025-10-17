@@ -5,19 +5,31 @@
 #   docker run --rm -ti --name rd-csan cynkra/r-debug-csan
 #   RDcsan # to start R-devel with clang sanitizers
 
-FROM ghcr.io/cynkra/docker-images/r-debug-r-devel:latest
+FROM ghcr.io/cynkra/docker-images/r-debug:latest
 
 LABEL maintainer="cynkra <team@cynkra.com>"
 LABEL org.opencontainers.image.source="https://github.com/cynkra/docker-images"
 
-RUN /tmp/buildR.sh csan
+RUN \
+    /tmp/buildR.sh csan && \
+    true
 
 # Modify the RDcsan script to increase stack size with `ulimit -Ss 131072`;
 # otherwise we get these messages during package compilation:
 # Error: compilation failed -  C stack usage  8042720 is too close to the limit at NULL
-RUN sed -i 's/^#!\/bin\/bash/#!\/bin\/bash\nulimit -Ss 131072/' /usr/local/bin/RDcsan
-# Increase stack size in .bashrc, so that it is picked up by RDscriptcsan.
-RUN echo "\nulimit -Ss 131072" >> $HOME/.bashrc
+RUN \
+    sed -i 's/^#!\/bin\/bash/#!\/bin\/bash\nulimit -Ss 131072/' /usr/local/bin/RDcsan && \
+    true
 
-RUN RDcsan -q -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev")'
-RUN RDcsan -q -e 'pak::pkg_install(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))'
+# Increase stack size in .bashrc, so that it is picked up by RDscriptcsan.
+RUN \
+    echo "\nulimit -Ss 131072" >> $HOME/.bashrc && \
+    true
+
+RUN \
+    RDcsan -q -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))' && \
+    true
+
+RUN \
+    RDcsan -q -e 'pak::pkg_install(c("devtools", "Rcpp", "cpp11", "decor", "roxygen2", "testthat", "memoise", "rmarkdown"))' && \
+    true
