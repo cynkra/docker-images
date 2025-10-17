@@ -343,7 +343,7 @@ class DockerImageAnalyzer:
         config = {
             'name': 'Create and publish a Docker image',
             'on': {
-                'push': {'branches': ['main', 'dev', 'arm']},
+                'push': {'branches': ['main', 'dev']},
                 'workflow_dispatch': None,
                 'schedule': [{'cron': '0 0 * * *'}]
             },
