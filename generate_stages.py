@@ -381,7 +381,7 @@ class DockerImageAnalyzer:
             # Then add the rest of the job configuration
             # Use the directory path as the parameter - image name can be derived from path
             job_config.update({
-                'uses': 'cynkra/docker-images/.github/workflows/publish.yml@arm',
+                'uses': 'cynkra/docker-images/.github/workflows/publish.yml@main',
                 'with': {
                     'path': dir_path,
                     'image_name': image,
