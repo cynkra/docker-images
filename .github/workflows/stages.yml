@@ -550,7 +550,7 @@ jobs:
     with:
       path: otf
       image_name: otf
-      architectures: '["amd64"]'
+      architectures: '["arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
