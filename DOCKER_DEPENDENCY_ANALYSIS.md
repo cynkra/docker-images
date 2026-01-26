@@ -20,6 +20,11 @@
 ✓ clang18-duckdb ← rhub/clang18 (external)
 ✓ dust ← scratch (external)
   └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
+✓ forky ← debian:forky (external)
+✓ forky-gcc ← forky ← ghcr.io/cynkra/docker-images/forky:latest
+✓ forky-gcc-rig ← forky-gcc ← ghcr.io/cynkra/docker-images/forky-gcc:latest
+✓ forky-gcc-rig-rdev ← forky-gcc-rig ← ghcr.io/cynkra/docker-images/forky-gcc-rig:latest
+✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
 ✓ otf ← leg100/otfd:0.4.9 (external)
 ✓ r-debug ← ubuntu:22.04 (external)
 ✓ r-debug-csan ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
@@ -47,11 +52,6 @@
 ✓ sops-age ← alpine:latest (external)
 ✓ sssd-almalinux ← almalinux:9 (external)
 ✓ tofutf ← ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7 (external)
-✓ trixie ← debian:trixie (external)
-✓ trixie-gcc ← trixie ← ghcr.io/cynkra/docker-images/trixie:latest
-✓ trixie-gcc-rig ← trixie-gcc ← ghcr.io/cynkra/docker-images/trixie-gcc:latest
-✓ trixie-gcc-rig-rdev ← trixie-gcc-rig ← ghcr.io/cynkra/docker-images/trixie-gcc-rig:latest
-✓ trixie-gcc-rig-rdev-duckdb ← trixie-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/trixie-gcc-rig-rdev:latest
 ✓ ubuntu24 ← ubuntu:24.04 (external)
 ✓ ubuntu24-msfonts ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
@@ -75,15 +75,16 @@
 
 - alma9
 - build-dust
+- forky
 - r-debug
 - rig-ubuntu
-- trixie
 - ubuntu24
 
 ### Stage 2
 
 - alma9-rig
 - dust
+- forky-gcc
 - r-debug-csan
 - r-debug-san
 - r-debug-strictbarrier
@@ -96,33 +97,32 @@
 - rig-ubuntu-igraph
 - rig-ubuntu-r-postgres
 - rig-ubuntu-revdepcheck
-- trixie-gcc
 - ubuntu24-msfonts
 - ubuntu24-rig
 
 ### Stage 3
 
 - alma9-rig-rrel
+- forky-gcc-rig
 - r-debug-csan-igraph
 - r-debug-strictbarrier-igraph
 - r-debug-threadcheck-igraph
 - r-debug-valgrind-igraph
 - rig-ubuntu-duckdb-dev
-- trixie-gcc-rig
 - ubuntu24-rig-rdev
 - ubuntu24-rig-rrel
 
 ### Stage 4
 
 - alma9-rig-rrel-coinor
-- trixie-gcc-rig-rdev
+- forky-gcc-rig-rdev
 - ubuntu24-rig-rdev-dc
 - ubuntu24-rig-rdev-gcc14
 - ubuntu24-rig-rrel-dc
 
 ### Stage 5
 
-- trixie-gcc-rig-rdev-duckdb
+- forky-gcc-rig-rdev-duckdb
 - ubuntu24-rig-rdev-dc-dt
 - ubuntu24-rig-rdev-gcc14-duckdb
 - ubuntu24-rig-rrel-dc-dt
@@ -141,7 +141,7 @@
 - `almalinux:9` used by: sssd-almalinux
 - `alpine:latest` used by: sops-age
 - `debian:bookworm` used by: rig-debian
-- `debian:trixie` used by: trixie
+- `debian:forky` used by: forky
 - `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` used by: tofutf
 - `kalibera/rchk:latest` used by: rchk-igraph
 - `leg100/otfd:0.4.9` used by: otf
@@ -164,6 +164,11 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `build-dust` (root): FROM `rust:latest` ✓
 - `clang18-duckdb` (root): FROM `rhub/clang18` ✓
 - `dust` (root): FROM `scratch` ✓
+- `forky` (root): FROM `debian:forky` ✓
+- `forky-gcc`: FROM `ghcr.io/cynkra/docker-images/forky:latest` ✓
+- `forky-gcc-rig`: FROM `ghcr.io/cynkra/docker-images/forky-gcc:latest` ✓
+- `forky-gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig:latest` ✓
+- `forky-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest` ✓
 - `otf` (root): FROM `leg100/otfd:0.4.9` ✓
 - `r-debug` (root): FROM `ubuntu:22.04` ✓
 - `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
@@ -191,11 +196,6 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `sops-age` (root): FROM `alpine:latest` ✓
 - `sssd-almalinux` (root): FROM `almalinux:9` ✓
 - `tofutf` (root): FROM `ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7` ✓
-- `trixie` (root): FROM `debian:trixie` ✓
-- `trixie-gcc`: FROM `ghcr.io/cynkra/docker-images/trixie:latest` ✓
-- `trixie-gcc-rig`: FROM `ghcr.io/cynkra/docker-images/trixie-gcc:latest` ✓
-- `trixie-gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/trixie-gcc-rig:latest` ✓
-- `trixie-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/trixie-gcc-rig-rdev:latest` ✓
 - `ubuntu24` (root): FROM `ubuntu:24.04` ✓
 - `ubuntu24-msfonts`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓

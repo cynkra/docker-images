@@ -1,4 +1,4 @@
-FROM debian:trixie
+FROM debian:forky
 
 COPY date.txt /date.txt
 

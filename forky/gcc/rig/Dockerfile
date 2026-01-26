@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/trixie-gcc:latest
+FROM ghcr.io/cynkra/docker-images/forky-gcc:latest
 
 ARG TARGETARCH=arm64
 
