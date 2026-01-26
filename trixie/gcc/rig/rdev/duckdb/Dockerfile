@@ -4,7 +4,7 @@ FROM ghcr.io/cynkra/docker-images/trixie-gcc-rig-rdev:latest
 RUN \
   apt-get update && \
   apt-get install -y git python3 ninja-build cmake && \
-  R -q -e 'pak::pak(c("DBI", "cpp11"))' && \
+  R -q -e 'install.packages(c("DBI", "cpp11"))' && \
   git clone --depth 1 https://github.com/duckdb/duckdb.git /root/duckdb && \
   cd /root/duckdb/tools/rpkg && \
   R CMD INSTALL . && \
