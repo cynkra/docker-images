@@ -6,7 +6,7 @@
 ## Summary
 
 - Total Dockerfiles found: 56
-- Images with local dependencies: 37
+- Images with local dependencies: 40
 - Build stages required: 6
 
 ## Dependency Tree
@@ -21,9 +21,9 @@
 ✓ dust ← scratch (external)
   └─ COPY --from build-dust ← ghcr.io/cynkra/docker-images/build-dust:latest
 ✓ gcc ← gcc:latest (external)
-✓ gcc-rig ← gcc-latest ← ghcr.io/cynkra/docker-images/gcc-latest:latest
-✓ gcc-rig-rdev ← gcc-latest-rig ← ghcr.io/cynkra/docker-images/gcc-latest-rig:latest
-✓ gcc-rig-rdev-duckdb ← gcc-latest-rig-rdev ← ghcr.io/cynkra/docker-images/gcc-latest-rig-rdev:latest
+✓ gcc-rig ← gcc ← ghcr.io/cynkra/docker-images/gcc:latest
+✓ gcc-rig-rdev ← gcc-rig ← ghcr.io/cynkra/docker-images/gcc-rig:latest
+✓ gcc-rig-rdev-duckdb ← gcc-rig-rdev ← ghcr.io/cynkra/docker-images/gcc-rig-rdev:latest
 ✓ otf ← leg100/otfd:0.4.9 (external)
 ✓ r-debug ← ubuntu:22.04 (external)
 ✓ r-debug-csan ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
@@ -79,6 +79,7 @@
 
 - alma9
 - build-dust
+- gcc
 - r-debug
 - rig-ubuntu
 - trixie
@@ -88,6 +89,7 @@
 
 - alma9-rig
 - dust
+- gcc-rig
 - r-debug-csan
 - r-debug-san
 - r-debug-strictbarrier
@@ -107,6 +109,7 @@
 ### Stage 3
 
 - alma9-rig-rrel
+- gcc-rig-rdev
 - r-debug-csan-igraph
 - r-debug-strictbarrier-igraph
 - r-debug-threadcheck-igraph
@@ -119,6 +122,7 @@
 ### Stage 4
 
 - alma9-rig-rrel-coinor
+- gcc-rig-rdev-duckdb
 - trixie-gcc-rig-rdev
 - ubuntu24-rig-rdev-dc
 - ubuntu24-rig-rdev-gcc14
@@ -170,9 +174,9 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `clang18-duckdb` (root): FROM `rhub/clang18` ✓
 - `dust` (root): FROM `scratch` ✓
 - `gcc` (root): FROM `gcc:latest` ✓
-- `gcc-rig`: FROM `ghcr.io/cynkra/docker-images/gcc-latest:latest` ❌ (should be `ghcr.io/cynkra/docker-images/gcc:latest`)
-- `gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/gcc-latest-rig:latest` ❌ (should be `ghcr.io/cynkra/docker-images/gcc-rig:latest`)
-- `gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/gcc-latest-rig-rdev:latest` ❌ (should be `ghcr.io/cynkra/docker-images/gcc-rig-rdev:latest`)
+- `gcc-rig`: FROM `ghcr.io/cynkra/docker-images/gcc:latest` ✓
+- `gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/gcc-rig:latest` ✓
+- `gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/gcc-rig-rdev:latest` ✓
 - `otf` (root): FROM `leg100/otfd:0.4.9` ✓
 - `r-debug` (root): FROM `ubuntu:22.04` ✓
 - `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓

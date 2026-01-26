@@ -58,18 +58,18 @@ pull-arm64:
 
 # Pull the parent image this image depends on
 pull-parent:
-	@echo "Pulling parent image: ghcr.io/cynkra/docker-images/gcc-latest:latest"
-	docker pull ghcr.io/cynkra/docker-images/gcc-latest:latest
+	@echo "Pulling parent image: ghcr.io/cynkra/docker-images/gcc:latest"
+	docker pull ghcr.io/cynkra/docker-images/gcc:latest
 
 # Pull the amd64 parent image this image depends on
 pull-parent-amd64:
-	@echo "Pulling amd64 parent image: ghcr.io/cynkra/docker-images/gcc-latest:latest"
-	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/gcc-latest:latest
+	@echo "Pulling amd64 parent image: ghcr.io/cynkra/docker-images/gcc:latest"
+	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/gcc:latest
 
 # Pull the arm64 parent image this image depends on
 pull-parent-arm64:
-	@echo "Pulling arm64 parent image: ghcr.io/cynkra/docker-images/gcc-latest:latest"
-	docker pull --platform linux/arm64 ghcr.io/cynkra/docker-images/gcc-latest:latest
+	@echo "Pulling arm64 parent image: ghcr.io/cynkra/docker-images/gcc:latest"
+	docker pull --platform linux/arm64 ghcr.io/cynkra/docker-images/gcc:latest
 
 # Run interactive bash as regular user (amd64)
 run-amd64:

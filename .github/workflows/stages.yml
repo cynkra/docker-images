@@ -106,6 +106,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-gcc:
+    needs:
+      - gcc
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: gcc/rig
@@ -116,6 +118,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rdev-rig-gcc:
+    needs:
+      - rig-gcc
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: gcc/rig/rdev
@@ -126,6 +130,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   duckdb-rdev-rig-gcc:
+    needs:
+      - rdev-rig-gcc
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: gcc/rig/rdev/duckdb
