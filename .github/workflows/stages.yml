@@ -95,6 +95,46 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  gcc:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: gcc
+      image_name: gcc
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rig-gcc:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: gcc/rig
+      image_name: gcc-rig
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rdev-rig-gcc:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: gcc/rig/rdev
+      image_name: gcc-rig-rdev
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  duckdb-rdev-rig-gcc:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: gcc/rig/rdev/duckdb
+      image_name: gcc-rig-rdev-duckdb
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   otf:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
