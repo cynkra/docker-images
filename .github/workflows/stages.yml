@@ -95,6 +95,16 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  otf:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: otf
+      image_name: otf
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   r-debug:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -389,6 +399,64 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  trixie:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: trixie
+      image_name: trixie
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  gcc-trixie:
+    needs:
+      - trixie
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: trixie/gcc
+      image_name: trixie-gcc
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rig-gcc-trixie:
+    needs:
+      - gcc-trixie
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: trixie/gcc/rig
+      image_name: trixie-gcc-rig
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  rdev-rig-gcc-trixie:
+    needs:
+      - rig-gcc-trixie
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: trixie/gcc/rig/rdev
+      image_name: trixie-gcc-rig-rdev
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  duckdb-rdev-rig-gcc-trixie:
+    needs:
+      - rdev-rig-gcc-trixie
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: trixie/gcc/rig/rdev/duckdb
+      image_name: trixie-gcc-rig-rdev-duckdb
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   ubuntu24:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -541,16 +609,6 @@ jobs:
       path: ubuntu24/rig/rrel/dc/dt/pkgcache
       image_name: ubuntu24-rig-rrel-dc-dt-pkgcache
       architectures: '["amd64", "arm64"]'
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  otf:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: otf
-      image_name: otf
-      architectures: '["arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
