@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/gcc-latest-rig:latest
+FROM ghcr.io/cynkra/docker-images/gcc-rig:latest
 
 # Configure --pedantic compile flags (R already installed via apt in parent image)
 RUN \

@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/gcc-latest-rig-rdev:latest
+FROM ghcr.io/cynkra/docker-images/gcc-rig-rdev:latest
 
 # Install system dependencies, R packages, clone duckdb, and build it
 RUN \

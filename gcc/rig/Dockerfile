@@ -1,4 +1,4 @@
-FROM ghcr.io/cynkra/docker-images/gcc-latest:latest
+FROM ghcr.io/cynkra/docker-images/gcc:latest
 
 ARG TARGETARCH=arm64
 
