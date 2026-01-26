@@ -120,9 +120,25 @@ RUN \
 # Install TinyTeX (subset of TeXLive)
 # From FAQ 5 and 6 here: https://yihui.name/tinytex/faq/
 # Also install ae, parskip, and listings packages to build R vignettes
-# Set CTAN_REPO to use a reliable mirror instead of the default mirror.ctan.org
+# Try multiple CTAN mirrors, use the first one that responds without certificate errors
 RUN \
-    export CTAN_REPO=https://ctan.mirrors.hoobly.com/systems/texlive/tlnet && \
+    for mirror in \
+        https://ctan.math.washington.edu/tex-archive/systems/texlive/tlnet \
+        https://mirrors.mit.edu/CTAN/systems/texlive/tlnet \
+        https://mirror.las.iastate.edu/tex-archive/systems/texlive/tlnet \
+        https://mirrors.rit.edu/CTAN/systems/texlive/tlnet \
+        https://ctan.mirrors.hoobly.com/systems/texlive/tlnet \
+        https://mirror.ctan.org/systems/texlive/tlnet \
+        https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/tlnet \
+        https://mirror.clientvps.com/CTAN/systems/texlive/tlnet \
+        https://mirrors.concertpass.com/tex-archive/systems/texlive/tlnet \
+        https://ctan.math.illinois.edu/systems/texlive/tlnet \
+    ; do \
+        if wget --spider --timeout=10 "$mirror" 2>/dev/null; then \
+            export CTAN_REPO="$mirror" && \
+            break; \
+        fi; \
+    done && \
     wget -qO- "https://yihui.org/gh/tinytex/tools/install-unx.sh" | sh -s - --admin --no-path && \
     ~/.TinyTeX/bin/*/tlmgr path add && \
     tlmgr install metafont mfware inconsolata tex ae parskip listings xcolor epstopdf-pkg pdftexcmds kvoptions texlive-scripts grfext && \
