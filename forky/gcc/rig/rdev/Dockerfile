@@ -4,5 +4,5 @@ FROM ghcr.io/cynkra/docker-images/forky-gcc-rig:latest
 RUN \
   # TODO: Use rig when Trixie is supported
   # rig add devel && \
-  /bin/echo -e "CXX11FLAGS=-Wall -pedantic -g -O2\nCXX14FLAGS=-Wall -pedantic -g -O2\nCXX17FLAGS=-Wall -pedantic -g -O2\nCFLAGS=-Wall -pedantic -g -O2" >> ~/.R/Makevars && \
+  /bin/echo -e "CXX11FLAGS=-Wall -pedantic -g -O2 -D_FORTIFY_SOURCE=3 -mtune=native\nCXX14FLAGS=-Wall -pedantic -g -O2 -D_FORTIFY_SOURCE=3 -mtune=native\nCXX17FLAGS=-Wall -pedantic -g -O2 -D_FORTIFY_SOURCE=3 -mtune=native\nCFLAGS=-Wall -pedantic -g -O2 -D_FORTIFY_SOURCE=3 -mtune=native" >> ~/.R/Makevars && \
   true
