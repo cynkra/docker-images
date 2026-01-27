@@ -59,14 +59,70 @@ The system automatically:
 
 ## Images
 
-### [dm](dm)
+### [alma9](alma9)
 
-Based on rig-ubuntu, configured for database management and modeling tasks. Includes Microsoft ODBC Driver 18 for SQL Server and system tools (gnupg, lsb-release, time) for enterprise database connectivity. Installs R packages from DESCRIPTION file.
+**Dependency**: almalinux/9-base
+AlmaLinux 9 base with essential system packages and locale configuration (en_US.UTF-8). Foundation image for AlmaLinux-based R environments.
 
-### [r-4-duckdb](r-4-duckdb)
+### [alma9/rig](alma9/rig)
 
-**Dependency**: rig-ubuntu
-Development environment for working with DuckDB using R 4.x. Includes necessary build tools and optimized for legacy R compatibility.
+**Dependency**: alma9
+AlmaLinux 9 with rig installed. Includes essential development packages (curl, sudo, ccache) and optimized R build configuration (MAKEFLAGS=-j4).
+
+### [alma9/rig/rrel](alma9/rig/rrel)
+
+**Dependency**: alma9/rig
+AlmaLinux 9 with R release installed via rig. Ready-to-use R environment for production workflows.
+
+### [alma9/rig/rrel/coinor](alma9/rig/rrel/coinor)
+
+**Dependency**: alma9/rig/rrel
+AlmaLinux 9 R environment with COIN-OR SYMPHONY optimization library built and installed to /opt/coin-or. Used for mathematical optimization and operations research.
+
+### [build-dust](build-dust)
+
+**Dependency**: rust:latest
+Builder image for the dust disk usage utility. Creates statically-linked musl binary using Rust with cross-platform support for amd64 and arm64.
+
+### [clang18-duckdb](clang18-duckdb)
+
+**Dependency**: rhub/clang18
+Specialized environment with Clang 18 compiler for testing DuckDB with alternative compiler toolchain. Used for compiler compatibility testing.
+
+### [dust](dust)
+
+**Dependency**: scratch (contains only dust binary)
+Minimal container with just the dust binary from build-dust. Efficient for copying into other images.
+
+### [forky](forky)
+
+**Dependency**: debian:forky
+Debian Forky (testing) base with essential system packages and locale configuration. Foundation for testing with cutting-edge Debian.
+
+### [forky/gcc](forky/gcc)
+
+**Dependency**: forky
+Debian Forky with GCC compiler and build-essential tools. Base for building R packages with latest GCC.
+
+### [forky/gcc/rig](forky/gcc/rig)
+
+**Dependency**: forky/gcc
+Debian Forky with R installed via apt (rig doesn't support Forky yet). Includes ccache and build configuration.
+
+### [forky/gcc/rig/rdev](forky/gcc/rig/rdev)
+
+**Dependency**: forky/gcc/rig
+Debian Forky R development environment with pedantic compiler flags (-Wall -pedantic) for strict code quality checking.
+
+### [forky/gcc/rig/rdev/duckdb](forky/gcc/rig/rdev/duckdb)
+
+**Dependency**: forky/gcc/rig/rdev
+Forky development environment with DuckDB built from source. Includes build tools (python3, ninja-build, cmake) and DUCKDB_R_DEBUG=1.
+
+### [otf](otf)
+
+**Dependency**: leg100/otfd:0.4.9
+OpenTofu/Terraform environment with AWS CLI added. Used for infrastructure automation with cloud provider integration.
 
 ### [r-minimal](r-minimal)
 
@@ -87,117 +143,142 @@ Comprehensive debugging environment for R memory problems and low-level issues. 
 
 Each variant provides specialized debugging capabilities for detecting memory errors, undefined behavior, and thread safety issues. Based on Winston Chang's original r-debug Docker images from <https://github.com/wch/r-debug>.
 
-### [r-postgres](r-postgres)
-
-**Dependency**: rig-ubuntu
-PostgreSQL-enabled R environment with postgresql-client and essential system tools. Configured for database development workflows. Installs packages specified in DESCRIPTION file.
-
 ### [rchk-igraph](rchk-igraph)
 
 **Dependency**: kalibera/rchk:latest
 R check environment with igraph dependencies, based on kalibera/rchk. Includes libglpk-dev for graph optimization algorithms. Used for rigorous package checking and validation.
 
-### [rig-alma9](rig-alma9)
-
-**Dependency**: almalinux/9-base
-AlmaLinux 9 with rig installed. Includes essential system packages (curl, sudo, locales, ccache), proper locale configuration (en_US.UTF-8), and optimized R build configuration (MAKEFLAGS=-j4). Foundation image without R installed.
-
-### [rig-alma9-rrel](rig-alma9-rrel)
-
-**Dependency**: rig-alma9
-AlmaLinux 9 with R release installed via rig. Ready-to-use R environment for production workflows.
-
 ### [rig-debian](rig-debian)
 
-**Dependency**: debian
-Debian-based rig environment for compatibility testing and specialized Debian workflows.
+**Dependency**: debian:bookworm
+Debian Bookworm-based rig environment for compatibility testing and specialized Debian workflows.
 
 ### [rig-rocky8](rig-rocky8)
 
 **Dependency**: rockylinux:8
 Rocky Linux 8-based rig environment for enterprise RHEL-compatible development and testing.
 
+### [sssd-almalinux](sssd-almalinux)
+
+**Dependency**: almalinux:9
+AlmaLinux 9 with SSSD and Active Directory authentication support. Includes realmd, Kerberos, and Samba tools for enterprise authentication workflows.
+
 ### [rig-ubuntu](rig-ubuntu)
 
-**Dependency**: ubuntu
+**Dependency**: ubuntu:latest
 Ubuntu-based rig environment with base R installation capabilities. Serves as foundation for many other specialized images.
 
-### [rig-ubuntu-dbi](rig-ubuntu-dbi)
+### [rig-ubuntu/dbi](rig-ubuntu/dbi)
 
 **Dependency**: rig-ubuntu
 Database interface development environment with comprehensive R database packages (DBI, RMariaDB, RPostgres, RSQLite, dm, duckdb, odbc, adbi) installed for both R release and R-devel. Includes development tools and system dependencies for database connectivity.
 
-### [rig-ubuntu-duckdb](rig-ubuntu-duckdb)
+### [rig-ubuntu/dm](rig-ubuntu/dm)
+
+**Dependency**: rig-ubuntu
+Based on rig-ubuntu, configured for database management and modeling tasks. Includes Microsoft ODBC Driver 18 for SQL Server and system tools for enterprise database connectivity. Installs R packages from DESCRIPTION file.
+
+### [rig-ubuntu/duckdb](rig-ubuntu/duckdb)
 
 **Dependency**: rig-ubuntu
 DuckDB development environment with build tools (python3, ninja-build, cmake) and R packages (duckplyr, cpp11, decor, devtools). Configured with DUCKDB_R_DEBUG=1 for development debugging.
 
-### [rig-ubuntu-duckdb4](rig-ubuntu-duckdb4)
+### [rig-ubuntu/duckdb4](rig-ubuntu/duckdb4)
 
 **Dependency**: rig-ubuntu
-Like rig-ubuntu-duckdb, but with R 4.1.3 for compatibility testing. Includes duckdb, cpp11, decor, and devtools packages.
+Like rig-ubuntu/duckdb, but with R 4.1.3 for compatibility testing. Includes duckdb, cpp11, decor, and devtools packages.
 
-### [rig-ubuntu-duckdb-dev](rig-ubuntu-duckdb-dev)
+### [rig-ubuntu/duckdb/dev](rig-ubuntu/duckdb/dev)
 
-**Dependency**: rig-ubuntu-duckdb
+**Dependency**: rig-ubuntu/duckdb
 Development environment with latest development versions of duckdb-r and duckplyr cloned and installed from GitHub repositories. Uses date.txt for cache invalidation.
 
-### [rig-ubuntu-igraph](rig-ubuntu-igraph)
+### [rig-ubuntu/igraph](rig-ubuntu/igraph)
 
 **Dependency**: rig-ubuntu
 Graph analysis environment with igraph and its system dependencies (cmake, flex, bison, libglpk-dev, libgmp-dev, libarpack2-dev, python3-venv). Includes igraph, cpp11, and devtools R packages.
 
-### [rig-ubuntu-revdepcheck](rig-ubuntu-revdepcheck)
+### [rig-ubuntu/r-postgres](rig-ubuntu/r-postgres)
+
+**Dependency**: rig-ubuntu
+PostgreSQL-enabled R environment with postgresql-client and essential system tools. Configured for database development workflows. Installs packages specified in DESCRIPTION file.
+
+### [rig-ubuntu/revdepcheck](rig-ubuntu/revdepcheck)
 
 **Dependency**: rig-ubuntu
 Reverse dependency checking environment with r-lib/revdepcheck package for comprehensive package testing workflows.
 
-### [rig-ubuntu24](rig-ubuntu24)
+### [ubuntu24](ubuntu24)
 
 **Dependency**: ubuntu:24.04
-Ubuntu 24.04 base with rig installed. Includes essential system packages (curl, sudo, locales, ccache), proper locale configuration (en_US.UTF-8), and optimized R build configuration (MAKEFLAGS=-j4). Foundation image without R installed.
+Ubuntu 24.04 base with locale configuration (en_US.UTF-8). Foundation image for Ubuntu 24.04-based R environments.
 
-### [rig-ubuntu24-rrel](rig-ubuntu24-rrel)
+### [ubuntu24/msfonts](ubuntu24/msfonts)
 
-**Dependency**: rig-ubuntu24
+**Dependency**: ubuntu24
+Ubuntu 24.04 with Microsoft TrueType core fonts installed. Used for consistent font rendering in reports and graphics.
+
+### [ubuntu24/rig](ubuntu24/rig)
+
+**Dependency**: ubuntu24
+Ubuntu 24.04 with rig installed. Includes essential system packages (curl, sudo, ccache) and optimized R build configuration (MAKEFLAGS=-j4). Foundation image without R installed.
+
+### [ubuntu24/rig/rrel](ubuntu24/rig/rrel)
+
+**Dependency**: ubuntu24/rig
 Ubuntu 24.04 with R release installed via rig. Ready-to-use R environment for production workflows.
 
-### [rig-ubuntu24-rrel-devtools](rig-ubuntu24-rrel-devtools)
+### [ubuntu24/rig/rrel/dc](ubuntu24/rig/rrel/dc)
 
-**Dependency**: rig-ubuntu24-rrel
-Development environment based on R release with essential development tools (git, vim, nano, htop, tree, wget, ca-certificates) and R development packages (devtools, usethis, languageserver). Optimized for R package development workflows.
+**Dependency**: ubuntu24/rig/rrel
+Development container with dust, air, and development tools (git, vim, htop, silversearcher-ag, fd-find). Configured with ubuntu user and sudo access for apt operations.
 
-### [rig-ubuntu24-rdev](rig-ubuntu24-rdev)
+### [ubuntu24/rig/rrel/dc/dt](ubuntu24/rig/rrel/dc/dt)
 
-**Dependency**: rig-ubuntu24
+**Dependency**: ubuntu24/rig/rrel/dc
+Development environment with R development packages (devtools, usethis, languageserver) installed. Optimized for R package development workflows.
+
+### [ubuntu24/rig/rrel/dc/dt/dm](ubuntu24/rig/rrel/dc/dt/dm)
+
+**Dependency**: ubuntu24/rig/rrel/dc/dt
+Database management environment with Microsoft ODBC Driver 18 for SQL Server, mssql-tools18, and unixodbc-dev. Configured for enterprise database connectivity.
+
+### [ubuntu24/rig/rrel/dc/dt/pkgcache](ubuntu24/rig/rrel/dc/dt/pkgcache)
+
+**Dependency**: ubuntu24/rig/rrel/dc/dt
+Development environment with r-lib/pkgcache installed for fast package caching and dependency resolution.
+
+### [ubuntu24/rig/rdev](ubuntu24/rig/rdev)
+
+**Dependency**: ubuntu24/rig
 Ubuntu 24.04 with R devel installed via rig. Used for testing packages against cutting-edge R development versions.
 
-### [rig-ubuntu24-rdev-devtools](rig-ubuntu24-rdev-devtools)
+### [ubuntu24/rig/rdev/dc](ubuntu24/rig/rdev/dc)
 
-**Dependency**: rig-ubuntu24-rdev
-Development environment based on R devel with essential development tools (git, vim, nano, htop, tree, wget, ca-certificates) and R development packages (devtools, usethis, languageserver). Optimized for bleeding-edge R package development.
+**Dependency**: ubuntu24/rig/rdev
+Development container for R-devel with dust, air, and development tools. Configured with ubuntu user and sudo access.
 
-### [rig-ubuntu24-gcc14](rig-ubuntu24-gcc14)
+### [ubuntu24/rig/rdev/dc/dt](ubuntu24/rig/rdev/dc/dt)
 
-**Dependency**: rig-ubuntu24-rdev
-Specialized environment with GCC 14 compiler to replicate CRAN compiler warnings and testing conditions. Configured with update-alternatives for proper compiler selection and enhanced warning flags for thorough code validation.
+**Dependency**: ubuntu24/rig/rdev/dc
+R-devel development environment with development packages (devtools, usethis, languageserver) for bleeding-edge R package development.
 
-### [rig-ubuntu24-gcc14-duckdb](rig-ubuntu24-gcc14-duckdb)
+### [ubuntu24/rig/rdev/gcc14](ubuntu24/rig/rdev/gcc14)
 
-**Dependency**: rig-ubuntu24-gcc14
+**Dependency**: ubuntu24/rig/rdev
+Specialized environment with GCC 14 compiler to replicate CRAN compiler warnings and testing conditions. Configured with update-alternatives for proper compiler selection and enhanced warning flags.
+
+### [ubuntu24/rig/rdev/gcc14/duckdb](ubuntu24/rig/rdev/gcc14/duckdb)
+
+**Dependency**: ubuntu24/rig/rdev/gcc14
 GCC 14 environment optimized for DuckDB development, including build dependencies (python3, ninja-build, cmake) and essential R packages (DBI, cpp11). Configured with DUCKDB_R_DEBUG=1.
 
-### [rigraph-san](rigraph-san)
-
-**Dependency**: wch1/r-debug:latest
-Specialized testing environment for rigraph package using multiple R debug variants (RD, RDvalgrind, RDsan, RDcsan, RDthreadcheck). Includes sanitizer configurations (ASAN_OPTIONS) and required system libraries for comprehensive memory and thread safety testing.
-
-#### [sops-age](sops-age)
+### [sops-age](sops-age)
 
 **Dependency**: alpine:latest
 Lightweight Alpine-based image with `sops` and `age` for secret management and encryption workflows. Includes essential tools (git, curl, bash, jq) for CI/CD pipelines.
 
 ### [tofutf](tofutf)
 
-**Dependency**: ghcr.io/tofutf/tofutf/tofutfd:v0.10.0-4-g1de178b7
+**Dependency**: ghcr.io/tofutf/tofutf/tofutfd:latest
 Terraform/OpenTofu environment with additional tooling including 1Password CLI and AWS CLI for infrastructure automation and secret management.
