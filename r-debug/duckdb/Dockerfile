@@ -15,7 +15,7 @@ RUN \
     RD -q -e 'pak::pak("DBI")' && \
     mkdir -p /clone && \
     cd /clone && \
-    git clone --depth 1 https://github.com/duckdb/duckdb-r.git && \
+    git clone https://github.com/duckdb/duckdb-r.git && \
     cd duckdb-r && \
     MAKEFLAGS=-j$(nproc) RD CMD INSTALL . --no-byte-compile && \
     RD -q -e 'pak::pak("duckplyr", dependencies = TRUE)' && \
