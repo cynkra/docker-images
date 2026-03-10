@@ -845,8 +845,8 @@ run-amd64:
             content += f"""
 # Run interactive bash as regular user (arm64)
 run-arm64:
-\t@echo "Starting interactive bash session (arm64) in {full_image_name}:latest"
-\tdocker run --platform linux/arm64 --rm -it {full_image_name}:latest /bin/bash
+\t@echo "Starting interactive bash session (arm64) in {full_image_name}:latest-arm64"
+\tdocker run --platform linux/arm64 --rm -it {full_image_name}:latest-arm64 /bin/bash
 """
 
         if supports_amd64:
@@ -861,8 +861,8 @@ run-root-amd64:
             content += f"""
 # Run interactive bash as root user (arm64)
 run-root-arm64:
-\t@echo "Starting interactive bash session as root (arm64) in {full_image_name}:latest"
-\tdocker run --platform linux/arm64 --rm -it --user root {full_image_name}:latest /bin/bash
+\t@echo "Starting interactive bash session as root (arm64) in {full_image_name}:latest-arm64"
+\tdocker run --platform linux/arm64 --rm -it --user root {full_image_name}:latest-arm64 /bin/bash
 """
 
         # Build clean dependencies

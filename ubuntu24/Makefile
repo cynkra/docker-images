@@ -78,8 +78,8 @@ run-amd64:
 
 # Run interactive bash as regular user (arm64)
 run-arm64:
-	@echo "Starting interactive bash session (arm64) in ghcr.io/cynkra/docker-images/ubuntu24:latest"
-	docker run --platform linux/arm64 --rm -it ghcr.io/cynkra/docker-images/ubuntu24:latest /bin/bash
+	@echo "Starting interactive bash session (arm64) in ghcr.io/cynkra/docker-images/ubuntu24:latest-arm64"
+	docker run --platform linux/arm64 --rm -it ghcr.io/cynkra/docker-images/ubuntu24:latest-arm64 /bin/bash
 
 # Run interactive bash as root user (amd64)
 run-root-amd64:
@@ -88,8 +88,8 @@ run-root-amd64:
 
 # Run interactive bash as root user (arm64)
 run-root-arm64:
-	@echo "Starting interactive bash session as root (arm64) in ghcr.io/cynkra/docker-images/ubuntu24:latest"
-	docker run --platform linux/arm64 --rm -it --user root ghcr.io/cynkra/docker-images/ubuntu24:latest /bin/bash
+	@echo "Starting interactive bash session as root (arm64) in ghcr.io/cynkra/docker-images/ubuntu24:latest-arm64"
+	docker run --platform linux/arm64 --rm -it --user root ghcr.io/cynkra/docker-images/ubuntu24:latest-arm64 /bin/bash
 
 # Remove the Docker image (supported architectures)
 clean: clean-amd64 clean-arm64
