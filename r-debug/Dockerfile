@@ -30,13 +30,13 @@ RUN \
     apt-get install -y software-properties-common wget dirmngr && \
     true
 
-# LLVM-18
+# LLVM-17
 RUN \
     wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     true
 
 RUN \
-    add-apt-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-18 main" && \
+    add-apt-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main" && \
     true
 
 # Install basic stuff, R, and other packages that are useful for compiling R
@@ -77,8 +77,8 @@ RUN \
         g++-12 \
         gdb \
         valgrind \
-        clang-18 \
-        lldb-18 \
+        clang-17 \
+        lldb-17 \
         devscripts && \
     true
 
@@ -95,9 +95,9 @@ RUN \
     true
 
 RUN \
-    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 800 \
-        --slave /usr/bin/clang++ clang++ /usr/bin/clang++-18 \
-        --slave /usr/bin/llvm-symbolizer llvm-symbolizer /usr/bin/llvm-symbolizer-18 && \
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 800 \
+        --slave /usr/bin/clang++ clang++ /usr/bin/clang++-17 \
+        --slave /usr/bin/llvm-symbolizer llvm-symbolizer /usr/bin/llvm-symbolizer-17 && \
     true
 
 # https://blog.thesparktree.com/docker-multi-arch-github-actions
