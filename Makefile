@@ -4,7 +4,7 @@
 
 .NOTPARALLEL:
 
-all: stages analysis generate-makefiles
+all: stages analysis update-from generate-makefiles
 
 # Default target
 help:
