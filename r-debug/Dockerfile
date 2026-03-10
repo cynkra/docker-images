@@ -56,7 +56,6 @@ RUN \
         fonts-texgyre \
         gdebi-core \
         pandoc \
-        pandoc-citeproc \
         libcurl4-openssl-dev \
         libcairo2-dev \
         libpango1.0-dev \
