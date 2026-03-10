@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 52
-- Images with local dependencies: 37
+- Total Dockerfiles found: 53
+- Images with local dependencies: 38
 - Build stages required: 6
 
 ## Dependency Tree
@@ -29,6 +29,7 @@
 ✓ r-debug ← ubuntu:22.04 (external)
 ✓ r-debug-csan ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
 ✓ r-debug-csan-igraph ← r-debug-csan ← ghcr.io/cynkra/docker-images/r-debug-csan:latest
+✓ r-debug-duckdb ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
 ✓ r-debug-san ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
 ✓ r-debug-strictbarrier ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
 ✓ r-debug-strictbarrier-igraph ← r-debug-strictbarrier ← ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest
@@ -86,6 +87,7 @@
 - dust
 - forky-gcc
 - r-debug-csan
+- r-debug-duckdb
 - r-debug-san
 - r-debug-strictbarrier
 - r-debug-threadcheck
@@ -173,6 +175,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `r-debug` (root): FROM `ubuntu:22.04` ✓
 - `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
 - `r-debug-csan-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-csan:latest` ✓
+- `r-debug-duckdb`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
 - `r-debug-san`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
 - `r-debug-strictbarrier`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
 - `r-debug-strictbarrier-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest` ✓
