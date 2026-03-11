@@ -773,7 +773,7 @@ build: """ + build_deps + """
 build-amd64:
 \t@echo "Building Docker image for amd64: {full_image_name}:latest-amd64"
 \t@echo "Creating date file for cache invalidation..."
-\t@date -Idate > date.txt
+\t@date -Idate | tee date.txt
 \t@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t {full_image_name}:latest-amd64 .
 """
 
@@ -783,7 +783,7 @@ build-amd64:
 build-arm64:
 \t@echo "Building Docker image for arm64: {full_image_name}:latest-arm64"
 \t@echo "Creating date file for cache invalidation..."
-\t@date -Idate > date.txt
+\t@date -Idate | tee date.txt
 \t@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 -t {full_image_name}:latest-arm64 .
 """
 

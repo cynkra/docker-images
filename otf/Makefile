@@ -25,7 +25,7 @@ build: build-amd64
 build-amd64:
 	@echo "Building Docker image for amd64: ghcr.io/cynkra/docker-images/otf:latest-amd64"
 	@echo "Creating date file for cache invalidation..."
-	@date -Idate > date.txt
+	@date -Idate | tee date.txt
 	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/otf:latest-amd64 .
 
 # Pull the Docker image from registry (manifest)
