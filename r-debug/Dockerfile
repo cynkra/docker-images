@@ -161,7 +161,7 @@ ENV R_DONT_USE_TK=true
 # Clone R-devel and download recommended packages
 RUN \
     cd /tmp && \
-    git clone --depth 1 https://github.com/wch/r-source.git && \
+    git clone --depth 1 https://github.com/r-devel/r-svn.git r-source && \
     git -C r-source log --oneline -n 1 && \
     r-source/tools/rsync-recommended && \
     true
