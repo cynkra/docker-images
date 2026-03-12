@@ -49,12 +49,12 @@ pull:
 # Pull the amd64 Docker image from registry
 pull-amd64:
 	@echo "Pulling amd64 Docker image: ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc-dt:latest-amd64"
-	docker pull ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc-dt:latest-amd64
+	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc-dt:latest-amd64
 
 # Pull the arm64 Docker image from registry
 pull-arm64:
 	@echo "Pulling arm64 Docker image: ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc-dt:latest-arm64"
-	docker pull ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc-dt:latest-arm64
+	docker pull --platform linux/arm64 ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc-dt:latest-arm64
 
 # Pull the parent image this image depends on
 pull-parent:
@@ -64,12 +64,12 @@ pull-parent:
 # Pull the amd64 parent image this image depends on
 pull-parent-amd64:
 	@echo "Pulling amd64 parent image: ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest"
-	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest
+	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest:latest-amd64
 
 # Pull the arm64 parent image this image depends on
 pull-parent-arm64:
 	@echo "Pulling arm64 parent image: ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest"
-	docker pull --platform linux/arm64 ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest
+	docker pull --platform linux/arm64 ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev-dc:latest:latest-arm64
 
 # Run interactive bash as regular user (amd64)
 run-amd64:

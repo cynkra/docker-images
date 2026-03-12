@@ -660,7 +660,9 @@ class DockerImageAnalyzer:
         dockerfiles = self.find_dockerfiles()
         dockerfile_path = dockerfiles.get(image_name)
         base_image = None
-        parent_pull_command = ""
+        parent_pull_command = "@echo \"No parent image found or needed\""
+        parent_pull_command_amd64 = "@echo \"No parent image found or needed\""
+        parent_pull_command_arm64 = "@echo \"No parent image found or needed\""
         supported_archs = ['amd64', 'arm64']  # default
 
         if dockerfile_path:
@@ -671,14 +673,13 @@ class DockerImageAnalyzer:
             if local_parent and local_parent in dockerfiles:
                 # It's a local parent image from our registry
                 parent_pull_command = f"docker pull {base_image}"
+                parent_pull_command_amd64 = f"docker pull --platform linux/amd64 {base_image}:latest-amd64"
+                parent_pull_command_arm64 = f"docker pull --platform linux/arm64 {base_image}:latest-arm64"
             elif base_image:
                 # It's an external parent image
                 parent_pull_command = f"docker pull {base_image}"
-            else:
-                # No parent found, use a generic message
-                parent_pull_command = "@echo \"No parent image found or needed\""
-        else:
-            parent_pull_command = "@echo \"No parent image found or needed\""
+                parent_pull_command_amd64 = f"docker pull --platform linux/amd64 {base_image}"
+                parent_pull_command_arm64 = f"docker pull --platform linux/arm64 {base_image}"
 
         # Determine which architectures to support
         supports_amd64 = 'amd64' in supported_archs
@@ -799,7 +800,7 @@ pull:
 # Pull the amd64 Docker image from registry
 pull-amd64:
 \t@echo "Pulling amd64 Docker image: {full_image_name}:latest-amd64"
-\tdocker pull {full_image_name}:latest-amd64
+\tdocker pull --platform linux/amd64 {full_image_name}:latest-amd64
 """
 
         if supports_arm64:
@@ -807,7 +808,7 @@ pull-amd64:
 # Pull the arm64 Docker image from registry
 pull-arm64:
 \t@echo "Pulling arm64 Docker image: {full_image_name}:latest-arm64"
-\tdocker pull {full_image_name}:latest-arm64
+\tdocker pull --platform linux/arm64 {full_image_name}:latest-arm64
 """
 
         content += f"""
@@ -822,7 +823,7 @@ pull-parent:
 # Pull the amd64 parent image this image depends on
 pull-parent-amd64:
 \t@echo "Pulling amd64 parent image: {base_image if base_image else 'none'}"
-\t{parent_pull_command.replace('docker pull', 'docker pull --platform linux/amd64')}
+\t{parent_pull_command_amd64}
 """
 
         if supports_arm64:
@@ -830,7 +831,7 @@ pull-parent-amd64:
 # Pull the arm64 parent image this image depends on
 pull-parent-arm64:
 \t@echo "Pulling arm64 parent image: {base_image if base_image else 'none'}"
-\t{parent_pull_command.replace('docker pull', 'docker pull --platform linux/arm64')}
+\t{parent_pull_command_arm64}
 """
 
         if supports_amd64:

@@ -36,7 +36,7 @@ pull:
 # Pull the amd64 Docker image from registry
 pull-amd64:
 	@echo "Pulling amd64 Docker image: ghcr.io/cynkra/docker-images/rig-ubuntu:latest-amd64"
-	docker pull ghcr.io/cynkra/docker-images/rig-ubuntu:latest-amd64
+	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/rig-ubuntu:latest-amd64
 
 # Pull the parent image this image depends on
 pull-parent:
