@@ -59,7 +59,7 @@ jobs:
 
       - name: Write date file
         run: |
-          date -Idate > ${{ inputs.path }}/date.txt
+          date -Idate | tee ${{ inputs.path }}/date.txt
         shell: bash
 
       - name: Build and push Docker image
