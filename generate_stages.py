@@ -18,8 +18,25 @@ class DockerImageAnalyzer:
 
     def __init__(self, root_dir: str):
         self.root_dir = Path(root_dir)
-        self.registry = "ghcr.io"
-        self.repo_name = "${{ github.repository }}"
+
+        # Load repo-specific configuration from sync-config.yml
+        config = self._load_config()
+        self.registry: str = config["registry"]
+        self.org: str = config["organization"]
+        self.repo_name: str = self.root_dir.resolve().name
+        self.default_archs: List[str] = list(config["default_architectures"])
+        self.schedule: str = config["schedule"]
+
+    def _load_config(self) -> dict:
+        """Load sync-config.yml from the root directory."""
+        with open(self.root_dir / "sync-config.yml", "r", encoding="utf-8") as f:
+            return yaml.safe_load(f)
+
+    def _image_full_name(self, image_name: str) -> str:
+        """Return the full registry reference for a local image."""
+        if self.registry == "ghcr.io":
+            return f"{self.registry}/{self.org}/{self.repo_name}/{image_name}"
+        return f"{self.org}/{image_name}"
 
     def format_yaml_output(self, config: dict) -> str:
         """Format YAML output with custom spacing and formatting."""
@@ -165,8 +182,8 @@ class DockerImageAnalyzer:
                     archs = [arch.strip() for arch in arch_part.split(',')]
                     return archs
 
-        # Default: support both architectures
-        return ['amd64', 'arm64']
+        # Default: use repo default architectures from sync-config.yml
+        return list(self.default_archs)
 
     def extract_base_image(self, dockerfile_path: Path) -> Optional[str]:
         """Extract the base image from a Dockerfile."""
@@ -209,16 +226,18 @@ class DockerImageAnalyzer:
         if not image_name:
             return None
 
-        # Check if it's from our registry
-        registry_prefix = f"{self.registry}/cynkra/docker-images/"
+        # Check full registry path: registry/org/repo_name/image
+        full_prefix = f"{self.registry}/{self.org}/{self.repo_name}/"
+        if image_name.startswith(full_prefix):
+            local_name = image_name[len(full_prefix):]
+            return local_name.split(':')[0] if ':' in local_name else local_name
 
-        if image_name.startswith(registry_prefix):
-            # Extract the image name after the registry prefix
-            local_name = image_name[len(registry_prefix):]
-            # Remove :latest or other tags
-            if ':' in local_name:
-                local_name = local_name.split(':')[0]
-            return local_name
+        # Check short org/image pattern for non-ghcr.io registries (e.g. docker.io)
+        if self.registry != "ghcr.io":
+            short_prefix = f"{self.org}/"
+            if image_name.startswith(short_prefix):
+                local_name = image_name[len(short_prefix):]
+                return local_name.split(':')[0] if ':' in local_name else local_name
 
         # If it's not from our registry, it's an external dependency
         return None
@@ -345,10 +364,10 @@ class DockerImageAnalyzer:
             'on': {
                 'push': {'branches': ['main', 'dev']},
                 'workflow_dispatch': None,
-                'schedule': [{'cron': '0 0 * * *'}]
+                'schedule': [{'cron': self.schedule}]
             },
             'env': {
-                'REGISTRY': 'ghcr.io',
+                'REGISTRY': self.registry,
                 'REPO_NAME': '${{ github.repository }}'
             },
             'jobs': {}
@@ -381,7 +400,7 @@ class DockerImageAnalyzer:
             # Then add the rest of the job configuration
             # Use the directory path as the parameter - image name can be derived from path
             job_config.update({
-                'uses': 'cynkra/docker-images/.github/workflows/publish.yml@main',
+                'uses': f'{self.org}/{self.repo_name}/.github/workflows/publish.yml@main',
                 'with': {
                     'path': dir_path,
                     'image_name': image,
@@ -544,7 +563,7 @@ class DockerImageAnalyzer:
             else:
                 # Nested image - should inherit from parent
                 parent_image_name = self.path_to_image_name(self.root_dir / parent_path)
-                expected_from = f"{self.registry}/cynkra/docker-images/{parent_image_name}:latest"
+                expected_from = f"{self._image_full_name(parent_image_name)}:latest"
 
                 if current_from == expected_from:
                     report.append(f"- `{image_name}`: FROM `{current_from}` ✓")
@@ -588,7 +607,7 @@ class DockerImageAnalyzer:
             else:
                 # This is a nested image, it should inherit from parent
                 parent_image_name = self.path_to_image_name(self.root_dir / parent_path)
-                expected_from = f"{self.registry}/cynkra/docker-images/{parent_image_name}:latest"
+                expected_from = f"{self._image_full_name(parent_image_name)}:latest"
 
             # Read current FROM instruction
             current_from = self.extract_base_image(dockerfile_path)
@@ -654,7 +673,7 @@ class DockerImageAnalyzer:
     def _generate_makefile_content(self, image_name: str) -> str:
         """Generate the content for a Makefile."""
         # Use the full image name with registry for consistency
-        full_image_name = f"{self.registry}/cynkra/docker-images/{image_name}"
+        full_image_name = self._image_full_name(image_name)
 
         # Get the base image for this image to generate pull-parent target
         dockerfiles = self.find_dockerfiles()
@@ -663,7 +682,7 @@ class DockerImageAnalyzer:
         parent_pull_command = "@echo \"No parent image found or needed\""
         parent_pull_command_amd64 = "@echo \"No parent image found or needed\""
         parent_pull_command_arm64 = "@echo \"No parent image found or needed\""
-        supported_archs = ['amd64', 'arm64']  # default
+        supported_archs = list(self.default_archs)  # default
 
         if dockerfile_path:
             base_image = self.extract_base_image(dockerfile_path)
