@@ -1,6 +1,11 @@
 # Makefile for Docker Image Dependency Management
+# Delegates to ../github-docker for all code generation.
 
-.PHONY: stages analysis clean help update-from check-from generate-makefiles
+GITHUB_DOCKER := ../github-docker
+PYTHON := $(GITHUB_DOCKER)/.venv/bin/python3
+GENERATOR := $(PYTHON) $(GITHUB_DOCKER)/generate_stages.py --root .
+
+.PHONY: stages analysis clean help update-from check-from generate-makefiles publish-yml
 
 .NOTPARALLEL:
 
@@ -17,51 +22,46 @@ help:
 	@echo "  clean      - Remove generated files"
 	@echo "  help       - Show this help message"
 
-.venv:
-	@echo "Creating Python virtual environment"
-	@python3.11 -m venv .venv
-	@touch requirements.txt
-	@echo "To activate the virtual environment, run 'source .venv/bin/activate'"
-
-.venv/pyvenv.cfg: requirements.txt .venv
-	@echo "Installing requirements"
-	@source .venv/bin/activate && pip install -r $<
-	@touch $@
-
+$(GITHUB_DOCKER)/.venv/pyvenv.cfg:
+	$(MAKE) -C $(GITHUB_DOCKER) .venv/pyvenv.cfg
 
 # Generate stages.yml file
-stages: .venv/pyvenv.cfg
+stages: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 	@echo "Generating stages.yml from Dockerfiles..."
-	@source .venv/bin/activate && python3 generate_stages.py
+	@$(GENERATOR)
 
 # Generate only the analysis report
-analysis: .venv/pyvenv.cfg
+analysis: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 	@echo "Generating dependency analysis..."
-	@source .venv/bin/activate && python3 -c "from generate_stages import DockerImageAnalyzer; import pathlib; analyzer = DockerImageAnalyzer('.'); report = analyzer.generate_comprehensive_analysis(); pathlib.Path('DOCKER_DEPENDENCY_ANALYSIS.md').write_text(report, encoding='utf-8'); print('Analysis written to DOCKER_DEPENDENCY_ANALYSIS.md')"
+	@$(GENERATOR) --analysis-only
 
 # Clean generated files
 clean:
 	@echo "Cleaning generated files..."
 	rm -f .github/workflows/stages.yml
 	rm -f DOCKER_DEPENDENCY_ANALYSIS.md
-	rm -f stages-fine-grained.yml
 
 # Validate generated YAML
 validate: stages
 	@echo "Validating generated YAML..."
-	python3 -c "import yaml; yaml.safe_load(open('.github/workflows/stages.yml')); print('✓ YAML syntax is valid')"
+	@$(PYTHON) -c "import yaml; yaml.safe_load(open('.github/workflows/stages.yml')); print('✓ YAML syntax is valid')"
 
 # Update FROM instructions in Dockerfiles according to directory hierarchy
-update-from: .venv/pyvenv.cfg
+update-from: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 	@echo "Updating FROM instructions in Dockerfiles..."
-	@source .venv/bin/activate && python3 generate_stages.py --update-from
+	@$(GENERATOR) --update-from
 
 # Check what FROM instructions would be updated (dry run)
-check-from: .venv/pyvenv.cfg
+check-from: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 	@echo "Checking FROM instructions in Dockerfiles..."
-	@source .venv/bin/activate && python3 generate_stages.py --update-from --dry-run
+	@$(GENERATOR) --update-from --dry-run
 
 # Generate Makefiles alongside each Dockerfile
-generate-makefiles: .venv/pyvenv.cfg
+generate-makefiles: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 	@echo "Generating Makefiles for all Dockerfiles..."
-	@source .venv/bin/activate && python3 generate_stages.py --generate-makefiles
+	@$(GENERATOR) --generate-makefiles
+
+# Render publish.yml.j2 template
+publish-yml: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
+	@echo "Rendering publish.yml..."
+	@$(GENERATOR) --generate-publish-yml
