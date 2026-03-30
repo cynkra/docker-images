@@ -63,34 +63,12 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  build-dust:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: build-dust
-      image_name: build-dust
-      architectures: '["amd64", "arm64"]'
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
   clang18-duckdb:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: clang18-duckdb
       image_name: clang18-duckdb
       architectures: '["amd64"]'
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  dust:
-    needs:
-      - build-dust
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: dust
-      image_name: dust
-      architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -149,16 +127,6 @@ jobs:
       path: forky/gcc/rig/rdev/duckdb
       image_name: forky-gcc-rig-rdev-duckdb
       architectures: '["amd64", "arm64"]'
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  otf:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: otf
-      image_name: otf
-      architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -309,36 +277,6 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  sops-age:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: sops-age
-      image_name: sops-age
-      architectures: '["amd64", "arm64"]'
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  sssd-almalinux:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: sssd-almalinux
-      image_name: sssd-almalinux
-      architectures: '["amd64", "arm64"]'
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-  tofutf:
-    uses: cynkra/docker-images/.github/workflows/publish.yml@main
-    with:
-      path: tofutf
-      image_name: tofutf
-      architectures: '["amd64"]'
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
   ubuntu24:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -387,7 +325,6 @@ jobs:
 
   dc-rdev-rig-ubuntu24:
     needs:
-      - dust
       - rdev-rig-ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -448,7 +385,6 @@ jobs:
 
   dc-rrel-rig-ubuntu24:
     needs:
-      - dust
       - rrel-rig-ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
