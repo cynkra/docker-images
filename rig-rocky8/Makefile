@@ -26,7 +26,7 @@ build-amd64:
 	@echo "Building Docker image for amd64: ghcr.io/cynkra/docker-images/rig-rocky8:latest-amd64"
 	@echo "Creating date file for cache invalidation..."
 	@date -Idate | tee date.txt
-	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/rig-rocky8:latest-amd64 .
+	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/rig-rocky8:latest-amd64 . && docker tag ghcr.io/cynkra/docker-images/rig-rocky8:latest-amd64 ghcr.io/cynkra/docker-images/rig-rocky8:latest
 
 # Pull the Docker image from registry (manifest)
 pull:

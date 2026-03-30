@@ -32,14 +32,14 @@ build-amd64:
 	@echo "Building Docker image for amd64: ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-amd64"
 	@echo "Creating date file for cache invalidation..."
 	@date -Idate | tee date.txt
-	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-amd64 .
+	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-amd64 . && docker tag ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-amd64 ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest
 
 # Build the Docker image for arm64 platform
 build-arm64:
 	@echo "Building Docker image for arm64: ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-arm64"
 	@echo "Creating date file for cache invalidation..."
 	@date -Idate | tee date.txt
-	@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 -t ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-arm64 .
+	@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 -t ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-arm64 . && docker tag ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest-arm64 ghcr.io/cynkra/docker-images/r-debug-csan-igraph:latest
 
 # Pull the Docker image from registry (manifest)
 pull:
@@ -64,12 +64,12 @@ pull-parent:
 # Pull the amd64 parent image this image depends on
 pull-parent-amd64:
 	@echo "Pulling amd64 parent image: ghcr.io/cynkra/docker-images/r-debug-csan:latest"
-	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/r-debug-csan:latest:latest-amd64
+	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/r-debug-csan:latest-amd64
 
 # Pull the arm64 parent image this image depends on
 pull-parent-arm64:
 	@echo "Pulling arm64 parent image: ghcr.io/cynkra/docker-images/r-debug-csan:latest"
-	docker pull --platform linux/arm64 ghcr.io/cynkra/docker-images/r-debug-csan:latest:latest-arm64
+	docker pull --platform linux/arm64 ghcr.io/cynkra/docker-images/r-debug-csan:latest-arm64
 
 # Run interactive bash as regular user (amd64)
 run-amd64:

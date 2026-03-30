@@ -32,14 +32,14 @@ build-amd64:
 	@echo "Building Docker image for amd64: ghcr.io/cynkra/docker-images/sops-age:latest-amd64"
 	@echo "Creating date file for cache invalidation..."
 	@date -Idate | tee date.txt
-	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/sops-age:latest-amd64 .
+	@trap 'rm -f date.txt' EXIT; docker build --platform linux/amd64 --build-arg TARGETARCH=amd64 -t ghcr.io/cynkra/docker-images/sops-age:latest-amd64 . && docker tag ghcr.io/cynkra/docker-images/sops-age:latest-amd64 ghcr.io/cynkra/docker-images/sops-age:latest
 
 # Build the Docker image for arm64 platform
 build-arm64:
 	@echo "Building Docker image for arm64: ghcr.io/cynkra/docker-images/sops-age:latest-arm64"
 	@echo "Creating date file for cache invalidation..."
 	@date -Idate | tee date.txt
-	@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 -t ghcr.io/cynkra/docker-images/sops-age:latest-arm64 .
+	@trap 'rm -f date.txt' EXIT; docker build --platform linux/arm64 --build-arg TARGETARCH=arm64 -t ghcr.io/cynkra/docker-images/sops-age:latest-arm64 . && docker tag ghcr.io/cynkra/docker-images/sops-age:latest-arm64 ghcr.io/cynkra/docker-images/sops-age:latest
 
 # Pull the Docker image from registry (manifest)
 pull:
