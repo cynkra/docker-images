@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 53
-- Images with local dependencies: 38
+- Total Dockerfiles found: 42
+- Images with local dependencies: 28
 - Build stages required: 6
 
 ## Dependency Tree
@@ -26,17 +26,6 @@
 ✓ forky-gcc-rig-rdev ← forky-gcc-rig ← ghcr.io/cynkra/docker-images/forky-gcc-rig:latest
 ✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
 ✓ otf ← leg100/otfd:0.4.9 (external)
-✓ r-debug ← ubuntu:22.04 (external)
-✓ r-debug-csan ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
-✓ r-debug-csan-igraph ← r-debug-csan ← ghcr.io/cynkra/docker-images/r-debug-csan:latest
-✓ r-debug-duckdb ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
-✓ r-debug-san ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
-✓ r-debug-strictbarrier ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
-✓ r-debug-strictbarrier-igraph ← r-debug-strictbarrier ← ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest
-✓ r-debug-threadcheck ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
-✓ r-debug-threadcheck-igraph ← r-debug-threadcheck ← ghcr.io/cynkra/docker-images/r-debug-threadcheck:latest
-✓ r-debug-valgrind ← r-debug ← ghcr.io/cynkra/docker-images/r-debug:latest
-✓ r-debug-valgrind-igraph ← r-debug-valgrind ← ghcr.io/cynkra/docker-images/r-debug-valgrind:latest
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
@@ -77,7 +66,6 @@
 - alma9
 - build-dust
 - forky
-- r-debug
 - rig-ubuntu
 - ubuntu24
 
@@ -86,12 +74,6 @@
 - alma9-rig
 - dust
 - forky-gcc
-- r-debug-csan
-- r-debug-duckdb
-- r-debug-san
-- r-debug-strictbarrier
-- r-debug-threadcheck
-- r-debug-valgrind
 - rig-ubuntu-dbi
 - rig-ubuntu-dm
 - rig-ubuntu-duckdb
@@ -106,10 +88,6 @@
 
 - alma9-rig-rrel
 - forky-gcc-rig
-- r-debug-csan-igraph
-- r-debug-strictbarrier-igraph
-- r-debug-threadcheck-igraph
-- r-debug-valgrind-igraph
 - rig-ubuntu-duckdb-dev
 - ubuntu24-rig-rdev
 - ubuntu24-rig-rrel
@@ -151,7 +129,7 @@
 - `rockylinux:8` used by: rig-rocky8
 - `rust:latest` used by: build-dust
 - `scratch` used by: dust
-- `ubuntu:22.04` used by: rig-ubuntu, r-debug
+- `ubuntu:22.04` used by: rig-ubuntu
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
 
@@ -172,17 +150,6 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `forky-gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig:latest` ✓
 - `forky-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest` ✓
 - `otf` (root): FROM `leg100/otfd:0.4.9` ✓
-- `r-debug` (root): FROM `ubuntu:22.04` ✓
-- `r-debug-csan`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
-- `r-debug-csan-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-csan:latest` ✓
-- `r-debug-duckdb`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
-- `r-debug-san`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
-- `r-debug-strictbarrier`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
-- `r-debug-strictbarrier-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-strictbarrier:latest` ✓
-- `r-debug-threadcheck`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
-- `r-debug-threadcheck-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-threadcheck:latest` ✓
-- `r-debug-valgrind`: FROM `ghcr.io/cynkra/docker-images/r-debug:latest` ✓
-- `r-debug-valgrind-igraph`: FROM `ghcr.io/cynkra/docker-images/r-debug-valgrind:latest` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓
