@@ -79,20 +79,10 @@ AlmaLinux 9 with R release installed via rig. Ready-to-use R environment for pro
 **Dependency**: alma9/rig/rrel
 AlmaLinux 9 R environment with COIN-OR SYMPHONY optimization library built and installed to /opt/coin-or. Used for mathematical optimization and operations research.
 
-### [build-dust](build-dust)
-
-**Dependency**: rust:latest
-Builder image for the dust disk usage utility. Creates statically-linked musl binary using Rust with cross-platform support for amd64 and arm64.
-
 ### [clang18-duckdb](clang18-duckdb)
 
 **Dependency**: rhub/clang18
 Specialized environment with Clang 18 compiler for testing DuckDB with alternative compiler toolchain. Used for compiler compatibility testing.
-
-### [dust](dust)
-
-**Dependency**: scratch (contains only dust binary)
-Minimal container with just the dust binary from build-dust. Efficient for copying into other images.
 
 ### [forky](forky)
 
@@ -129,20 +119,6 @@ OpenTofu/Terraform environment with AWS CLI added. Used for infrastructure autom
 **Dependency**: ubuntu:latest
 Minimal Ubuntu-based image with basic setup. Serves as a lightweight base for specialized use cases.
 
-### [r-debug](r-debug)
-
-**Dependency**: ubuntu:22.04
-Comprehensive debugging environment for R memory problems and low-level issues. Contains multiple instrumented builds of R-devel:
-
-- `r-debug-r-devel`: Base R-devel without optimizations (-O0) for debugging
-- `r-debug-valgrind`: R-devel with valgrind level 2 instrumentation
-- `r-debug-san`: R-devel with GCC Address Sanitizer and Undefined Behavior Sanitizer
-- `r-debug-csan`: R-devel with Clang sanitizers
-- `r-debug-strictbarrier`: R-devel with strict barrier checking
-- `r-debug-threadcheck`: R-devel with thread safety checking
-
-Each variant provides specialized debugging capabilities for detecting memory errors, undefined behavior, and thread safety issues. Based on Winston Chang's original r-debug Docker images from <https://github.com/wch/r-debug>.
-
 ### [rchk-igraph](rchk-igraph)
 
 **Dependency**: kalibera/rchk:latest
@@ -157,11 +133,6 @@ Debian Bookworm-based rig environment for compatibility testing and specialized 
 
 **Dependency**: rockylinux:8
 Rocky Linux 8-based rig environment for enterprise RHEL-compatible development and testing.
-
-### [sssd-almalinux](sssd-almalinux)
-
-**Dependency**: almalinux:9
-AlmaLinux 9 with SSSD and Active Directory authentication support. Includes realmd, Kerberos, and Samba tools for enterprise authentication workflows.
 
 ### [rig-ubuntu](rig-ubuntu)
 
@@ -272,13 +243,3 @@ Specialized environment with GCC 14 compiler to replicate CRAN compiler warnings
 
 **Dependency**: ubuntu24/rig/rdev/gcc14
 GCC 14 environment optimized for DuckDB development, including build dependencies (python3, ninja-build, cmake) and essential R packages (DBI, cpp11). Configured with DUCKDB_R_DEBUG=1.
-
-### [sops-age](sops-age)
-
-**Dependency**: alpine:latest
-Lightweight Alpine-based image with `sops` and `age` for secret management and encryption workflows. Includes essential tools (git, curl, bash, jq) for CI/CD pipelines.
-
-### [tofutf](tofutf)
-
-**Dependency**: ghcr.io/tofutf/tofutf/tofutfd:latest
-Terraform/OpenTofu environment with additional tooling including 1Password CLI and AWS CLI for infrastructure automation and secret management.
