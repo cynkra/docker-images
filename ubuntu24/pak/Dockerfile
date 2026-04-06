@@ -3,6 +3,7 @@ FROM ghcr.io/cynkra/docker-images/ubuntu24:latest
 RUN apt-get update -y
 RUN apt-get install -y --no-install-recommends \
     git \
+    sudo \
     ca-certificates \
     catch2 \
     clang-format \
