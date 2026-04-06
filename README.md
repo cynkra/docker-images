@@ -189,6 +189,11 @@ Ubuntu 24.04 base with locale configuration (en_US.UTF-8). Foundation image for 
 **Dependency**: ubuntu24
 Ubuntu 24.04 with Microsoft TrueType core fonts installed. Used for consistent font rendering in reports and graphics.
 
+### [ubuntu24/msfonts](ubuntu24/pak)
+
+**Dependency**: ubuntu24
+Reproducer for <https://github.com/r-lib/pak/issues/826>, can be closed once that is resolved.
+
 ### [ubuntu24/rig](ubuntu24/rig)
 
 **Dependency**: ubuntu24
