@@ -12,4 +12,8 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN echo 'options(repos = c(CRAN = sprintf("https://p3m.dev/cran/latest/bin/linux/noble-%s/%s", R.version["arch"], substr(getRversion(), 1, 3))))' | sudo tee -a /etc/R/Rprofile.site
 
-RUN Rscript -e 'getOption("repos"); install.packages("pak"); pak::ppm_has_binaries()'
+RUN Rscript -e 'getOption("repos")'
+
+RUN Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/devel/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+
+RUN Rscript -e 'pak::ppm_has_binaries()'
