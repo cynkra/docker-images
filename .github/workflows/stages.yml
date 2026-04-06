@@ -300,6 +300,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   pak-ubuntu24:
+    needs:
+      - ubuntu24
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/pak

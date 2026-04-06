@@ -6,7 +6,7 @@
 ## Summary
 
 - Total Dockerfiles found: 37
-- Images with local dependencies: 27
+- Images with local dependencies: 28
 - Build stages required: 6
 
 ## Dependency Tree
@@ -37,7 +37,7 @@
 ✓ rig-ubuntu-revdepcheck ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 ✓ ubuntu24 ← ubuntu:24.04 (external)
 ✓ ubuntu24-msfonts ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
-✓ ubuntu24-pak ← ubuntu:noble (external)
+✓ ubuntu24-pak ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig-rdev ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
 ✓ ubuntu24-rig-rdev-dc ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
@@ -72,6 +72,7 @@
 - rig-ubuntu-r-postgres
 - rig-ubuntu-revdepcheck
 - ubuntu24-msfonts
+- ubuntu24-pak
 - ubuntu24-rig
 
 ### Stage 3
@@ -116,7 +117,6 @@
 - `ubuntu:22.04` used by: rig-ubuntu
 - `ubuntu:24.04` used by: ubuntu24
 - `ubuntu:latest` used by: r-minimal
-- `ubuntu:noble` used by: ubuntu24-pak
 
 ## FROM Instruction Validation
 
@@ -147,7 +147,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `rig-ubuntu-revdepcheck`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓
 - `ubuntu24` (root): FROM `ubuntu:24.04` ✓
 - `ubuntu24-msfonts`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
-- `ubuntu24-pak`: FROM `ubuntu:noble` ❌ (should be `ghcr.io/cynkra/docker-images/ubuntu24:latest`)
+- `ubuntu24-pak`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig:latest` ✓
 - `ubuntu24-rig-rdev-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ✓
