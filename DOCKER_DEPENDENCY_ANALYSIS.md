@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 38
-- Images with local dependencies: 29
+- Total Dockerfiles found: 39
+- Images with local dependencies: 30
 - Build stages required: 6
 
 ## Dependency Tree
@@ -39,6 +39,7 @@
 ✓ ubuntu24-msfonts ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-pak ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-pak-rlang ← ubuntu24-pak ← ghcr.io/cynkra/docker-images/ubuntu24-pak:latest
+✓ ubuntu24-pak-rlang2 ← ubuntu24-pak ← ghcr.io/cynkra/docker-images/ubuntu24-pak:latest
 ✓ ubuntu24-rig ← ubuntu24 ← ghcr.io/cynkra/docker-images/ubuntu24:latest
 ✓ ubuntu24-rig-rdev ← ubuntu24-rig ← ghcr.io/cynkra/docker-images/ubuntu24-rig:latest
 ✓ ubuntu24-rig-rdev-dc ← ubuntu24-rig-rdev ← ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest
@@ -82,6 +83,7 @@
 - forky-gcc-rig
 - rig-ubuntu-duckdb-dev
 - ubuntu24-pak-rlang
+- ubuntu24-pak-rlang2
 - ubuntu24-rig-rdev
 - ubuntu24-rig-rrel
 
@@ -151,6 +153,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `ubuntu24-msfonts`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-pak`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-pak-rlang`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-pak:latest` ✓
+- `ubuntu24-pak-rlang2`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-pak:latest` ✓
 - `ubuntu24-rig`: FROM `ghcr.io/cynkra/docker-images/ubuntu24:latest` ✓
 - `ubuntu24-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig:latest` ✓
 - `ubuntu24-rig-rdev-dc`: FROM `ghcr.io/cynkra/docker-images/ubuntu24-rig-rdev:latest` ✓
