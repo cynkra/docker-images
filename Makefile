@@ -7,7 +7,7 @@ GITHUB_DOCKER := ../github-docker
 PYTHON := $(GITHUB_DOCKER)/.venv/bin/python3
 GENERATOR := $(PYTHON) $(GITHUB_DOCKER)/generate_stages.py --root .
 
-.PHONY: stages analysis clean help update-from check-from generate-makefiles publish-yml root-makefile
+.PHONY: stages analysis clean help update-from check-from generate-makefiles publish-yml pr-failure-comment-yml root-makefile
 
 .NOTPARALLEL:
 
@@ -16,15 +16,16 @@ all: stages analysis update-from generate-makefiles
 # Default target
 help:
 	@echo "Available targets:"
-	@echo "  stages           - Generate stages.yml from Dockerfiles"
-	@echo "  analysis         - Generate dependency analysis report"
-	@echo "  update-from      - Update FROM instructions in Dockerfiles according to hierarchy"
-	@echo "  check-from       - Check what FROM instructions would be updated (dry run)"
-	@echo "  generate-makefiles - Generate Makefiles alongside each Dockerfile"
-	@echo "  publish-yml      - Render publish.yml from template"
-	@echo "  root-makefile    - Render this Makefile from template"
-	@echo "  clean            - Remove generated files"
-	@echo "  help             - Show this help message"
+	@echo "  stages                  - Generate stages.yml from Dockerfiles"
+	@echo "  analysis                - Generate dependency analysis report"
+	@echo "  update-from             - Update FROM instructions in Dockerfiles according to hierarchy"
+	@echo "  check-from              - Check what FROM instructions would be updated (dry run)"
+	@echo "  generate-makefiles      - Generate Makefiles alongside each Dockerfile"
+	@echo "  publish-yml             - Render publish.yml from template"
+	@echo "  pr-failure-comment-yml  - Render pr-failure-comment.yml from template"
+	@echo "  root-makefile           - Render this Makefile from template"
+	@echo "  clean                   - Remove generated files"
+	@echo "  help                    - Show this help message"
 
 $(GITHUB_DOCKER)/.venv/pyvenv.cfg:
 	$(MAKE) -C $(GITHUB_DOCKER) .venv/pyvenv.cfg
@@ -69,6 +70,11 @@ generate-makefiles: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 publish-yml: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 	@echo "Rendering publish.yml..."
 	@$(GENERATOR) --generate-publish-yml
+
+# Render pr-failure-comment.yml.j2 template
+pr-failure-comment-yml: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
+	@echo "Rendering pr-failure-comment.yml..."
+	@$(GENERATOR) --generate-pr-failure-comment-yml
 
 # Render Makefile.j2 template (regenerate this file)
 root-makefile: $(GITHUB_DOCKER)/.venv/pyvenv.cfg

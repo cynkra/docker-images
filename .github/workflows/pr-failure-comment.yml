@@ -1,0 +1,164 @@
+# Generated from github-docker/pr-failure-comment.yml.j2, do not edit by hand
+# Run 'make pr-failure-comment-yml' to regenerate this file
+#
+# Posts the failing build output as a comment on the originating pull request.
+# Runs as a second workflow (workflow_run trigger) after stages.yml completes,
+# so the job logs are finalized in Azure blob storage by the time we read them.
+# Running in the base-repo context also gives us `pull-requests: write` even
+# for fork PRs.
+#
+# === Interdependencies with other generated files — keep in sync ===
+#
+# 1. The `workflows:` filter below MUST match the workflow `name:` emitted by
+#    generate_stages.py (see DockerImageAnalyzer.generate_fine_grained_stages:
+#    `'name': 'Create and publish a Docker image'`). If that name changes,
+#    update the filter here.
+#
+# 2. The log parser looks for the marker `##[group]Run docker/build-push-action`
+#    to locate the build step's section of the job log. This is emitted by the
+#    `uses: docker/build-push-action@...` step in publish.yml.j2. If that action
+#    is renamed or replaced, update the awk pattern below.
+#
+# 3. Matrix job names in the API appear as `<caller-job> / <callee-job> (<arch>)`
+#    (e.g. `rig-ubuntu / img (amd64)`). The caller name comes from
+#    generate_stages.py's `path_to_job_name`; the callee `img` and the arch
+#    matrix come from publish.yml.j2. We don't parse these here (we enumerate
+#    failed jobs via the API), we just surface the full job name in the comment.
+
+name: PR failure comment
+
+on:
+  workflow_run:
+    # See interdependency note 1 above.
+    workflows: ["Create and publish a Docker image"]
+    types: [completed]
+
+permissions:
+  actions: read          # read job logs via the Actions API
+  pull-requests: write   # post the PR comment
+  contents: read
+
+jobs:
+  post-comment:
+    # Only run when the upstream workflow failed on a pull_request event.
+    if: >-
+      github.event.workflow_run.conclusion == 'failure'
+      && github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Post failure comments for each failed matrix job
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          SERVER_URL: ${{ github.server_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # The PR number. `workflow_run.pull_requests` is only populated for
+          # same-repo PRs. For fork PRs it is empty; fall back to resolving the
+          # PR from the head SHA.
+          PR_NUMBER=$(gh api \
+            "/repos/${REPO}/actions/runs/${RUN_ID}" \
+            --jq '.pull_requests[0].number // empty' || true)
+          if [ -z "${PR_NUMBER:-}" ]; then
+            HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+            PR_NUMBER=$(gh api \
+              "/repos/${REPO}/commits/${HEAD_SHA}/pulls" \
+              --jq '.[0].number // empty' || true)
+          fi
+          if [ -z "${PR_NUMBER:-}" ]; then
+            echo "Could not resolve PR number; nothing to comment on."
+            exit 0
+          fi
+
+          RUN_URL="${SERVER_URL}/${REPO}/actions/runs/${RUN_ID}/attempts/${RUN_ATTEMPT}"
+
+          # Enumerate failed jobs from the completed run.
+          mapfile -t FAILED_JOBS < <(gh api \
+            "/repos/${REPO}/actions/runs/${RUN_ID}/attempts/${RUN_ATTEMPT}/jobs" \
+            --paginate \
+            --jq '.jobs[] | select(.conclusion == "failure") | "\(.id)\t\(.name)"')
+
+          if [ "${#FAILED_JOBS[@]}" -eq 0 ]; then
+            echo "No failed jobs found on the completed run."
+            exit 0
+          fi
+
+          # Retry log fetch with exponential backoff — sums to ~127s, under 2 min.
+          # Azure blob for the job log is sometimes briefly missing right after
+          # the job completes (BlobNotFound).
+          fetch_log() {
+            local job_id=$1
+            local delay
+            for delay in 1 2 4 8 16 32 64; do
+              local body
+              body=$(gh api "/repos/${REPO}/actions/jobs/${job_id}/logs" 2>/dev/null || true)
+              if [ -n "$body" ] && ! printf '%s' "$body" | head -c 200 | grep -q '<Error>'; then
+                printf '%s' "$body"
+                return 0
+              fi
+              echo "Log for job ${job_id} not ready, sleeping ${delay}s..." >&2
+              sleep "$delay"
+            done
+            return 1
+          }
+
+          for row in "${FAILED_JOBS[@]}"; do
+            JOB_ID=$(printf '%s' "$row" | cut -f1)
+            JOB_NAME=$(printf '%s' "$row" | cut -f2-)
+            echo "Processing failed job: ${JOB_NAME} (id=${JOB_ID})"
+
+            LOG_RAW=""
+            if LOG_RAW=$(fetch_log "$JOB_ID"); then
+              :
+            else
+              LOG_RAW=""
+            fi
+
+            if [ -z "$LOG_RAW" ]; then
+              LOG_SECTION="(build log still unavailable after ~2 minutes of retries)"
+            else
+              # See interdependency note 2 above: we anchor on the build action's
+              # group marker to isolate the build step's output from other steps
+              # and post-hook cleanup.
+              LOG_SECTION=$(printf '%s' "$LOG_RAW" | awk '
+                /##\[group\]Run docker\/build-push-action/ { in_step = 1 }
+                in_step { print }
+              ')
+              if [ -z "$LOG_SECTION" ]; then
+                # Fallback: the marker was not found (e.g. action renamed);
+                # take a larger slice so the user still gets context.
+                LOG_SECTION=$(printf '%s' "$LOG_RAW" | tail -n 400)
+              fi
+              # Trim trailing post-hook noise after the error marker.
+              ERR_LINE=$(printf '%s\n' "$LOG_SECTION" | grep -n '##\[error\]' | tail -n1 | cut -d: -f1 || true)
+              if [ -n "${ERR_LINE:-}" ]; then
+                LOG_SECTION=$(printf '%s\n' "$LOG_SECTION" | sed -n "1,${ERR_LINE}p")
+              fi
+              LOG_SECTION=$(printf '%s\n' "$LOG_SECTION" | tail -n 200)
+            fi
+
+            # Stay well under GitHub's 65 KB comment limit.
+            LOG_SECTION=$(printf '%s' "$LOG_SECTION" | tail -c 60000)
+
+            # Choose a code fence longer than the longest backtick run in the log.
+            MAX_TICKS=$(printf '%s' "$LOG_SECTION" | grep -oE '`+' | awk '{print length}' | sort -n | tail -n1 || true)
+            FENCE_LEN=$(( ${MAX_TICKS:-0} + 1 ))
+            [ "$FENCE_LEN" -lt 3 ] && FENCE_LEN=3
+            FENCE=$(printf '`%.0s' $(seq 1 "$FENCE_LEN"))
+
+            {
+              printf 'Build failed: `%s`\n\n' "$JOB_NAME"
+              printf '[View workflow run](%s)\n\n' "$RUN_URL"
+              printf '<details><summary>Build step output (last 200 lines)</summary>\n\n'
+              printf '%s\n' "$FENCE"
+              printf '%s\n' "$LOG_SECTION"
+              printf '%s\n\n' "$FENCE"
+              printf '</details>\n'
+            } > /tmp/pr-failure-comment.md
+
+            gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file /tmp/pr-failure-comment.md
+          done
