@@ -45,7 +45,7 @@ pull-parent:
 
 # Pull the amd64 parent image this image depends on
 pull-parent-amd64:
-	@echo "Pulling amd64 parent image: ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest"
+	@echo "Pulling amd64 parent image: ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest-amd64"
 	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/rig-ubuntu-duckdb:latest-amd64
 
 # Run interactive bash as regular user (amd64)
