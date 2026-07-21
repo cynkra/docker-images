@@ -91,7 +91,7 @@ The table below lists every Linux platform for which P3M currently serves x86_64
 | RHEL 9 / Rocky Linux 9 | `rhel9` | x86_64, arm64 | ✅ [`p3m-rhel9`](p3m-rhel9) | `almalinux:9` |
 | RHEL 10 / Rocky Linux 10 | `rhel10` | x86_64, arm64 | ✅ [`p3m-rhel10`](p3m-rhel10) *(R from source)* | `almalinux:10` |
 | openSUSE 15.6 / SLES 15 SP6/SP7 | `opensuse156` | x86_64 | ✅ [`p3m-opensuse`](p3m-opensuse) | `opensuse/leap:15.6` |
-| CentOS / RHEL 7 | `centos7` | x86_64 | ❌ no viable OSS base — see below | — |
+| CentOS / RHEL 7 | `centos7` | x86_64 | ⚠️ [`p3m-centos7`](p3m-centos7) — **testing only** | `centos:7` (vault, EOL) |
 | Portable manylinux (glibc 2.28+) | `manylinux_2_28` | x86_64, arm64 | ✅ [`p3m-manylinux`](p3m-manylinux) | `almalinux:8` |
 
 > The RHEL 8 binaries are served under the `centos8` slug (P3M has no `rhel8` slug). The portable `manylinux_2_28` binaries are built against glibc 2.28 and work on most modern Linux distributions; `p3m-manylinux` uses AlmaLinux 8 (glibc 2.28) as its base and is built for both x86_64 and arm64.
@@ -107,7 +107,9 @@ RHEL 7 is only reachable through paid Extended Life Cycle Support, and as of mid
 | Oracle Linux 7 | free updates ended 2024-12-31; only paid Extended Support (to 2027) |
 | RHEL 7 itself | Maintenance ended 2024; **ELS ended 2026-06-30** |
 
-There is no AlmaLinux/Rocky "7" (those rebuilds start at 8). The portable `manylinux_2_28` repo does not help either: it requires glibc ≥ 2.28, while EL7 ships glibc 2.17. The only way to keep an EL7 base patched is commercial (e.g. TuxCare ELS), which is not OSS. **Recommendation:** treat `centos7` as legacy-only and steer workloads to `p3m-rhel8`/`p3m-rhel9`/`p3m-rhel10` or `p3m-manylinux`. If a throwaway EL7 build environment is genuinely needed *today*, the CentOS 7 vault images still exist but are unmaintained and insecure — not something to depend on going forward.
+There is no AlmaLinux/Rocky "7" (those rebuilds start at 8). The portable `manylinux_2_28` repo does not help either: it requires glibc ≥ 2.28, while EL7 ships glibc 2.17. The only way to keep an EL7 base patched is commercial (e.g. TuxCare ELS), which is not OSS. **Recommendation:** treat `centos7` as legacy-only and steer workloads to `p3m-rhel8`/`p3m-rhel9`/`p3m-rhel10` or `p3m-manylinux`.
+
+A `p3m-centos7` image **is** provided, but strictly **for testing** the `centos7` slug. It builds on the frozen `centos:7` vault image (yum is repointed at `vault.centos.org`), which is unmaintained and insecure — do not depend on it for anything needing security updates.
 
 ## Images
 
@@ -170,6 +172,11 @@ OpenTofu/Terraform environment with AWS CLI added. Used for infrastructure autom
 
 **Dependency**: debian:bookworm
 Debian 12 base with **R built from source** in an explicit preparatory stage, and the default CRAN repo set to P3M binary packages (slug `bookworm`, x86_64). See [Posit Package Manager (P3M) base images](#posit-package-manager-p3m-base-images).
+
+### [p3m-centos7](p3m-centos7)
+
+**Dependency**: centos:7 (vault, EOL)
+**Testing only.** CentOS 7 / RHEL 7 are end-of-life with no maintained OSS base; this image builds on the frozen CentOS 7 vault image purely to exercise the P3M `centos7` slug (x86_64). Not for production — see [Posit Package Manager (P3M) base images](#posit-package-manager-p3m-base-images).
 
 ### [p3m-jammy](p3m-jammy)
 

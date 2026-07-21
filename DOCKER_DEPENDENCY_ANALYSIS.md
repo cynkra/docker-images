@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 49
+- Total Dockerfiles found: 50
 - Images with local dependencies: 30
 - Build stages required: 6
 
@@ -23,6 +23,7 @@
 ✓ forky-gcc-rig-rdev ← forky-gcc-rig ← ghcr.io/cynkra/docker-images/forky-gcc-rig:latest
 ✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
 ✓ p3m-bookworm ← debian:bookworm (external)
+✓ p3m-centos7 ← centos:7 (external)
 ✓ p3m-jammy ← ubuntu:22.04 (external)
 ✓ p3m-manylinux ← almalinux:8 (external)
 ✓ p3m-noble ← ubuntu:24.04 (external)
@@ -126,6 +127,7 @@
 - `almalinux:10` used by: p3m-rhel10
 - `almalinux:8` used by: p3m-manylinux, p3m-rhel8
 - `almalinux:9` used by: p3m-rhel9
+- `centos:7` used by: p3m-centos7
 - `debian:bookworm` used by: p3m-bookworm, rig-debian
 - `debian:forky` used by: forky
 - `debian:trixie` used by: p3m-trixie
@@ -153,6 +155,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `forky-gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig:latest` ✓
 - `forky-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest` ✓
 - `p3m-bookworm` (root): FROM `debian:bookworm` ✓
+- `p3m-centos7` (root): FROM `centos:7` ✓
 - `p3m-jammy` (root): FROM `ubuntu:22.04` ✓
 - `p3m-manylinux` (root): FROM `almalinux:8` ✓
 - `p3m-noble` (root): FROM `ubuntu:24.04` ✓

@@ -24,7 +24,7 @@ RUN \
     libcurl-devel openssl-devel libicu-devel \
     cairo-devel pango-devel libpng-devel libjpeg-turbo-devel libtiff-devel \
     libX11-devel libXt-devel tcl-devel tk-devel \
-    tar findutils which && \
+    perl tar findutils which && \
   curl -Ls https://cran.r-project.org/src/base/R-latest.tar.gz -o /tmp/R.tar.gz && \
   mkdir -p /tmp/Rsrc && \
   tar -xzf /tmp/R.tar.gz -C /tmp/Rsrc --strip-components=1 && \
