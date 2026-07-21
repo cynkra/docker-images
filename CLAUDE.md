@@ -182,6 +182,24 @@ with the default CRAN repo pointed at a P3M Linux **binary** distribution.
   `amd64 -> x86_64`, `arm64 -> aarch64`, then download
   `rig-linux-${RIG_ARCH}-latest.tar.gz`. Restrict each image's `# arch:` comment
   to the architectures P3M actually serves for that slug.
+- **Building R from source** (used by `p3m-bookworm` and `p3m-rhel10`). Use a
+  multi-stage Dockerfile: a preparatory `FROM <base> AS build` stage compiles
+  `R-latest.tar.gz` (`./configure --prefix=/opt/R/current --enable-R-shlib
+  --enable-memory-profiling && make && make install`); the final stage does
+  `COPY --from=build /opt/R/current /opt/R/current` (so the source tree/objects
+  are not shipped), installs R's libraries, and symlinks
+  `/opt/R/current/bin/{R,Rscript}` into `/usr/local/bin`. Get build deps from the
+  distro, not a hand-list where possible: Debian `apt-get build-dep r-base`
+  (enable `deb-src` first; bookworm uses the deb822 `debian.sources`); AlmaLinux
+  an explicit `-devel` set with `dnf config-manager --set-enabled crb`. Both the
+  `build` and final stages are external-based, so the generator still treats the
+  image as a root image. Keep the `# arch:` comment on line 1.
+- **No `centos7` image.** RHEL 7 is EOL/ELS-only and (as of mid-2026) has no
+  OSS base that is both usable today and maintained going forward: CentOS 7 EOL
+  2024, Amazon Linux 2 EOL 2026-06-30, Oracle Linux 7 free updates ended 2024,
+  and there is no AlmaLinux/Rocky "7". `manylinux_2_28` cannot substitute (it
+  needs glibc >= 2.28; EL7 ships 2.17). Steer EL workloads to `p3m-rhel8/9/10`
+  or `p3m-manylinux`.
 
 ## 9. Always Update CLAUDE.md
 

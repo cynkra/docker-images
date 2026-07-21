@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 47
+- Total Dockerfiles found: 49
 - Images with local dependencies: 30
 - Build stages required: 6
 
@@ -26,6 +26,8 @@
 ✓ p3m-jammy ← ubuntu:22.04 (external)
 ✓ p3m-manylinux ← almalinux:8 (external)
 ✓ p3m-noble ← ubuntu:24.04 (external)
+✓ p3m-opensuse ← opensuse/leap:15.6 (external)
+✓ p3m-resolute ← ubuntu:26.04 (external)
 ✓ p3m-rhel10 ← almalinux:10 (external)
 ✓ p3m-rhel8 ← almalinux:8 (external)
 ✓ p3m-rhel9 ← almalinux:9 (external)
@@ -128,10 +130,12 @@
 - `debian:forky` used by: forky
 - `debian:trixie` used by: p3m-trixie
 - `kalibera/rchk:latest` used by: rchk-igraph
+- `opensuse/leap:15.6` used by: p3m-opensuse
 - `rhub/clang18` used by: clang18-duckdb
 - `rockylinux:8` used by: rig-rocky8
 - `ubuntu:22.04` used by: p3m-jammy, rig-ubuntu
 - `ubuntu:24.04` used by: p3m-noble, ubuntu24
+- `ubuntu:26.04` used by: p3m-resolute
 - `ubuntu:latest` used by: r-minimal
 
 ## FROM Instruction Validation
@@ -152,6 +156,8 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `p3m-jammy` (root): FROM `ubuntu:22.04` ✓
 - `p3m-manylinux` (root): FROM `almalinux:8` ✓
 - `p3m-noble` (root): FROM `ubuntu:24.04` ✓
+- `p3m-opensuse` (root): FROM `opensuse/leap:15.6` ✓
+- `p3m-resolute` (root): FROM `ubuntu:26.04` ✓
 - `p3m-rhel10` (root): FROM `almalinux:10` ✓
 - `p3m-rhel8` (root): FROM `almalinux:8` ✓
 - `p3m-rhel9` (root): FROM `almalinux:9` ✓
