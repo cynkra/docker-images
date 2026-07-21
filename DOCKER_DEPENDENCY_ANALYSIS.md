@@ -5,7 +5,7 @@
 
 ## Summary
 
-- Total Dockerfiles found: 39
+- Total Dockerfiles found: 47
 - Images with local dependencies: 30
 - Build stages required: 6
 
@@ -22,6 +22,14 @@
 ✓ forky-gcc-rig ← forky-gcc ← ghcr.io/cynkra/docker-images/forky-gcc:latest
 ✓ forky-gcc-rig-rdev ← forky-gcc-rig ← ghcr.io/cynkra/docker-images/forky-gcc-rig:latest
 ✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
+✓ p3m-bookworm ← debian:bookworm (external)
+✓ p3m-jammy ← ubuntu:22.04 (external)
+✓ p3m-manylinux ← almalinux:8 (external)
+✓ p3m-noble ← ubuntu:24.04 (external)
+✓ p3m-rhel10 ← almalinux:10 (external)
+✓ p3m-rhel8 ← almalinux:8 (external)
+✓ p3m-rhel9 ← almalinux:9 (external)
+✓ p3m-trixie ← debian:trixie (external)
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:bookworm (external)
@@ -113,13 +121,17 @@
 ### FROM Dependencies
 
 - `almalinux/9-base` used by: alma9
-- `debian:bookworm` used by: rig-debian
+- `almalinux:10` used by: p3m-rhel10
+- `almalinux:8` used by: p3m-manylinux, p3m-rhel8
+- `almalinux:9` used by: p3m-rhel9
+- `debian:bookworm` used by: p3m-bookworm, rig-debian
 - `debian:forky` used by: forky
+- `debian:trixie` used by: p3m-trixie
 - `kalibera/rchk:latest` used by: rchk-igraph
 - `rhub/clang18` used by: clang18-duckdb
 - `rockylinux:8` used by: rig-rocky8
-- `ubuntu:22.04` used by: rig-ubuntu
-- `ubuntu:24.04` used by: ubuntu24
+- `ubuntu:22.04` used by: p3m-jammy, rig-ubuntu
+- `ubuntu:24.04` used by: p3m-noble, ubuntu24
 - `ubuntu:latest` used by: r-minimal
 
 ## FROM Instruction Validation
@@ -136,6 +148,14 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `forky-gcc-rig`: FROM `ghcr.io/cynkra/docker-images/forky-gcc:latest` ✓
 - `forky-gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig:latest` ✓
 - `forky-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest` ✓
+- `p3m-bookworm` (root): FROM `debian:bookworm` ✓
+- `p3m-jammy` (root): FROM `ubuntu:22.04` ✓
+- `p3m-manylinux` (root): FROM `almalinux:8` ✓
+- `p3m-noble` (root): FROM `ubuntu:24.04` ✓
+- `p3m-rhel10` (root): FROM `almalinux:10` ✓
+- `p3m-rhel8` (root): FROM `almalinux:8` ✓
+- `p3m-rhel9` (root): FROM `almalinux:9` ✓
+- `p3m-trixie` (root): FROM `debian:trixie` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:bookworm` ✓

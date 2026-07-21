@@ -147,7 +147,43 @@ Sometimes an image cannot be built for all architectures due to dependencies or 
 
 - Use pylint and black for Python code formatting
 
-## 8. Always Update CLAUDE.md
+## 8. Posit Package Manager (P3M) Binary Base Images
+
+The `p3m-*` images are minimal, single-purpose base images: R installed via rig,
+with the default CRAN repo pointed at a P3M Linux **binary** distribution.
+
+- **One image per P3M "slug"**, named `p3m-<slug-ish>` (e.g. `p3m-jammy`,
+  `p3m-rhel9`, `p3m-manylinux`). They are **root-level** images (external base),
+  so the FROM hierarchy tooling (`make update-from`) leaves them untouched.
+- **Authoritative repo config.** Install R with `rig add release --without-p3m`
+  so rig does not write its own repo config, then append exactly one block to
+  the site-wide `Rprofile.site` (found via `$(R RHOME)/etc/Rprofile.site`):
+
+  ```r
+  options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))
+  options(repos = c(P3M = "https://packagemanager.posit.co/cran/__linux__/<slug>/latest"))
+  ```
+
+  The `HTTPUserAgent` is **required** — it is what makes P3M serve binaries for
+  the running R version/arch. Write the block with `printf '%s\n' '...' '...'`
+  (single-quoted args) so the literal `%s` in the R code is preserved.
+- **Build-time assertion.** End the RUN with a check that fails the build on
+  misconfiguration:
+  `R -q -e 'stopifnot(grepl("__linux__/<slug>", getOption("repos")[["P3M"]]))'`.
+- **The authoritative platform list** comes from P3M itself, not from docs that
+  may lag: `curl -fsS https://packagemanager.posit.co/__api__/status` and read
+  the `distros` array (`binaryURL` = slug, `arch`, `binaries`, `hidden`). RHEL 8
+  binaries live under the `centos8` slug (there is no `rhel8` slug).
+- **OSS replacements.** RHEL → AlmaLinux (`almalinux:8/9/10`), SLES → openSUSE
+  Leap. `manylinux_2_28` (glibc 2.28+, portable) uses `almalinux:8` as its base
+  and is built multi-arch (amd64 + arm64).
+- **Multi-arch rig download.** rig's release assets are arch-specific; map
+  `TARGETARCH` to the rig arch token:
+  `amd64 -> x86_64`, `arm64 -> aarch64`, then download
+  `rig-linux-${RIG_ARCH}-latest.tar.gz`. Restrict each image's `# arch:` comment
+  to the architectures P3M actually serves for that slug.
+
+## 9. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development
