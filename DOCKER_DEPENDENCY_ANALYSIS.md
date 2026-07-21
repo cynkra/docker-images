@@ -24,7 +24,7 @@
 ✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
-✓ rig-debian ← debian:bookworm (external)
+✓ rig-debian ← debian:trixie (external)
 ✓ rig-rocky8 ← rockylinux:8 (external)
 ✓ rig-ubuntu ← ubuntu:22.04 (external)
 ✓ rig-ubuntu-dbi ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
@@ -113,7 +113,7 @@
 ### FROM Dependencies
 
 - `almalinux/9-base` used by: alma9
-- `debian:bookworm` used by: rig-debian
+- `debian:trixie` used by: rig-debian
 - `debian:forky` used by: forky
 - `kalibera/rchk:latest` used by: rchk-igraph
 - `rhub/clang18` used by: clang18-duckdb
@@ -138,7 +138,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `forky-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
-- `rig-debian` (root): FROM `debian:bookworm` ✓
+- `rig-debian` (root): FROM `debian:trixie` ✓
 - `rig-rocky8` (root): FROM `rockylinux:8` ✓
 - `rig-ubuntu` (root): FROM `ubuntu:22.04` ✓
 - `rig-ubuntu-dbi`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓

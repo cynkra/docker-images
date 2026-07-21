@@ -126,8 +126,8 @@ R check environment with igraph dependencies, based on kalibera/rchk. Includes l
 
 ### [rig-debian](rig-debian)
 
-**Dependency**: debian:bookworm
-Debian Bookworm-based rig environment for compatibility testing and specialized Debian workflows.
+**Dependency**: debian:trixie
+Debian Trixie-based rig environment for compatibility testing and specialized Debian workflows.
 
 ### [rig-rocky8](rig-rocky8)
 
@@ -157,7 +157,7 @@ DuckDB development environment with build tools (python3, ninja-build, cmake) an
 ### [rig-ubuntu/duckdb4](rig-ubuntu/duckdb4)
 
 **Dependency**: rig-ubuntu
-Like rig-ubuntu/duckdb, but with R 4.1.3 for compatibility testing. Includes duckdb, cpp11, decor, and devtools packages.
+Like rig-ubuntu/duckdb, but with R 4.2.3 for compatibility testing. Includes duckdb, cpp11, decor, and devtools packages.
 
 ### [rig-ubuntu/duckdb/dev](rig-ubuntu/duckdb/dev)
 
