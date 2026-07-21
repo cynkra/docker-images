@@ -54,8 +54,10 @@ The `rig-debian` image is restricted to `amd64` only:
 ```dockerfile
 # arch: amd64
 
-# Before changing this to 24.04, check if pak install from binary
-FROM debian:bookworm
+# Debian Trixie (13): Posit's CDN only publishes the latest R release for
+# recent Debian versions. Bookworm (12) stopped at R 4.6.0 (rig add release
+# then 403s on R 4.6.1), so Trixie is required for `rig add release` to work.
+FROM debian:trixie
 ```
 
 This means:

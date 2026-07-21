@@ -39,7 +39,7 @@
 ✓ p3m-trixie ← debian:trixie (external)
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
-✓ rig-debian ← debian:bookworm (external)
+✓ rig-debian ← debian:trixie (external)
 ✓ rig-rocky8 ← rockylinux:8 (external)
 ✓ rig-ubuntu ← ubuntu:22.04 (external)
 ✓ rig-ubuntu-dbi ← rig-ubuntu ← ghcr.io/cynkra/docker-images/rig-ubuntu:latest
@@ -136,9 +136,9 @@
 - `almalinux:8` used by: p3m-manylinux, p3m-rhel8
 - `almalinux:9` used by: p3m-rhel9
 - `centos:7` used by: p3m-centos7
-- `debian:bookworm` used by: p3m-bookworm, p3m-bookworm-rbuild, rig-debian
+- `debian:bookworm` used by: p3m-bookworm, p3m-bookworm-rbuild
 - `debian:forky` used by: forky
-- `debian:trixie` used by: p3m-trixie
+- `debian:trixie` used by: p3m-trixie, rig-debian
 - `kalibera/rchk:latest` used by: rchk-igraph
 - `opensuse/leap:15.6` used by: p3m-opensuse
 - `rhub/clang18` used by: clang18-duckdb
@@ -177,7 +177,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `p3m-trixie` (root): FROM `debian:trixie` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
-- `rig-debian` (root): FROM `debian:bookworm` ✓
+- `rig-debian` (root): FROM `debian:trixie` ✓
 - `rig-rocky8` (root): FROM `rockylinux:8` ✓
 - `rig-ubuntu` (root): FROM `ubuntu:22.04` ✓
 - `rig-ubuntu-dbi`: FROM `ghcr.io/cynkra/docker-images/rig-ubuntu:latest` ✓

@@ -6,6 +6,11 @@ FROM ghcr.io/cynkra/docker-images/rig-ubuntu:latest
 RUN \
   apt-get update && \
   apt-get install -y gnupg lsb-release time && \
+  # Pre-install cpp11 first: right after a new R release, P3M may not have a
+  # binary yet for packages that LinkingTo cpp11 (e.g. timechange), so pak
+  # builds them from source and needs cpp11 already present in the library.
+  R       -q -e 'pak::pak("cpp11")' && \
+  R-devel -q -e 'pak::pak("cpp11")' && \
   R       -q -e 'pak::pak(c("DBI", "RMariaDB", "RPostgres", "RSQLite", "dm", "duckdb", "odbc", "adbi", "cpp11", "devtools", "decor", "reprex"), dependencies = TRUE)' && \
   R-devel -q -e 'pak::pak(c("DBI", "RMariaDB", "RPostgres", "RSQLite", "dm", "duckdb", "odbc", "adbi", "cpp11", "devtools", "decor", "reprex"), dependencies = TRUE)' && \
   rm -rf /var/lib/apt/lists/* && \

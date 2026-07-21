@@ -40,13 +40,13 @@ pull-amd64:
 
 # Pull the parent image this image depends on
 pull-parent:
-	@echo "Pulling parent image: debian:bookworm"
-	docker pull debian:bookworm
+	@echo "Pulling parent image: debian:trixie"
+	docker pull debian:trixie
 
 # Pull the amd64 parent image this image depends on
 pull-parent-amd64:
-	@echo "Pulling amd64 parent image: debian:bookworm"
-	docker pull --platform linux/amd64 debian:bookworm
+	@echo "Pulling amd64 parent image: debian:trixie"
+	docker pull --platform linux/amd64 debian:trixie
 
 # Run interactive bash as regular user (amd64)
 run-amd64:
