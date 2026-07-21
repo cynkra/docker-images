@@ -8,15 +8,21 @@
 # to build nor to run (Java is only for the optional rJava/Java package
 # ecosystem). AlmaLinux 10 is the OSS, binary-compatible stand-in for RHEL 10.
 
-FROM almalinux:10
-
+# Reference the build-stage image as a named FROM stage. R is NOT compiled
+# here - it is built in p3m-rhel10-rbuild; this alias only lets us COPY the
+# result in. The indirection is required because BuildKit forbids variable
+# expansion (the arch-specific tag) directly in `COPY --from=`; a FROM stage
+# with an ARG-expanded tag is the documented workaround. The arch-specific tag
+# is used because the multi-arch :latest manifest is only published on main.
 ARG TARGETARCH
+FROM ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH} AS rbuild
+
+FROM almalinux:10
 
 COPY date.txt /date.txt
 
-# Compiled R comes from the named build-stage image, at its arch-specific tag
-# (the multi-arch :latest manifest is only published on main).
-COPY --from=ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH} /opt/R/current /opt/R/current
+# Bring in the compiled R (only the install prefix).
+COPY --from=rbuild /opt/R/current /opt/R/current
 
 # Install R's runtime shared libraries (no compilers, no JDK; CRB enabled for
 # libXt/tcl/tk), configure the locale, expose R/Rscript on PATH, and write the

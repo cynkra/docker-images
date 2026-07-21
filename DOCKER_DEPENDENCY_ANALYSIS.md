@@ -23,7 +23,7 @@
 ✓ forky-gcc-rig-rdev ← forky-gcc-rig ← ghcr.io/cynkra/docker-images/forky-gcc-rig:latest
 ✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
 ✓ p3m-bookworm ← debian:bookworm (external)
-  └─ COPY --from p3m-bookworm-rbuild ← ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-${TARGETARCH}
+  └─ FROM p3m-bookworm-rbuild ← ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-${TARGETARCH}
 ✓ p3m-bookworm-rbuild ← debian:bookworm (external)
 ✓ p3m-centos7 ← centos:7 (external)
 ✓ p3m-jammy ← ubuntu:22.04 (external)
@@ -32,7 +32,7 @@
 ✓ p3m-opensuse ← opensuse/leap:15.6 (external)
 ✓ p3m-resolute ← ubuntu:26.04 (external)
 ✓ p3m-rhel10 ← almalinux:10 (external)
-  └─ COPY --from p3m-rhel10-rbuild ← ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH}
+  └─ FROM p3m-rhel10-rbuild ← ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH}
 ✓ p3m-rhel10-rbuild ← almalinux:10 (external)
 ✓ p3m-rhel8 ← almalinux:8 (external)
 ✓ p3m-rhel9 ← almalinux:9 (external)

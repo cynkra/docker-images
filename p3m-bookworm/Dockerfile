@@ -7,15 +7,21 @@
 # (slug: bookworm, x86_64). No Java is installed: base R needs it neither to
 # build nor to run (Java is only for the optional rJava/Java package ecosystem).
 
-FROM debian:bookworm
-
+# Reference the build-stage image as a named FROM stage. R is NOT compiled
+# here - it is built in p3m-bookworm-rbuild; this alias only lets us COPY the
+# result in. The indirection is required because BuildKit forbids variable
+# expansion (the arch-specific tag) directly in `COPY --from=`; a FROM stage
+# with an ARG-expanded tag is the documented workaround. The arch-specific tag
+# is used because the multi-arch :latest manifest is only published on main.
 ARG TARGETARCH
+FROM ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-${TARGETARCH} AS rbuild
+
+FROM debian:bookworm
 
 COPY date.txt /date.txt
 
-# Compiled R comes from the named build-stage image, at its arch-specific tag
-# (the multi-arch :latest manifest is only published on main).
-COPY --from=ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-${TARGETARCH} /opt/R/current /opt/R/current
+# Bring in the compiled R (only the install prefix).
+COPY --from=rbuild /opt/R/current /opt/R/current
 
 # Install R's runtime shared libraries (no compilers, no JDK), configure the
 # locale, expose R/Rscript on PATH, and write the authoritative P3M binary repo
