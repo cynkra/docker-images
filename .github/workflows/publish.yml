@@ -14,6 +14,14 @@ on:
       architectures:
         required: true
         type: string
+      push_on_pr:
+        # Opt-in: push this image to the registry even on pull_request builds.
+        # Needed for base/build-stage images that other images consume, so the
+        # dependents can pull them within the same PR. Off by default, so normal
+        # images stay push-on-main-only.
+        required: false
+        type: boolean
+        default: false
     secrets:
       # Optional: only used for push/schedule runs (not pull_request).
       # Fork PRs do not have access to these secrets.
@@ -81,7 +89,7 @@ jobs:
           context: ${{ inputs.path }}
           platforms: linux/${{ matrix.arch }}
           pull: true
-          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm' }}
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/arm' || inputs.push_on_pr }}
           tags: |
             ghcr.io/${{ env.REPO_NAME }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}
             ${{ github.repository_owner }}/${{ inputs.image_name }}:latest-${{ matrix.arch }}

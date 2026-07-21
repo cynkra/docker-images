@@ -204,11 +204,19 @@ with the default CRAN repo pointed at a P3M Linux **binary** distribution.
 - **`R` needs no Java** to build or run; `./configure` only uses a JDK to enable
   optional `rJava`/`javareconf` support. Keep JDK/JRE out of these base images
   (it otherwise sneaks in via Debian's `apt-get build-dep r-base`).
-- **New base/build-stage images are red on their introducing PR.** `stages.yml`
-  calls `publish.yml@main` and images are only pushed on `main`, so a brand-new
-  `*-rbuild` image is not in the registry while its own PR runs — the dependent
-  `COPY --from` image fails to pull until the `*-rbuild` image merges to `main`.
-  This is inherent to the build system (it is not a bug to "fix" in the PR).
+- **Consuming a new base/build-stage image within its own PR.** A dependent can
+  only `COPY --from`/`FROM` an image that is in the registry. Two build-system
+  mechanisms (in `github-docker`) make a brand-new upstream image available
+  during the PR that introduces it:
+    - `stages.yml` calls the reusable workflow by **local path**
+      (`./.github/workflows/publish.yml`), not `@main`, so a PR runs its own
+      `publish.yml` (CI changes are testable in the PR that makes them).
+    - An upstream image opts into `# push-on-pr: true` (first 10 lines, like
+      `# arch:`); the generator passes `push_on_pr: true` to `publish.yml`, whose
+      `push:` condition then publishes it on pull-request builds too. Normal
+      images omit the comment and stay push-on-main-only (no clobbering published
+      `:latest` tags during review). Dependents `needs:` the upstream job, so it
+      publishes before they pull.
 - **No `centos7` image.** RHEL 7 is EOL/ELS-only and (as of mid-2026) has no
   OSS base that is both usable today and maintained going forward: CentOS 7 EOL
   2024, Amazon Linux 2 EOL 2026-06-30, Oracle Linux 7 free updates ended 2024,
