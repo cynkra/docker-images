@@ -40,13 +40,13 @@ pull-amd64:
 
 # Pull the parent image this image depends on
 pull-parent:
-	@echo "Pulling parent image: debian:bookworm"
-	docker pull debian:bookworm
+	@echo "Pulling parent image: ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest"
+	docker pull ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest
 
 # Pull the amd64 parent image this image depends on
 pull-parent-amd64:
-	@echo "Pulling amd64 parent image: debian:bookworm"
-	docker pull --platform linux/amd64 debian:bookworm
+	@echo "Pulling amd64 parent image: ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-amd64"
+	docker pull --platform linux/amd64 ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-amd64
 
 # Run interactive bash as regular user (amd64)
 run-amd64:

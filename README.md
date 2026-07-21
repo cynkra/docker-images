@@ -74,7 +74,16 @@ The `HTTPUserAgent` header is what tells P3M to serve binaries for the running R
 
 ### R from source (`p3m-bookworm`, `p3m-rhel10`)
 
-These two use a multi-stage Dockerfile: a **preparatory `build` stage** compiles the current R release (`R-latest.tar.gz`) from source into a self-contained prefix (`/opt/R/current`), and the final stage copies that prefix in (leaving the source tree and object files behind) and installs the runtime/build libraries. On Debian, R's official build dependencies come straight from `apt-get build-dep r-base`; on AlmaLinux they come from an explicit `-devel` set with the CRB repo enabled. The same P3M `Rprofile.site` configuration is applied. Keeping the toolchain in the final image is intentional — it lets these bases also compile source-only packages that P3M has no binary for.
+These two compile the current R release (`R-latest.tar.gz`) from source. Rather than a multi-stage Dockerfile, the compile is an **explicit build-stage image** in the pipeline — a first-class, cacheable, reusable node:
+
+- **`p3m-bookworm-rbuild`** / **`p3m-rhel10-rbuild`** compile R into a self-contained prefix (`/opt/R/current`) and remove the source tree. On Debian the build dependencies come straight from `apt-get build-dep r-base` (deb-src enabled); on AlmaLinux from an explicit `-devel` set with the CRB repo enabled (plus `perl`, which R needs to build its man pages).
+- **`p3m-bookworm`** / **`p3m-rhel10`** then `COPY --from` the compiled prefix out of the build-stage image, install only the **runtime** shared libraries R links against (no compilers, **no Java** — see below), symlink `R`/`Rscript`, and apply the P3M `Rprofile.site` configuration.
+
+The final images reference the build stage at its arch-specific tag (`…-rbuild:latest-${TARGETARCH}`) because the multi-arch `:latest` manifest is only published on `main`.
+
+> **CI note:** the reusable build workflow is pinned at `@main` and only pushes images on `main`, so a brand-new build-stage image is not in the registry during its own introducing PR. The `p3m-bookworm` / `p3m-rhel10` jobs therefore go green only **after** the `*-rbuild` images have merged to `main` and been published; on the introducing PR those two jobs fail to pull the not-yet-published build stage. The `*-rbuild` images themselves build fine on the PR.
+
+**Do we need Java?** No — not for base R, at build time or run time. R's `./configure` enables Java support only if a JDK is present (for later `R CMD javareconf` / `rJava`), but R builds and runs without it and does not link `libjvm`. Java is only needed for the optional Java-package ecosystem: a **JDK at build time** (to compile e.g. `rJava`) and a **JRE at run time** (to load it). It was pulled in only via Debian's `apt-get build-dep r-base` (which includes `default-jdk`) in the build stage; the final images deliberately omit it.
 
 ### Supported Linux x86_64 platforms
 
@@ -170,8 +179,13 @@ OpenTofu/Terraform environment with AWS CLI added. Used for infrastructure autom
 
 ### [p3m-bookworm](p3m-bookworm)
 
+**Dependency**: debian:bookworm + [p3m-bookworm-rbuild](p3m-bookworm-rbuild) (COPY --from)
+Debian 12 base with **R built from source** (copied from the `p3m-bookworm-rbuild` build-stage image), and the default CRAN repo set to P3M binary packages (slug `bookworm`, x86_64). No Java. See [Posit Package Manager (P3M) base images](#posit-package-manager-p3m-base-images).
+
+### [p3m-bookworm-rbuild](p3m-bookworm-rbuild)
+
 **Dependency**: debian:bookworm
-Debian 12 base with **R built from source** in an explicit preparatory stage, and the default CRAN repo set to P3M binary packages (slug `bookworm`, x86_64). See [Posit Package Manager (P3M) base images](#posit-package-manager-p3m-base-images).
+Build-stage image: compiles the current R release from source into `/opt/R/current` (via `apt-get build-dep r-base`). Consumed by `p3m-bookworm` through `COPY --from`.
 
 ### [p3m-centos7](p3m-centos7)
 
@@ -215,8 +229,13 @@ RHEL 9 base (OSS AlmaLinux 9) with R (via rig) and the default CRAN repo set to 
 
 ### [p3m-rhel10](p3m-rhel10)
 
+**Dependency**: almalinux:10 + [p3m-rhel10-rbuild](p3m-rhel10-rbuild) (COPY --from)
+RHEL 10 base (OSS AlmaLinux 10) with **R built from source** (copied from the `p3m-rhel10-rbuild` build-stage image), and the default CRAN repo set to P3M binary packages (slug `rhel10`). No Java. Built for both amd64 and arm64.
+
+### [p3m-rhel10-rbuild](p3m-rhel10-rbuild)
+
 **Dependency**: almalinux:10
-RHEL 10 base (OSS AlmaLinux 10) with **R built from source** in an explicit preparatory stage, and the default CRAN repo set to P3M binary packages (slug `rhel10`). Built for both amd64 and arm64.
+Build-stage image: compiles the current R release from source into `/opt/R/current` (CRB `-devel` set + `perl`). Consumed by `p3m-rhel10` through `COPY --from`. Built for both amd64 and arm64.
 
 ### [p3m-trixie](p3m-trixie)
 

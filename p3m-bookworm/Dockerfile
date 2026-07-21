@@ -1,62 +1,35 @@
 # arch: amd64
 
 # Posit Package Manager (P3M) base image - Debian 12 (Bookworm).
-# Unlike the rig-based p3m-* images, R here is COMPILED FROM SOURCE in an
-# explicit preparatory build stage and then assembled into a clean final
-# image. The default CRAN repo is set to the P3M Linux binary repository
-# (slug: bookworm, x86_64 only).
+# R is compiled from source by the p3m-bookworm-rbuild build-stage image; this
+# image copies that R install in, installs only the runtime libraries R links
+# against, and sets the default CRAN repo to the P3M Linux binary repository
+# (slug: bookworm, x86_64). No Java is installed: base R needs it neither to
+# build nor to run (Java is only for the optional rJava/Java package ecosystem).
 
-# ---------------------------------------------------------------------------
-# Preparatory stage: build R from source.
-# ---------------------------------------------------------------------------
-FROM debian:bookworm AS build
-
-# Enable Debian source repositories, pull R's official build dependencies
-# (authoritative, Debian-maintained), then configure + compile + install the
-# current R release into a self-contained prefix (/opt/R/current).
-RUN \
-  if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
-    sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources; \
-  else \
-    echo 'deb-src http://deb.debian.org/debian bookworm main' >> /etc/apt/sources.list; \
-  fi && \
-  apt-get update && \
-  apt-get install -y --no-install-recommends curl ca-certificates && \
-  apt-get build-dep -y r-base && \
-  curl -Ls https://cran.r-project.org/src/base/R-latest.tar.gz -o /tmp/R.tar.gz && \
-  mkdir -p /tmp/Rsrc && \
-  tar -xzf /tmp/R.tar.gz -C /tmp/Rsrc --strip-components=1 && \
-  cd /tmp/Rsrc && \
-  ./configure --prefix=/opt/R/current --enable-R-shlib --enable-memory-profiling && \
-  make -j"$(nproc)" && \
-  make install && \
-  true
-
-# ---------------------------------------------------------------------------
-# Final stage: assemble the image around the compiled R.
-# ---------------------------------------------------------------------------
 FROM debian:bookworm
 
 ARG TARGETARCH
 
 COPY date.txt /date.txt
 
-# Bring in the compiled R (only the install prefix, not the source tree).
-COPY --from=build /opt/R/current /opt/R/current
+# Compiled R comes from the named build-stage image, at its arch-specific tag
+# (the multi-arch :latest manifest is only published on main).
+COPY --from=ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-${TARGETARCH} /opt/R/current /opt/R/current
 
-# Install R's runtime/build libraries (build-dep provides every shared library
-# R links against and keeps a working toolchain for compiling source-only
-# packages), configure the locale, expose R/Rscript on PATH, and write the
-# authoritative P3M binary repo configuration to the site-wide Rprofile.
+# Install R's runtime shared libraries (no compilers, no JDK), configure the
+# locale, expose R/Rscript on PATH, and write the authoritative P3M binary repo
+# configuration to the site-wide Rprofile.
 RUN \
-  if [ -f /etc/apt/sources.list.d/debian.sources ]; then \
-    sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/debian.sources; \
-  else \
-    echo 'deb-src http://deb.debian.org/debian bookworm main' >> /etc/apt/sources.list; \
-  fi && \
   apt-get update && \
-  apt-get install -y --no-install-recommends ca-certificates locales && \
-  apt-get build-dep -y r-base && \
+  apt-get install -y --no-install-recommends \
+    libreadline8 libpcre2-8-0 liblzma5 libbz2-1.0 zlib1g \
+    libcurl4 libssl3 libicu72 \
+    libpng16-16 libjpeg62-turbo libtiff6 \
+    libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
+    libx11-6 libxt6 libtcl8.6 libtk8.6 \
+    libgomp1 libgfortran5 libquadmath0 \
+    ca-certificates locales tzdata && \
   sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
   locale-gen && \
   ln -s /opt/R/current/bin/R /usr/local/bin/R && \

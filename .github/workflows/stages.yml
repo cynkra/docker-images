@@ -135,10 +135,22 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-bookworm:
+    needs:
+      - p3m-bookworm-rbuild
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-bookworm
       image_name: p3m-bookworm
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  p3m-bookworm-rbuild:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-bookworm-rbuild
+      image_name: p3m-bookworm-rbuild
       architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -205,10 +217,22 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-rhel10:
+    needs:
+      - p3m-rhel10-rbuild
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-rhel10
       image_name: p3m-rhel10
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  p3m-rhel10-rbuild:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-rhel10-rbuild
+      image_name: p3m-rhel10-rbuild
       architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -596,6 +620,7 @@ jobs:
       - rdev-rig-gcc-forky
       - duckdb-rdev-rig-gcc-forky
       - p3m-bookworm
+      - p3m-bookworm-rbuild
       - p3m-centos7
       - p3m-jammy
       - p3m-manylinux
@@ -603,6 +628,7 @@ jobs:
       - p3m-opensuse
       - p3m-resolute
       - p3m-rhel10
+      - p3m-rhel10-rbuild
       - p3m-rhel8
       - p3m-rhel9
       - p3m-trixie

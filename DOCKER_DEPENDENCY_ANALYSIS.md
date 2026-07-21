@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 50
-- Images with local dependencies: 30
+- Total Dockerfiles found: 52
+- Images with local dependencies: 32
 - Build stages required: 6
 
 ## Dependency Tree
@@ -23,6 +23,8 @@
 ✓ forky-gcc-rig-rdev ← forky-gcc-rig ← ghcr.io/cynkra/docker-images/forky-gcc-rig:latest
 ✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
 ✓ p3m-bookworm ← debian:bookworm (external)
+  └─ COPY --from p3m-bookworm-rbuild ← ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-${TARGETARCH}
+✓ p3m-bookworm-rbuild ← debian:bookworm (external)
 ✓ p3m-centos7 ← centos:7 (external)
 ✓ p3m-jammy ← ubuntu:22.04 (external)
 ✓ p3m-manylinux ← almalinux:8 (external)
@@ -30,6 +32,8 @@
 ✓ p3m-opensuse ← opensuse/leap:15.6 (external)
 ✓ p3m-resolute ← ubuntu:26.04 (external)
 ✓ p3m-rhel10 ← almalinux:10 (external)
+  └─ COPY --from p3m-rhel10-rbuild ← ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH}
+✓ p3m-rhel10-rbuild ← almalinux:10 (external)
 ✓ p3m-rhel8 ← almalinux:8 (external)
 ✓ p3m-rhel9 ← almalinux:9 (external)
 ✓ p3m-trixie ← debian:trixie (external)
@@ -70,6 +74,8 @@
 
 - alma9
 - forky
+- p3m-bookworm-rbuild
+- p3m-rhel10-rbuild
 - rig-ubuntu
 - ubuntu24
 
@@ -77,6 +83,8 @@
 
 - alma9-rig
 - forky-gcc
+- p3m-bookworm
+- p3m-rhel10
 - rig-ubuntu-dbi
 - rig-ubuntu-dm
 - rig-ubuntu-duckdb
@@ -124,11 +132,11 @@
 ### FROM Dependencies
 
 - `almalinux/9-base` used by: alma9
-- `almalinux:10` used by: p3m-rhel10
+- `almalinux:10` used by: p3m-rhel10, p3m-rhel10-rbuild
 - `almalinux:8` used by: p3m-manylinux, p3m-rhel8
 - `almalinux:9` used by: p3m-rhel9
 - `centos:7` used by: p3m-centos7
-- `debian:bookworm` used by: p3m-bookworm, rig-debian
+- `debian:bookworm` used by: p3m-bookworm, p3m-bookworm-rbuild, rig-debian
 - `debian:forky` used by: forky
 - `debian:trixie` used by: p3m-trixie
 - `kalibera/rchk:latest` used by: rchk-igraph
@@ -155,6 +163,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `forky-gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig:latest` ✓
 - `forky-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest` ✓
 - `p3m-bookworm` (root): FROM `debian:bookworm` ✓
+- `p3m-bookworm-rbuild` (root): FROM `debian:bookworm` ✓
 - `p3m-centos7` (root): FROM `centos:7` ✓
 - `p3m-jammy` (root): FROM `ubuntu:22.04` ✓
 - `p3m-manylinux` (root): FROM `almalinux:8` ✓
@@ -162,6 +171,7 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `p3m-opensuse` (root): FROM `opensuse/leap:15.6` ✓
 - `p3m-resolute` (root): FROM `ubuntu:26.04` ✓
 - `p3m-rhel10` (root): FROM `almalinux:10` ✓
+- `p3m-rhel10-rbuild` (root): FROM `almalinux:10` ✓
 - `p3m-rhel8` (root): FROM `almalinux:8` ✓
 - `p3m-rhel9` (root): FROM `almalinux:9` ✓
 - `p3m-trixie` (root): FROM `debian:trixie` ✓
