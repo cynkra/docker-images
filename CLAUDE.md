@@ -265,19 +265,26 @@ The `clang18-duckdb` / `clang20-duckdb` families reproduce
 **prebuilt** DuckDB extension (e.g. `spatial`) segfaults R when the `duckdb` R
 package was compiled with clang. They form a base → child → grand-child chain:
 
+**Installing duckdb and installing extensions are two separate images** — the
+duckdb install must succeed, while the extension load is *expected* to crash, so
+they get opposite failure policies (hard vs soft).
+
 - **`clang18-duckdb` / `clang20-duckdb`** (root images, external base
-  `rhub/clang18` / `rhub/clang20`) install the `duckdb` R package **from source**
-  with the image's clang toolchain. Use `install.packages("duckdb", type =
-  "source")` here **on purpose** — a deliberate, documented exception to the
+  `rhub/clang18` / `rhub/clang20`) install **only** the `duckdb` R package **from
+  source** with the image's clang toolchain. Use `install.packages("duckdb", type
+  = "source")` here **on purpose** — a deliberate, documented exception to the
   `pak::pak()` rule (§2). The whole point of these images is to *guarantee* a
   source compile with the active clang toolchain, and `type = "source"` states
   that unambiguously (on Linux, CRAN serves only source anyway, and `rhub/clang*`
-  may not ship `pak`). Restrict them to `# arch: amd64` — the r-hub clang images
+  may not ship `pak`). **Treat a failed duckdb install as a hard failure:**
+  `install.packages()` only *warns* and exits 0 on a failed build, so append
+  `if (!requireNamespace("duckdb", quietly = TRUE)) stop("duckdb failed to install")`
+  to fail the build. Restrict them to `# arch: amd64` — the r-hub clang images
   are x86_64-only.
 - **`clang18-duckdb/extension` / `clang20-duckdb/extension`** (nested
-  grand-children, inherit from their parent via the FROM hierarchy) attempt
-  `INSTALL spatial` then `LOAD spatial`, printing `PRAGMA version` / `PRAGMA
-  platform` first for diagnostics.
+  grand-children, inherit from their parent via the FROM hierarchy) do the
+  **extension** half: they attempt `INSTALL spatial` then `LOAD spatial`,
+  printing `PRAGMA version` / `PRAGMA platform` first for diagnostics.
 
 **Guard the expected crash so it never turns CI red.** The `LOAD` (and, defensively,
 the `INSTALL`) step is wrapped as `{ R -q -e '...' || echo "... failed (exit $?)"; }`
