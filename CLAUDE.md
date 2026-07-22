@@ -226,7 +226,39 @@ with the default CRAN repo pointed at a P3M Linux **binary** distribution.
   needs glibc >= 2.28; EL7 ships 2.17). Steer EL workloads to `p3m-rhel8/9/10`
   or `p3m-manylinux`.
 
-## 9. Clang + DuckDB Extension Reproduction Images
+## 9. duckdb Extension Layers on P3M Images (`p3m-*/duckdb`)
+
+Each distro P3M base image has a child layer `p3m-<slug>/duckdb` (image
+`p3m-<slug>-duckdb`) that installs the **duckdb binary R package** and then
+`INSTALL`s + `LOAD`s a fixed set of extensions at build time.
+
+- **Extension list.** The extensions are listed in `duckdb-extensions.txt` **in
+  each image's build context** (one name per line; blank lines and `#` comments
+  ignored). Because the Docker build context is the image's own directory, this
+  file is duplicated per image — keep the copies **identical**.
+- **Why install + load at build time.** It doubles as a **per-distro check that
+  duckdb extensions are available as prebuilt binaries** for that OS/arch: the
+  build fails if any listed extension has no matching binary. The extensions R
+  downloads are cached into the image at `$DUCKDB_EXTENSION_DIRECTORY`
+  (`/opt/duckdb/extensions`), so downstream consumers can `LOAD` them offline.
+- **`install.packages()`, not `pak::pak()` here.** The P3M base images are
+  purpose-built with the P3M binary repo + `HTTPUserAgent` in `Rprofile.site`,
+  `pak` is not preinstalled, and this matches the existing `clang18-duckdb`
+  image. This is the one sanctioned exception to §2 — it is what the P3M base
+  images are designed for.
+- **No layer on the `-rbuild` stages.** `p3m-bookworm-rbuild` and
+  `p3m-rhel10-rbuild` are internal R-compilation build stages, not distro
+  runtimes, so they get no duckdb layer.
+- **No layer on `p3m-centos7`.** P3M ships no duckdb **binary** for the EL7
+  slug, so `install.packages("duckdb")` falls back to a source build, which
+  EL7's gcc 4.8 cannot do (`C++17 standard requested but CXX17 is not
+  defined`). CentOS 7 is EOL/testing-only anyway (§8), so it gets no duckdb
+  layer.
+- **Arch** of each duckdb layer mirrors its parent's `# arch:` restriction.
+  After adding/removing a layer, regenerate with
+  `make stages generate-makefiles analysis`.
+
+## 10. Clang + DuckDB Extension Reproduction Images
 
 The `clang18-duckdb` / `clang20-duckdb` families reproduce
 [duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107): loading a
@@ -254,7 +286,8 @@ The image also sets a `CMD` that runs the full `INSTALL`+`LOAD` repro, so
 `docker run <image>` demonstrates the crash directly. `COPY date.txt /date.txt`
 in the grand-children forces a fresh extension-download attempt on each rebuild.
 
-## 10. Always Update CLAUDE.md
+
+## 11. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development

@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 55
-- Images with local dependencies: 34
+- Total Dockerfiles found: 63
+- Images with local dependencies: 42
 - Build stages required: 6
 
 ## Dependency Tree
@@ -30,16 +30,24 @@
 ✓ p3m-bookworm-rbuild ← debian:bookworm (external)
 ✓ p3m-centos7 ← centos:7 (external)
 ✓ p3m-jammy ← ubuntu:22.04 (external)
+✓ p3m-jammy-duckdb ← p3m-jammy ← ghcr.io/cynkra/docker-images/p3m-jammy:latest
 ✓ p3m-manylinux ← almalinux:8 (external)
+✓ p3m-manylinux-duckdb ← p3m-manylinux ← ghcr.io/cynkra/docker-images/p3m-manylinux:latest
 ✓ p3m-noble ← ubuntu:24.04 (external)
+✓ p3m-noble-duckdb ← p3m-noble ← ghcr.io/cynkra/docker-images/p3m-noble:latest
 ✓ p3m-opensuse ← opensuse/leap:15.6 (external)
+✓ p3m-opensuse-duckdb ← p3m-opensuse ← ghcr.io/cynkra/docker-images/p3m-opensuse:latest
 ✓ p3m-resolute ← ubuntu:26.04 (external)
+✓ p3m-resolute-duckdb ← p3m-resolute ← ghcr.io/cynkra/docker-images/p3m-resolute:latest
 ✓ p3m-rhel10 ← almalinux:10 (external)
   └─ FROM p3m-rhel10-rbuild ← ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH}
 ✓ p3m-rhel10-rbuild ← almalinux:10 (external)
 ✓ p3m-rhel8 ← almalinux:8 (external)
+✓ p3m-rhel8-duckdb ← p3m-rhel8 ← ghcr.io/cynkra/docker-images/p3m-rhel8:latest
 ✓ p3m-rhel9 ← almalinux:9 (external)
+✓ p3m-rhel9-duckdb ← p3m-rhel9 ← ghcr.io/cynkra/docker-images/p3m-rhel9:latest
 ✓ p3m-trixie ← debian:trixie (external)
+✓ p3m-trixie-duckdb ← p3m-trixie ← ghcr.io/cynkra/docker-images/p3m-trixie:latest
 ✓ r-minimal ← ubuntu:latest (external)
 ✓ rchk-igraph ← kalibera/rchk:latest (external)
 ✓ rig-debian ← debian:trixie (external)
@@ -80,7 +88,15 @@
 - clang20-duckdb
 - forky
 - p3m-bookworm-rbuild
+- p3m-jammy
+- p3m-manylinux
+- p3m-noble
+- p3m-opensuse
+- p3m-resolute
 - p3m-rhel10-rbuild
+- p3m-rhel8
+- p3m-rhel9
+- p3m-trixie
 - rig-ubuntu
 - ubuntu24
 
@@ -91,7 +107,15 @@
 - clang20-duckdb-extension
 - forky-gcc
 - p3m-bookworm
+- p3m-jammy-duckdb
+- p3m-manylinux-duckdb
+- p3m-noble-duckdb
+- p3m-opensuse-duckdb
+- p3m-resolute-duckdb
 - p3m-rhel10
+- p3m-rhel8-duckdb
+- p3m-rhel9-duckdb
+- p3m-trixie-duckdb
 - rig-ubuntu-dbi
 - rig-ubuntu-dm
 - rig-ubuntu-duckdb
@@ -177,15 +201,23 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `p3m-bookworm-rbuild` (root): FROM `debian:bookworm` ✓
 - `p3m-centos7` (root): FROM `centos:7` ✓
 - `p3m-jammy` (root): FROM `ubuntu:22.04` ✓
+- `p3m-jammy-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-jammy:latest` ✓
 - `p3m-manylinux` (root): FROM `almalinux:8` ✓
+- `p3m-manylinux-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-manylinux:latest` ✓
 - `p3m-noble` (root): FROM `ubuntu:24.04` ✓
+- `p3m-noble-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-noble:latest` ✓
 - `p3m-opensuse` (root): FROM `opensuse/leap:15.6` ✓
+- `p3m-opensuse-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-opensuse:latest` ✓
 - `p3m-resolute` (root): FROM `ubuntu:26.04` ✓
+- `p3m-resolute-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-resolute:latest` ✓
 - `p3m-rhel10` (root): FROM `almalinux:10` ✓
 - `p3m-rhel10-rbuild` (root): FROM `almalinux:10` ✓
 - `p3m-rhel8` (root): FROM `almalinux:8` ✓
+- `p3m-rhel8-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-rhel8:latest` ✓
 - `p3m-rhel9` (root): FROM `almalinux:9` ✓
+- `p3m-rhel9-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-rhel9:latest` ✓
 - `p3m-trixie` (root): FROM `debian:trixie` ✓
+- `p3m-trixie-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-trixie:latest` ✓
 - `r-minimal` (root): FROM `ubuntu:latest` ✓
 - `rchk-igraph` (root): FROM `kalibera/rchk:latest` ✓
 - `rig-debian` (root): FROM `debian:trixie` ✓

@@ -207,11 +207,35 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  duckdb-p3m-jammy:
+    needs:
+      - p3m-jammy
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-jammy/duckdb
+      image_name: p3m-jammy-duckdb
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   p3m-manylinux:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-manylinux
       image_name: p3m-manylinux
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  duckdb-p3m-manylinux:
+    needs:
+      - p3m-manylinux
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-manylinux/duckdb
+      image_name: p3m-manylinux-duckdb
       architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -227,6 +251,18 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  duckdb-p3m-noble:
+    needs:
+      - p3m-noble
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-noble/duckdb
+      image_name: p3m-noble-duckdb
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   p3m-opensuse:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -237,11 +273,35 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  duckdb-p3m-opensuse:
+    needs:
+      - p3m-opensuse
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-opensuse/duckdb
+      image_name: p3m-opensuse-duckdb
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   p3m-resolute:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-resolute
       image_name: p3m-resolute
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  duckdb-p3m-resolute:
+    needs:
+      - p3m-resolute
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-resolute/duckdb
+      image_name: p3m-resolute-duckdb
       architectures: '["amd64", "arm64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -279,6 +339,18 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  duckdb-p3m-rhel8:
+    needs:
+      - p3m-rhel8
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-rhel8/duckdb
+      image_name: p3m-rhel8-duckdb
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   p3m-rhel9:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -289,11 +361,35 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  duckdb-p3m-rhel9:
+    needs:
+      - p3m-rhel9
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-rhel9/duckdb
+      image_name: p3m-rhel9-duckdb
+      architectures: '["amd64", "arm64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   p3m-trixie:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-trixie
       image_name: p3m-trixie
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  duckdb-p3m-trixie:
+    needs:
+      - p3m-trixie
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: p3m-trixie/duckdb
+      image_name: p3m-trixie-duckdb
       architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -657,15 +753,23 @@ jobs:
       - p3m-bookworm-rbuild
       - p3m-centos7
       - p3m-jammy
+      - duckdb-p3m-jammy
       - p3m-manylinux
+      - duckdb-p3m-manylinux
       - p3m-noble
+      - duckdb-p3m-noble
       - p3m-opensuse
+      - duckdb-p3m-opensuse
       - p3m-resolute
+      - duckdb-p3m-resolute
       - p3m-rhel10
       - p3m-rhel10-rbuild
       - p3m-rhel8
+      - duckdb-p3m-rhel8
       - p3m-rhel9
+      - duckdb-p3m-rhel9
       - p3m-trixie
+      - duckdb-p3m-trixie
       - r-minimal
       - rchk-igraph
       - rig-debian
