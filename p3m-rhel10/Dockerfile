@@ -35,7 +35,7 @@ RUN \
     openssl-libs libicu \
     libpng libjpeg-turbo libtiff \
     cairo pango libX11 libXt tcl tk \
-    libgfortran libgomp && \
+    libgfortran libgomp "libquadmath.so.0()(64bit)" && \
   ln -s /opt/R/current/bin/R /usr/local/bin/R && \
   ln -s /opt/R/current/bin/Rscript /usr/local/bin/Rscript && \
   printf '%s\n' \
