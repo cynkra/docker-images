@@ -145,7 +145,7 @@ AlmaLinux 9 R environment with COIN-OR SYMPHONY optimization library built and i
 ### [clang18-duckdb](clang18-duckdb)
 
 **Dependency**: rhub/clang18
-Clang 18 environment with the `duckdb` R package compiled **from source** (`install.packages(type = "source")`) using the image's clang toolchain. Base for reproducing compiler-specific DuckDB issues (see [duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107)).
+Clang 18 environment with the `duckdb` R package compiled **from source** (`install.packages(type = "source")`) using the image's clang toolchain. Installs **R 4.5** (release) via rig, because the base image's R-devel (4.6) can't compile duckdb's vendored `cpp11` (see [duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107)). A failed duckdb install is a hard build failure.
 
 ### [clang18-duckdb/extension](clang18-duckdb/extension)
 
@@ -155,7 +155,7 @@ Grand-child of `clang18-duckdb` that attempts to `INSTALL` and `LOAD` the DuckDB
 ### [clang20-duckdb](clang20-duckdb)
 
 **Dependency**: rhub/clang20
-Clang 20 counterpart of `clang18-duckdb`: the `duckdb` R package compiled **from source** with the image's clang toolchain.
+Clang 20 counterpart of `clang18-duckdb`: the `duckdb` R package compiled **from source** with the image's clang toolchain, on **R 4.5** (release, via rig) for the same `cpp11`/R-devel reason. A failed duckdb install is a hard build failure.
 
 ### [clang20-duckdb/extension](clang20-duckdb/extension)
 

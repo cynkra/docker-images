@@ -281,6 +281,25 @@ they get opposite failure policies (hard vs soft).
   `if (!requireNamespace("duckdb", quietly = TRUE)) stop("duckdb failed to install")`
   to fail the build. Restrict them to `# arch: amd64` — the r-hub clang images
   are x86_64-only.
+    - **Install R 4.5 (release) via rig; do not use the base image's R-devel.**
+      The `rhub/clang*` bases ship R-devel (4.6). duckdb's vendored `cpp11`
+      calls `R_getRegisteredNamespace()` under `#if R_VERSION >= R_Version(4,6,0)`,
+      but the R-devel build on these images does **not** declare that symbol, so
+      duckdb (and any cpp11 package) fails to compile with
+      `use of undeclared identifier 'R_getRegisteredNamespace'`. Installing R 4.5
+      (`rig add 4.5 --without-pak --without-p3m` then
+      `rig default "$(rig list --plain | grep '^4\.5' | sort -V | tail -n1)"`)
+      makes `cpp11` take its pre-4.6 path (`R_NamespaceRegistry` / `R_getVar`,
+      both present in R 4.5) and duckdb builds. R 4.5 is also a more
+      representative reproduction than R-devel.
+    - **Re-declare the clang paths at the image level.** The base wires clang
+      via `/root/.R/Makevars` (version-independent, kept via `R_MAKEVARS_USER`),
+      but exports clang's `bin`/`lib` paths only through the *devel* R's
+      `Renviron`/`Rprofile`, which a different R version does not inherit. So set
+      `ENV PATH=/usr/local/clang/bin:…`, `ENV LD_LIBRARY_PATH=/usr/local/clang/lib`
+      (needed at runtime to load the clang/`libc++`-built duckdb), and
+      `ENV PKG_CONFIG_PATH=/usr/local/clang/lib/pkgconfig` so R 4.5 both compiles
+      and loads duckdb with the clang toolchain.
 - **`clang18-duckdb/extension` / `clang20-duckdb/extension`** (nested
   grand-children, inherit from their parent via the FROM hierarchy) do the
   **extension** half: they attempt `INSTALL spatial` then `LOAD spatial`,
