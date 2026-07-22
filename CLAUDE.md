@@ -307,17 +307,32 @@ they get opposite failure policies (hard vs soft).
       `ENV LD_LIBRARY_PATH=/usr/local/clang/lib` (needed at runtime to load the
       clang/`libc++`-built duckdb) and `ENV PKG_CONFIG_PATH=/usr/local/clang/lib/pkgconfig`
       so R 4.5 both compiles and loads duckdb with the clang toolchain.
+    - **Compile in parallel with `ENV MAKEFLAGS=-j4`.** duckdb's `configure` only
+      runs its `MAKEFLAGS` auto-probe when `MAKEFLAGS` is unset, and that probe
+      is broken in the CRAN tarball layout here (`scripts/setup-makeflags.R` is
+      absent), leaving `MAKEFLAGS` as a garbage string and the build
+      single-threaded (~30 min). Setting `MAKEFLAGS=-j4` skips the probe and
+      parallelises the compile (a few minutes).
 - **`clang18-duckdb/extension` / `clang20-duckdb/extension`** (nested
   grand-children, inherit from their parent via the FROM hierarchy) do the
-  **extension** half: they attempt `INSTALL spatial` then `LOAD spatial`,
-  printing `PRAGMA version` / `PRAGMA platform` first for diagnostics.
+  **extension** half: they `INSTALL spatial` then `LOAD spatial`, printing
+  `PRAGMA version` / `PRAGMA platform` first for diagnostics. **Run `INSTALL`
+  and `LOAD` in the SAME R session** (one `R -q -e '...'`): duckdb caches
+  downloaded extensions in a per-session temp dir, so a `LOAD` in a fresh
+  session fails with "Extension not found" instead of exercising the load. This
+  matches the issue's REPREX.
 
-**Guard the expected crash so it never turns CI red.** The `LOAD` (and, defensively,
-the `INSTALL`) step is wrapped as `{ R -q -e '...' || echo "... failed (exit $?)"; }`
-so the segfault is recorded in the build log while the `RUN` layer still exits 0.
-The image also sets a `CMD` that runs the full `INSTALL`+`LOAD` repro, so
-`docker run <image>` demonstrates the crash directly. `COPY date.txt /date.txt`
-in the grand-children forces a fresh extension-download attempt on each rebuild.
+**Guard the expected crash so it never turns CI red.** The whole `INSTALL`+`LOAD`
+attempt is wrapped as `{ R -q -e '...' || echo "... failed (exit $?)"; }` so a
+segfault (or any other failure) is recorded in the build log while the `RUN`
+layer still exits 0. The image also sets a `CMD` that runs the same repro, so
+`docker run <image>` demonstrates it directly. `COPY date.txt /date.txt` in the
+grand-children forces a fresh extension-download attempt on each rebuild.
+
+> Note (observed in CI): a source-built duckdb reports `PRAGMA platform` =
+> `linux_amd64` (not the CRAN binary's `linux_amd64_gcc4`), so `INSTALL` fetches
+> the `linux_amd64` extension build. Whether `LOAD` then segfaults or loads
+> cleanly is exactly what these grand-children exist to show.
 
 
 ## 11. Always Update CLAUDE.md

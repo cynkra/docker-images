@@ -19,6 +19,9 @@ ENV R_MAKEVARS_USER="/root/.R/Makevars"
 ENV PATH="/opt/R/pinned/bin:/usr/local/clang/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/clang/lib"
 ENV PKG_CONFIG_PATH="/usr/local/clang/lib/pkgconfig"
+# duckdb's configure only runs its (here-broken) MAKEFLAGS probe when MAKEFLAGS
+# is unset; setting it skips the probe and compiles in parallel (minutes, not ~30).
+ENV MAKEFLAGS="-j4"
 
 # Install R 4.5, pin it as the active R, then compile *only* the duckdb R package
 # from source (installing extensions is the job of clang18-duckdb/extension).
