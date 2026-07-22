@@ -56,18 +56,28 @@ jobs:
             ["forky-gcc-rig-rdev"]="forky/gcc/rig/rdev"
             ["forky-gcc-rig-rdev-duckdb"]="forky/gcc/rig/rdev/duckdb"
             ["p3m-bookworm"]="p3m-bookworm"
+            ["p3m-bookworm-duckdb"]="p3m-bookworm/duckdb"
             ["p3m-bookworm-rbuild"]="p3m-bookworm-rbuild"
             ["p3m-centos7"]="p3m-centos7"
             ["p3m-jammy"]="p3m-jammy"
+            ["p3m-jammy-duckdb"]="p3m-jammy/duckdb"
             ["p3m-manylinux"]="p3m-manylinux"
+            ["p3m-manylinux-duckdb"]="p3m-manylinux/duckdb"
             ["p3m-noble"]="p3m-noble"
+            ["p3m-noble-duckdb"]="p3m-noble/duckdb"
             ["p3m-opensuse"]="p3m-opensuse"
+            ["p3m-opensuse-duckdb"]="p3m-opensuse/duckdb"
             ["p3m-resolute"]="p3m-resolute"
+            ["p3m-resolute-duckdb"]="p3m-resolute/duckdb"
             ["p3m-rhel10"]="p3m-rhel10"
+            ["p3m-rhel10-duckdb"]="p3m-rhel10/duckdb"
             ["p3m-rhel10-rbuild"]="p3m-rhel10-rbuild"
             ["p3m-rhel8"]="p3m-rhel8"
+            ["p3m-rhel8-duckdb"]="p3m-rhel8/duckdb"
             ["p3m-rhel9"]="p3m-rhel9"
+            ["p3m-rhel9-duckdb"]="p3m-rhel9/duckdb"
             ["p3m-trixie"]="p3m-trixie"
+            ["p3m-trixie-duckdb"]="p3m-trixie/duckdb"
             ["r-minimal"]="r-minimal"
             ["rchk-igraph"]="rchk-igraph"
             ["rig-debian"]="rig-debian"
@@ -110,18 +120,28 @@ jobs:
             ["forky-gcc-rig-rdev"]="forky-gcc-rig"
             ["forky-gcc-rig-rdev-duckdb"]="forky-gcc-rig-rdev"
             ["p3m-bookworm"]="p3m-bookworm-rbuild"
+            ["p3m-bookworm-duckdb"]="p3m-bookworm"
             ["p3m-bookworm-rbuild"]=""
             ["p3m-centos7"]=""
             ["p3m-jammy"]=""
+            ["p3m-jammy-duckdb"]="p3m-jammy"
             ["p3m-manylinux"]=""
+            ["p3m-manylinux-duckdb"]="p3m-manylinux"
             ["p3m-noble"]=""
+            ["p3m-noble-duckdb"]="p3m-noble"
             ["p3m-opensuse"]=""
+            ["p3m-opensuse-duckdb"]="p3m-opensuse"
             ["p3m-resolute"]=""
+            ["p3m-resolute-duckdb"]="p3m-resolute"
             ["p3m-rhel10"]="p3m-rhel10-rbuild"
+            ["p3m-rhel10-duckdb"]="p3m-rhel10"
             ["p3m-rhel10-rbuild"]=""
             ["p3m-rhel8"]=""
+            ["p3m-rhel8-duckdb"]="p3m-rhel8"
             ["p3m-rhel9"]=""
+            ["p3m-rhel9-duckdb"]="p3m-rhel9"
             ["p3m-trixie"]=""
+            ["p3m-trixie-duckdb"]="p3m-trixie"
             ["r-minimal"]=""
             ["rchk-igraph"]=""
             ["rig-debian"]=""
@@ -164,18 +184,28 @@ jobs:
             forky-gcc-rig-rdev
             forky-gcc-rig-rdev-duckdb
             p3m-bookworm
+            p3m-bookworm-duckdb
             p3m-bookworm-rbuild
             p3m-centos7
             p3m-jammy
+            p3m-jammy-duckdb
             p3m-manylinux
+            p3m-manylinux-duckdb
             p3m-noble
+            p3m-noble-duckdb
             p3m-opensuse
+            p3m-opensuse-duckdb
             p3m-resolute
+            p3m-resolute-duckdb
             p3m-rhel10
+            p3m-rhel10-duckdb
             p3m-rhel10-rbuild
             p3m-rhel8
+            p3m-rhel8-duckdb
             p3m-rhel9
+            p3m-rhel9-duckdb
             p3m-trixie
+            p3m-trixie-duckdb
             r-minimal
             rchk-igraph
             rig-debian
@@ -584,6 +614,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-bookworm:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-bookworm:latest" \
             p3m-bookworm
+      - name: Save p3m-bookworm
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-bookworm.tar \
+            "$REGISTRY/$REPO_NAME/p3m-bookworm:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-bookworm:latest"
+      - name: Upload p3m-bookworm
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-bookworm
+          path: /tmp/img-out/p3m-bookworm.tar
+          retention-days: 1
+
+  duckdb-p3m-bookworm:
+    name: p3m-bookworm-duckdb
+    needs: [detect, p3m-bookworm]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-bookworm-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-bookworm
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-bookworm') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-bookworm
+          path: /tmp/img-in
+      - name: Load image p3m-bookworm
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-bookworm') }}
+        run: docker load --input /tmp/img-in/p3m-bookworm.tar
+      - name: Build p3m-bookworm-duckdb
+        run: |
+          date -Idate | tee p3m-bookworm/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-bookworm-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-bookworm-duckdb:latest" \
+            p3m-bookworm/duckdb
 
   p3m-bookworm-rbuild:
     name: p3m-bookworm-rbuild
@@ -643,6 +709,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-jammy:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-jammy:latest" \
             p3m-jammy
+      - name: Save p3m-jammy
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-jammy.tar \
+            "$REGISTRY/$REPO_NAME/p3m-jammy:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-jammy:latest"
+      - name: Upload p3m-jammy
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-jammy
+          path: /tmp/img-out/p3m-jammy.tar
+          retention-days: 1
+
+  duckdb-p3m-jammy:
+    name: p3m-jammy-duckdb
+    needs: [detect, p3m-jammy]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-jammy-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-jammy
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-jammy') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-jammy
+          path: /tmp/img-in
+      - name: Load image p3m-jammy
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-jammy') }}
+        run: docker load --input /tmp/img-in/p3m-jammy.tar
+      - name: Build p3m-jammy-duckdb
+        run: |
+          date -Idate | tee p3m-jammy/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-jammy-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-jammy-duckdb:latest" \
+            p3m-jammy/duckdb
 
   p3m-manylinux:
     name: p3m-manylinux
@@ -659,6 +761,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-manylinux:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-manylinux:latest" \
             p3m-manylinux
+      - name: Save p3m-manylinux
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-manylinux.tar \
+            "$REGISTRY/$REPO_NAME/p3m-manylinux:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-manylinux:latest"
+      - name: Upload p3m-manylinux
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-manylinux
+          path: /tmp/img-out/p3m-manylinux.tar
+          retention-days: 1
+
+  duckdb-p3m-manylinux:
+    name: p3m-manylinux-duckdb
+    needs: [detect, p3m-manylinux]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-manylinux-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-manylinux
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-manylinux') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-manylinux
+          path: /tmp/img-in
+      - name: Load image p3m-manylinux
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-manylinux') }}
+        run: docker load --input /tmp/img-in/p3m-manylinux.tar
+      - name: Build p3m-manylinux-duckdb
+        run: |
+          date -Idate | tee p3m-manylinux/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-manylinux-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-manylinux-duckdb:latest" \
+            p3m-manylinux/duckdb
 
   p3m-noble:
     name: p3m-noble
@@ -675,6 +813,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-noble:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-noble:latest" \
             p3m-noble
+      - name: Save p3m-noble
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-noble.tar \
+            "$REGISTRY/$REPO_NAME/p3m-noble:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-noble:latest"
+      - name: Upload p3m-noble
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-noble
+          path: /tmp/img-out/p3m-noble.tar
+          retention-days: 1
+
+  duckdb-p3m-noble:
+    name: p3m-noble-duckdb
+    needs: [detect, p3m-noble]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-noble-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-noble
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-noble') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-noble
+          path: /tmp/img-in
+      - name: Load image p3m-noble
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-noble') }}
+        run: docker load --input /tmp/img-in/p3m-noble.tar
+      - name: Build p3m-noble-duckdb
+        run: |
+          date -Idate | tee p3m-noble/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-noble-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-noble-duckdb:latest" \
+            p3m-noble/duckdb
 
   p3m-opensuse:
     name: p3m-opensuse
@@ -691,6 +865,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-opensuse:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-opensuse:latest" \
             p3m-opensuse
+      - name: Save p3m-opensuse
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-opensuse.tar \
+            "$REGISTRY/$REPO_NAME/p3m-opensuse:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-opensuse:latest"
+      - name: Upload p3m-opensuse
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-opensuse
+          path: /tmp/img-out/p3m-opensuse.tar
+          retention-days: 1
+
+  duckdb-p3m-opensuse:
+    name: p3m-opensuse-duckdb
+    needs: [detect, p3m-opensuse]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-opensuse-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-opensuse
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-opensuse') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-opensuse
+          path: /tmp/img-in
+      - name: Load image p3m-opensuse
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-opensuse') }}
+        run: docker load --input /tmp/img-in/p3m-opensuse.tar
+      - name: Build p3m-opensuse-duckdb
+        run: |
+          date -Idate | tee p3m-opensuse/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-opensuse-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-opensuse-duckdb:latest" \
+            p3m-opensuse/duckdb
 
   p3m-resolute:
     name: p3m-resolute
@@ -707,6 +917,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-resolute:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-resolute:latest" \
             p3m-resolute
+      - name: Save p3m-resolute
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-resolute.tar \
+            "$REGISTRY/$REPO_NAME/p3m-resolute:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-resolute:latest"
+      - name: Upload p3m-resolute
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-resolute
+          path: /tmp/img-out/p3m-resolute.tar
+          retention-days: 1
+
+  duckdb-p3m-resolute:
+    name: p3m-resolute-duckdb
+    needs: [detect, p3m-resolute]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-resolute-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-resolute
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-resolute') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-resolute
+          path: /tmp/img-in
+      - name: Load image p3m-resolute
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-resolute') }}
+        run: docker load --input /tmp/img-in/p3m-resolute.tar
+      - name: Build p3m-resolute-duckdb
+        run: |
+          date -Idate | tee p3m-resolute/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-resolute-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-resolute-duckdb:latest" \
+            p3m-resolute/duckdb
 
   p3m-rhel10:
     name: p3m-rhel10
@@ -732,6 +978,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel10:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel10:latest" \
             p3m-rhel10
+      - name: Save p3m-rhel10
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-rhel10.tar \
+            "$REGISTRY/$REPO_NAME/p3m-rhel10:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-rhel10:latest"
+      - name: Upload p3m-rhel10
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-rhel10
+          path: /tmp/img-out/p3m-rhel10.tar
+          retention-days: 1
+
+  duckdb-p3m-rhel10:
+    name: p3m-rhel10-duckdb
+    needs: [detect, p3m-rhel10]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel10-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-rhel10
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel10') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-rhel10
+          path: /tmp/img-in
+      - name: Load image p3m-rhel10
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel10') }}
+        run: docker load --input /tmp/img-in/p3m-rhel10.tar
+      - name: Build p3m-rhel10-duckdb
+        run: |
+          date -Idate | tee p3m-rhel10/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-rhel10-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-rhel10-duckdb:latest" \
+            p3m-rhel10/duckdb
 
   p3m-rhel10-rbuild:
     name: p3m-rhel10-rbuild
@@ -775,6 +1057,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel8:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel8:latest" \
             p3m-rhel8
+      - name: Save p3m-rhel8
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-rhel8.tar \
+            "$REGISTRY/$REPO_NAME/p3m-rhel8:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-rhel8:latest"
+      - name: Upload p3m-rhel8
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-rhel8
+          path: /tmp/img-out/p3m-rhel8.tar
+          retention-days: 1
+
+  duckdb-p3m-rhel8:
+    name: p3m-rhel8-duckdb
+    needs: [detect, p3m-rhel8]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel8-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-rhel8
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel8') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-rhel8
+          path: /tmp/img-in
+      - name: Load image p3m-rhel8
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel8') }}
+        run: docker load --input /tmp/img-in/p3m-rhel8.tar
+      - name: Build p3m-rhel8-duckdb
+        run: |
+          date -Idate | tee p3m-rhel8/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-rhel8-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-rhel8-duckdb:latest" \
+            p3m-rhel8/duckdb
 
   p3m-rhel9:
     name: p3m-rhel9
@@ -791,6 +1109,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel9:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel9:latest" \
             p3m-rhel9
+      - name: Save p3m-rhel9
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-rhel9.tar \
+            "$REGISTRY/$REPO_NAME/p3m-rhel9:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-rhel9:latest"
+      - name: Upload p3m-rhel9
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-rhel9
+          path: /tmp/img-out/p3m-rhel9.tar
+          retention-days: 1
+
+  duckdb-p3m-rhel9:
+    name: p3m-rhel9-duckdb
+    needs: [detect, p3m-rhel9]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel9-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-rhel9
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel9') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-rhel9
+          path: /tmp/img-in
+      - name: Load image p3m-rhel9
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel9') }}
+        run: docker load --input /tmp/img-in/p3m-rhel9.tar
+      - name: Build p3m-rhel9-duckdb
+        run: |
+          date -Idate | tee p3m-rhel9/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-rhel9-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-rhel9-duckdb:latest" \
+            p3m-rhel9/duckdb
 
   p3m-trixie:
     name: p3m-trixie
@@ -807,6 +1161,42 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-trixie:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-trixie:latest" \
             p3m-trixie
+      - name: Save p3m-trixie
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/p3m-trixie.tar \
+            "$REGISTRY/$REPO_NAME/p3m-trixie:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-trixie:latest"
+      - name: Upload p3m-trixie
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-p3m-trixie
+          path: /tmp/img-out/p3m-trixie.tar
+          retention-days: 1
+
+  duckdb-p3m-trixie:
+    name: p3m-trixie-duckdb
+    needs: [detect, p3m-trixie]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-trixie-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image p3m-trixie
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-trixie') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-p3m-trixie
+          path: /tmp/img-in
+      - name: Load image p3m-trixie
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-trixie') }}
+        run: docker load --input /tmp/img-in/p3m-trixie.tar
+      - name: Build p3m-trixie-duckdb
+        run: |
+          date -Idate | tee p3m-trixie/duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/p3m-trixie-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/p3m-trixie-duckdb:latest" \
+            p3m-trixie/duckdb
 
   r-minimal:
     name: r-minimal
@@ -1617,18 +2007,28 @@ jobs:
       - rdev-rig-gcc-forky
       - duckdb-rdev-rig-gcc-forky
       - p3m-bookworm
+      - duckdb-p3m-bookworm
       - p3m-bookworm-rbuild
       - p3m-centos7
       - p3m-jammy
+      - duckdb-p3m-jammy
       - p3m-manylinux
+      - duckdb-p3m-manylinux
       - p3m-noble
+      - duckdb-p3m-noble
       - p3m-opensuse
+      - duckdb-p3m-opensuse
       - p3m-resolute
+      - duckdb-p3m-resolute
       - p3m-rhel10
+      - duckdb-p3m-rhel10
       - p3m-rhel10-rbuild
       - p3m-rhel8
+      - duckdb-p3m-rhel8
       - p3m-rhel9
+      - duckdb-p3m-rhel9
       - p3m-trixie
+      - duckdb-p3m-trixie
       - r-minimal
       - rchk-igraph
       - rig-debian
