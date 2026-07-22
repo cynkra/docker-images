@@ -10,19 +10,20 @@
 # === Interdependencies with other generated files — keep in sync ===
 #
 # 1. The `workflows:` filter below MUST match the `name:` of the PULL-REQUEST
-#    workflow (github-docker/pr-stages.yml: `name: CI`) — that is the workflow
-#    that runs on pull_request. (The per-image build+push workflow, push.yml, is
-#    push-only and never runs on a PR, so it is not what we comment on.) If the
-#    PR workflow name changes, update the filter here.
+#    workflow (stages.yml, emitted by generate_stages.py: `name: CI`) — that is
+#    the workflow that runs on pull_request. (The per-image build+push workflow,
+#    push.yml, is push-only and never runs on a PR, so it is not what we comment
+#    on.) If the PR workflow name changes, update the filter here.
 #
 # 2. The PR workflow builds with plain `docker build`, not
 #    docker/build-push-action, so there is no build-push-action group marker.
 #    The parser falls back to the tail of the failed job's log (trimmed at the
 #    last `##[error]`), which captures the docker build failure.
 #
-# 3. The PR workflow has a single job named `CI` (it runs
-#    .github/build-pr-images.sh). We enumerate failed jobs via the API and
-#    surface the full job name in the comment.
+# 3. The PR workflow is a per-image DAG: one job per image (job name = image
+#    name) plus a final aggregation job named `CI`. We enumerate failed jobs via
+#    the API and comment on each, skipping the `CI` gate itself (its log is just
+#    the aggregation echo, not a build failure).
 
 name: PR failure comment
 
@@ -79,7 +80,7 @@ jobs:
           mapfile -t FAILED_JOBS < <(gh api \
             "/repos/${REPO}/actions/runs/${RUN_ID}/attempts/${RUN_ATTEMPT}/jobs" \
             --paginate \
-            --jq '.jobs[] | select(.conclusion == "failure") | "\(.id)\t\(.name)"')
+            --jq '.jobs[] | select(.conclusion == "failure") | select(.name != "CI") | "\(.id)\t\(.name)"')
 
           if [ "${#FAILED_JOBS[@]}" -eq 0 ]; then
             echo "No failed jobs found on the completed run."
