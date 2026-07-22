@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 62
-- Images with local dependencies: 42
+- Total Dockerfiles found: 60
+- Images with local dependencies: 40
 - Build stages required: 6
 
 ## Dependency Tree
@@ -24,7 +24,6 @@
 ✓ forky-gcc-rig-rdev-duckdb ← forky-gcc-rig-rdev ← ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest
 ✓ p3m-bookworm ← debian:bookworm (external)
   └─ FROM p3m-bookworm-rbuild ← ghcr.io/cynkra/docker-images/p3m-bookworm-rbuild:latest-${TARGETARCH}
-✓ p3m-bookworm-duckdb ← p3m-bookworm ← ghcr.io/cynkra/docker-images/p3m-bookworm:latest
 ✓ p3m-bookworm-rbuild ← debian:bookworm (external)
 ✓ p3m-centos7 ← centos:7 (external)
 ✓ p3m-jammy ← ubuntu:22.04 (external)
@@ -39,7 +38,6 @@
 ✓ p3m-resolute-duckdb ← p3m-resolute ← ghcr.io/cynkra/docker-images/p3m-resolute:latest
 ✓ p3m-rhel10 ← almalinux:10 (external)
   └─ FROM p3m-rhel10-rbuild ← ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH}
-✓ p3m-rhel10-duckdb ← p3m-rhel10 ← ghcr.io/cynkra/docker-images/p3m-rhel10:latest
 ✓ p3m-rhel10-rbuild ← almalinux:10 (external)
 ✓ p3m-rhel8 ← almalinux:8 (external)
 ✓ p3m-rhel8-duckdb ← p3m-rhel8 ← ghcr.io/cynkra/docker-images/p3m-rhel8:latest
@@ -126,8 +124,6 @@
 
 - alma9-rig-rrel
 - forky-gcc-rig
-- p3m-bookworm-duckdb
-- p3m-rhel10-duckdb
 - rig-ubuntu-duckdb-dev
 - ubuntu24-pak-rlang
 - ubuntu24-pak-rlang2
@@ -191,7 +187,6 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `forky-gcc-rig-rdev`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig:latest` ✓
 - `forky-gcc-rig-rdev-duckdb`: FROM `ghcr.io/cynkra/docker-images/forky-gcc-rig-rdev:latest` ✓
 - `p3m-bookworm` (root): FROM `debian:bookworm` ✓
-- `p3m-bookworm-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-bookworm:latest` ✓
 - `p3m-bookworm-rbuild` (root): FROM `debian:bookworm` ✓
 - `p3m-centos7` (root): FROM `centos:7` ✓
 - `p3m-jammy` (root): FROM `ubuntu:22.04` ✓
@@ -205,7 +200,6 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `p3m-resolute` (root): FROM `ubuntu:26.04` ✓
 - `p3m-resolute-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-resolute:latest` ✓
 - `p3m-rhel10` (root): FROM `almalinux:10` ✓
-- `p3m-rhel10-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-rhel10:latest` ✓
 - `p3m-rhel10-rbuild` (root): FROM `almalinux:10` ✓
 - `p3m-rhel8` (root): FROM `almalinux:8` ✓
 - `p3m-rhel8-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-rhel8:latest` ✓
