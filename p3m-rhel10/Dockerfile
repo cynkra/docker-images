@@ -31,11 +31,11 @@ RUN \
   dnf -y install 'dnf-command(config-manager)' && \
   dnf config-manager --set-enabled crb && \
   dnf -y install glibc-langpack-en \
-    readline pcre2 xz-libs bzip2-libs \
+    readline pcre2 xz-libs bzip2-libs libtirpc \
     openssl-libs libicu \
     libpng libjpeg-turbo libtiff \
     cairo pango libX11 libXt tcl tk \
-    libgfortran libgomp libquadmath && \
+    libgfortran libgomp && \
   ln -s /opt/R/current/bin/R /usr/local/bin/R && \
   ln -s /opt/R/current/bin/Rscript /usr/local/bin/Rscript && \
   printf '%s\n' \

@@ -29,7 +29,7 @@ COPY --from=rbuild /opt/R/current /opt/R/current
 RUN \
   apt-get update && \
   apt-get install -y --no-install-recommends \
-    libreadline8 libpcre2-8-0 liblzma5 libbz2-1.0 zlib1g \
+    libreadline8 libpcre2-8-0 liblzma5 libbz2-1.0 zlib1g libtirpc3 \
     libcurl4 libssl3 libicu72 \
     libpng16-16 libjpeg62-turbo libtiff6 \
     libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
