@@ -21,7 +21,7 @@ help:
 	@echo "  update-from             - Update FROM instructions in Dockerfiles according to hierarchy"
 	@echo "  check-from              - Check what FROM instructions would be updated (dry run)"
 	@echo "  generate-makefiles      - Generate Makefiles alongside each Dockerfile"
-	@echo "  pr-build-script         - Generate .github/build-pr-images.py (no-push PR build)"
+	@echo "  pr-build-script         - Generate .github/build-pr-images.sh (no-push PR build)"
 	@echo "  publish-yml             - Render publish.yml from template"
 	@echo "  pr-failure-comment-yml  - Render pr-failure-comment.yml from template"
 	@echo "  root-makefile           - Render this Makefile from template"

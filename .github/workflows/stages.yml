@@ -675,7 +675,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build changed images and downstream dependents (no push)
-        run: python3 .github/build-pr-images.py
+        run: bash .github/build-pr-images.sh
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
