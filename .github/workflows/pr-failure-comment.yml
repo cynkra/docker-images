@@ -9,28 +9,30 @@
 #
 # === Interdependencies with other generated files — keep in sync ===
 #
-# 1. The `workflows:` filter below MUST match the workflow `name:` emitted by
-#    generate_stages.py (see DockerImageAnalyzer.generate_fine_grained_stages:
-#    `'name': 'Create and publish a Docker image'`). If that name changes,
-#    update the filter here.
+# 1. The `workflows:` filter below MUST match the `name:` of the PULL-REQUEST
+#    workflow (stages.yml, emitted by generate_stages.py: `name: CI`) — that is
+#    the workflow that runs on pull_request. (The per-image build+push workflow,
+#    push.yml, is push-only and never runs on a PR, so it is not what we comment
+#    on.) If the PR workflow name changes, update the filter here.
 #
-# 2. The log parser looks for the marker `##[group]Run docker/build-push-action`
-#    to locate the build step's section of the job log. This is emitted by the
-#    `uses: docker/build-push-action@...` step in publish.yml.j2. If that action
-#    is renamed or replaced, update the awk pattern below.
+# 2. The PR workflow builds with plain `docker build`, not
+#    docker/build-push-action, so there is no build-push-action group marker.
+#    The parser falls back to the tail of the failed job's log (trimmed at the
+#    last `##[error]`), which captures the docker build failure.
 #
-# 3. Matrix job names in the API appear as `<caller-job> / <callee-job> (<arch>)`
-#    (e.g. `rig-ubuntu / img (amd64)`). The caller name comes from
-#    generate_stages.py's `path_to_job_name`; the callee `img` and the arch
-#    matrix come from publish.yml.j2. We don't parse these here (we enumerate
-#    failed jobs via the API), we just surface the full job name in the comment.
+# 3. The PR workflow is a per-image DAG: a `detect` pre-step that computes the
+#    build plan, one job per image (job name = image name), and a final
+#    aggregation job named `CI`. We enumerate failed jobs via the API and comment
+#    on each, skipping the `CI` gate itself (its log is just the aggregation echo,
+#    not a build failure). Images not in the plan are skipped, not failed, so they
+#    are never enumerated.
 
 name: PR failure comment
 
 on:
   workflow_run:
     # See interdependency note 1 above.
-    workflows: ["Create and publish a Docker image"]
+    workflows: ["CI"]
     types: [completed]
 
 permissions:
@@ -80,7 +82,7 @@ jobs:
           mapfile -t FAILED_JOBS < <(gh api \
             "/repos/${REPO}/actions/runs/${RUN_ID}/attempts/${RUN_ATTEMPT}/jobs" \
             --paginate \
-            --jq '.jobs[] | select(.conclusion == "failure") | "\(.id)\t\(.name)"')
+            --jq '.jobs[] | select(.conclusion == "failure") | select(.name != "CI") | "\(.id)\t\(.name)"')
 
           if [ "${#FAILED_JOBS[@]}" -eq 0 ]; then
             echo "No failed jobs found on the completed run."

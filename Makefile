@@ -16,7 +16,7 @@ all: stages analysis update-from generate-makefiles
 # Default target
 help:
 	@echo "Available targets:"
-	@echo "  stages                  - Generate stages.yml from Dockerfiles"
+	@echo "  stages                  - Generate push.yml + stages.yml (parallel PR DAG)"
 	@echo "  analysis                - Generate dependency analysis report"
 	@echo "  update-from             - Update FROM instructions in Dockerfiles according to hierarchy"
 	@echo "  check-from              - Check what FROM instructions would be updated (dry run)"
@@ -30,9 +30,10 @@ help:
 $(GITHUB_DOCKER)/.venv/pyvenv.cfg:
 	$(MAKE) -C $(GITHUB_DOCKER) .venv/pyvenv.cfg
 
-# Generate stages.yml file
+# Generate the workflows: push.yml (build+push, on push/schedule) and stages.yml
+# (parallel per-image PR DAG that passes images as artifacts), plus the analysis.
 stages: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
-	@echo "Generating stages.yml from Dockerfiles..."
+	@echo "Generating push.yml + stages.yml from Dockerfiles..."
 	@$(GENERATOR)
 
 # Generate only the analysis report
@@ -44,12 +45,14 @@ analysis: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 clean:
 	@echo "Cleaning generated files..."
 	rm -f .github/workflows/stages.yml
+	rm -f .github/workflows/push.yml
+	rm -f .github/build-pr-images.sh
 	rm -f DOCKER_DEPENDENCY_ANALYSIS.md
 
 # Validate generated YAML
 validate: stages
 	@echo "Validating generated YAML..."
-	@$(PYTHON) -c "import yaml; yaml.safe_load(open('.github/workflows/stages.yml')); print('✓ YAML syntax is valid')"
+	@$(PYTHON) -c "import yaml; yaml.safe_load(open('.github/workflows/stages.yml')); yaml.safe_load(open('.github/workflows/push.yml')); print('✓ YAML syntax is valid')"
 
 # Update FROM instructions in Dockerfiles according to directory hierarchy
 update-from: $(GITHUB_DOCKER)/.venv/pyvenv.cfg

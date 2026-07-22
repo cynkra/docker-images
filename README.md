@@ -57,6 +57,69 @@ The system automatically:
 - Updates FROM instructions to follow the directory hierarchy convention
 - Provides clear reporting of any inconsistencies
 
+## Posit Package Manager (P3M) base images
+
+The `p3m-*` images are minimal base images with R installed and the default CRAN repository pointed at [Posit Public Package Manager](https://packagemanager.posit.co) (P3M) Linux **binary** packages. Each image targets one P3M binary distribution ("slug"), so R packages install as precompiled binaries instead of compiling from source. Most images install R via [rig](https://github.com/r-lib/rig); two (`p3m-bookworm` and `p3m-rhel10`) build **R from source** in an explicit preparatory stage (see below).
+
+### How the binary repo is configured
+
+rig installs R; its own P3M setup is disabled with `--without-p3m` so a single, explicit configuration is written to the site-wide `Rprofile.site`:
+
+```r
+options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))
+options(repos = c(P3M = "https://packagemanager.posit.co/cran/__linux__/<slug>/latest"))
+```
+
+The `HTTPUserAgent` header is what tells P3M to serve binaries for the running R version and architecture — it is required for `install.packages()` to receive binaries. `pak` works against the same repo out of the box.
+
+### R from source (`p3m-bookworm`, `p3m-rhel10`)
+
+These two compile the current R release (`R-latest.tar.gz`) from source. Rather than a multi-stage Dockerfile, the compile is an **explicit build-stage image** in the pipeline — a first-class, cacheable, reusable node:
+
+- **`p3m-bookworm-rbuild`** / **`p3m-rhel10-rbuild`** compile R into a self-contained prefix (`/opt/R/current`) and remove the source tree. On Debian the build dependencies come straight from `apt-get build-dep r-base` (deb-src enabled); on AlmaLinux from an explicit `-devel` set with the CRB repo enabled (plus `perl`, which R needs to build its man pages).
+- **`p3m-bookworm`** / **`p3m-rhel10`** then `COPY --from` the compiled prefix out of the build-stage image, install only the **runtime** shared libraries R links against (no compilers, **no Java** — see below), symlink `R`/`Rscript`, and apply the P3M `Rprofile.site` configuration.
+
+The final images reference the build stage at its arch-specific tag (`…-rbuild:latest-${TARGETARCH}`) because the multi-arch `:latest` manifest is only published on `main`.
+
+> **How this stays green on a PR.** A dependent image can only `COPY --from` a build-stage image that is actually in the registry. Two build-system changes make that work within the introducing PR itself: (1) `stages.yml` calls the reusable workflow by **local path** (`./.github/workflows/publish.yml`) rather than `@main`, so a PR runs its own `publish.yml`; and (2) build-stage images opt into `# push-on-pr: true`, which makes `publish.yml` push them to the registry on pull-request builds too (normal images stay push-on-main-only). The `p3m-*-rbuild` jobs therefore publish their arch tags first, and the dependent `p3m-bookworm` / `p3m-rhel10` jobs (which `needs:` them) then pull and build — all in the same run.
+
+**Do we need Java?** No — not for base R, at build time or run time. R's `./configure` enables Java support only if a JDK is present (for later `R CMD javareconf` / `rJava`), but R builds and runs without it and does not link `libjvm`. Java is only needed for the optional Java-package ecosystem: a **JDK at build time** (to compile e.g. `rJava`) and a **JRE at run time** (to load it). It was pulled in only via Debian's `apt-get build-dep r-base` (which includes `default-jdk`) in the build stage; the final images deliberately omit it.
+
+### Supported Linux x86_64 platforms
+
+The table below lists every Linux platform for which P3M currently serves x86_64 binaries (source: the P3M `__api__/status` endpoint, version 2026.06.0). RHEL and SLES are proprietary, so OSS, binary-compatible bases are used (AlmaLinux for RHEL, openSUSE Leap for SLES).
+
+| Platform | P3M slug | P3M arch | Image | Base (OSS) |
+|----------|----------|----------|-------|------------|
+| Ubuntu 22.04 (Jammy) | `jammy` | x86_64 | ✅ [`p3m-jammy`](p3m-jammy) | `ubuntu:22.04` |
+| Ubuntu 24.04 (Noble) | `noble` | x86_64, arm64 | ✅ [`p3m-noble`](p3m-noble) | `ubuntu:24.04` |
+| Ubuntu 26.04 (Resolute) | `resolute` | x86_64, arm64 | ✅ [`p3m-resolute`](p3m-resolute) | `ubuntu:26.04` |
+| Debian 12 (Bookworm) | `bookworm` | x86_64 | ✅ [`p3m-bookworm`](p3m-bookworm) *(R from source)* | `debian:bookworm` |
+| Debian 13 (Trixie) | `trixie` | x86_64 | ✅ [`p3m-trixie`](p3m-trixie) | `debian:trixie` |
+| RHEL 8 | `centos8` | x86_64 | ✅ [`p3m-rhel8`](p3m-rhel8) | `almalinux:8` |
+| RHEL 9 / Rocky Linux 9 | `rhel9` | x86_64, arm64 | ✅ [`p3m-rhel9`](p3m-rhel9) | `almalinux:9` |
+| RHEL 10 / Rocky Linux 10 | `rhel10` | x86_64, arm64 | ✅ [`p3m-rhel10`](p3m-rhel10) *(R from source)* | `almalinux:10` |
+| openSUSE 15.6 / SLES 15 SP6/SP7 | `opensuse156` | x86_64 | ✅ [`p3m-opensuse`](p3m-opensuse) | `opensuse/leap:15.6` |
+| CentOS / RHEL 7 | `centos7` | x86_64 | ⚠️ [`p3m-centos7`](p3m-centos7) — **testing only** | `centos:7` (vault, EOL) |
+| Portable manylinux (glibc 2.28+) | `manylinux_2_28` | x86_64, arm64 | ✅ [`p3m-manylinux`](p3m-manylinux) | `almalinux:8` |
+
+> The RHEL 8 binaries are served under the `centos8` slug (P3M has no `rhel8` slug). The portable `manylinux_2_28` binaries are built against glibc 2.28 and work on most modern Linux distributions; `p3m-manylinux` uses AlmaLinux 8 (glibc 2.28) as its base and is built for both x86_64 and arm64.
+
+### CentOS / RHEL 7 (`centos7`): no future-proof OSS base
+
+RHEL 7 is only reachable through paid Extended Life Cycle Support, and as of mid-2026 there is **no OSS base for the `centos7` slug that both works today and stays maintained** — so no image is built for it:
+
+| EL7-family OSS option | Status (July 2026) |
+|-----------------------|--------------------|
+| CentOS 7 | EOL 2024-06-30 — no updates, security-frozen |
+| Amazon Linux 2 | EOL 2026-06-30 — just reached end of life |
+| Oracle Linux 7 | free updates ended 2024-12-31; only paid Extended Support (to 2027) |
+| RHEL 7 itself | Maintenance ended 2024; **ELS ended 2026-06-30** |
+
+There is no AlmaLinux/Rocky "7" (those rebuilds start at 8). The portable `manylinux_2_28` repo does not help either: it requires glibc ≥ 2.28, while EL7 ships glibc 2.17. The only way to keep an EL7 base patched is commercial (e.g. TuxCare ELS), which is not OSS. **Recommendation:** treat `centos7` as legacy-only and steer workloads to `p3m-rhel8`/`p3m-rhel9`/`p3m-rhel10` or `p3m-manylinux`.
+
+A `p3m-centos7` image **is** provided, but strictly **for testing** the `centos7` slug. It builds on the frozen `centos:7` vault image (yum is repointed at `vault.centos.org`), which is unmaintained and insecure — do not depend on it for anything needing security updates.
+
 ## Images
 
 ### [alma9](alma9)
@@ -113,6 +176,71 @@ Forky development environment with DuckDB built from source. Includes build tool
 
 **Dependency**: leg100/otfd:0.4.9
 OpenTofu/Terraform environment with AWS CLI added. Used for infrastructure automation with cloud provider integration.
+
+### [p3m-bookworm](p3m-bookworm)
+
+**Dependency**: debian:bookworm + [p3m-bookworm-rbuild](p3m-bookworm-rbuild) (COPY --from)
+Debian 12 base with **R built from source** (copied from the `p3m-bookworm-rbuild` build-stage image), and the default CRAN repo set to P3M binary packages (slug `bookworm`, x86_64). No Java. See [Posit Package Manager (P3M) base images](#posit-package-manager-p3m-base-images).
+
+### [p3m-bookworm-rbuild](p3m-bookworm-rbuild)
+
+**Dependency**: debian:bookworm
+Build-stage image: compiles the current R release from source into `/opt/R/current` (via `apt-get build-dep r-base`). Consumed by `p3m-bookworm` through `COPY --from`.
+
+### [p3m-centos7](p3m-centos7)
+
+**Dependency**: centos:7 (vault, EOL)
+**Testing only.** CentOS 7 / RHEL 7 are end-of-life with no maintained OSS base; this image builds on the frozen CentOS 7 vault image purely to exercise the P3M `centos7` slug (x86_64). Not for production — see [Posit Package Manager (P3M) base images](#posit-package-manager-p3m-base-images).
+
+### [p3m-jammy](p3m-jammy)
+
+**Dependency**: ubuntu:22.04
+Ubuntu 22.04 base with R (via rig) and the default CRAN repo set to P3M binary packages (slug `jammy`, x86_64).
+
+### [p3m-manylinux](p3m-manylinux)
+
+**Dependency**: almalinux:8
+Portable R base with the default CRAN repo set to P3M portable binaries (slug `manylinux_2_28`, glibc 2.28+). Built for both amd64 and arm64; usable across most modern Linux distributions.
+
+### [p3m-noble](p3m-noble)
+
+**Dependency**: ubuntu:24.04
+Ubuntu 24.04 base with R (via rig) and the default CRAN repo set to P3M binary packages (slug `noble`). Built for both amd64 and arm64.
+
+### [p3m-opensuse](p3m-opensuse)
+
+**Dependency**: opensuse/leap:15.6
+openSUSE Leap 15.6 base (OSS stand-in for SLES 15) with R (via rig) and the default CRAN repo set to P3M binary packages (slug `opensuse156`, x86_64).
+
+### [p3m-resolute](p3m-resolute)
+
+**Dependency**: ubuntu:26.04
+Ubuntu 26.04 base with R (via rig) and the default CRAN repo set to P3M binary packages (slug `resolute`). Built for both amd64 and arm64.
+
+### [p3m-rhel8](p3m-rhel8)
+
+**Dependency**: almalinux:8
+RHEL 8 base (OSS AlmaLinux 8) with R (via rig) and the default CRAN repo set to P3M binary packages (RHEL 8 binaries, slug `centos8`, x86_64).
+
+### [p3m-rhel9](p3m-rhel9)
+
+**Dependency**: almalinux:9
+RHEL 9 base (OSS AlmaLinux 9) with R (via rig) and the default CRAN repo set to P3M binary packages (slug `rhel9`). Built for both amd64 and arm64.
+
+### [p3m-rhel10](p3m-rhel10)
+
+**Dependency**: almalinux:10 + [p3m-rhel10-rbuild](p3m-rhel10-rbuild) (COPY --from)
+RHEL 10 base (OSS AlmaLinux 10) with **R built from source** (copied from the `p3m-rhel10-rbuild` build-stage image), and the default CRAN repo set to P3M binary packages (slug `rhel10`). No Java. Built for both amd64 and arm64.
+
+### [p3m-rhel10-rbuild](p3m-rhel10-rbuild)
+
+**Dependency**: almalinux:10
+Build-stage image: compiles the current R release from source into `/opt/R/current` (CRB `-devel` set + `perl`). Consumed by `p3m-rhel10` through `COPY --from`. Built for both amd64 and arm64.
+
+### [p3m-trixie](p3m-trixie)
+
+**Dependency**: debian:trixie
+Debian 13 base with R (via rig) and the default CRAN repo set to P3M binary packages (slug `trixie`, x86_64).
 
 ### [r-minimal](r-minimal)
 
