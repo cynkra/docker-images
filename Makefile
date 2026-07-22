@@ -7,11 +7,11 @@ GITHUB_DOCKER := ../github-docker
 PYTHON := $(GITHUB_DOCKER)/.venv/bin/python3
 GENERATOR := $(PYTHON) $(GITHUB_DOCKER)/generate_stages.py --root .
 
-.PHONY: stages analysis clean help update-from check-from generate-makefiles publish-yml pr-failure-comment-yml root-makefile
+.PHONY: stages analysis clean help update-from check-from generate-makefiles pr-build-script publish-yml pr-failure-comment-yml root-makefile
 
 .NOTPARALLEL:
 
-all: stages analysis update-from generate-makefiles
+all: stages analysis update-from generate-makefiles pr-build-script
 
 # Default target
 help:
@@ -21,6 +21,7 @@ help:
 	@echo "  update-from             - Update FROM instructions in Dockerfiles according to hierarchy"
 	@echo "  check-from              - Check what FROM instructions would be updated (dry run)"
 	@echo "  generate-makefiles      - Generate Makefiles alongside each Dockerfile"
+	@echo "  pr-build-script         - Generate .github/build-pr-images.py (no-push PR build)"
 	@echo "  publish-yml             - Render publish.yml from template"
 	@echo "  pr-failure-comment-yml  - Render pr-failure-comment.yml from template"
 	@echo "  root-makefile           - Render this Makefile from template"
@@ -65,6 +66,11 @@ check-from: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 generate-makefiles: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
 	@echo "Generating Makefiles for all Dockerfiles..."
 	@$(GENERATOR) --generate-makefiles
+
+# Generate .github/build-pr-images.py (no-push PR build of changed images)
+pr-build-script: $(GITHUB_DOCKER)/.venv/pyvenv.cfg
+	@echo "Generating PR build script..."
+	@$(GENERATOR) --generate-pr-build-script
 
 # Render publish.yml.j2 template
 publish-yml: $(GITHUB_DOCKER)/.venv/pyvenv.cfg

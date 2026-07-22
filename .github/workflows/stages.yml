@@ -21,7 +21,8 @@ env:
 
 jobs:
   alma9:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: alma9
       image_name: alma9
@@ -31,9 +32,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-alma9:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - alma9
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: alma9/rig
       image_name: alma9-rig
@@ -43,9 +45,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rrel-rig-alma9:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-alma9
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: alma9/rig/rrel
       image_name: alma9-rig-rrel
@@ -55,9 +58,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   coinor-rrel-rig-alma9:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rrel-rig-alma9
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: alma9/rig/rrel/coinor
       image_name: alma9-rig-rrel-coinor
@@ -67,7 +71,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   clang18-duckdb:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: clang18-duckdb
       image_name: clang18-duckdb
@@ -77,7 +82,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   forky:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: forky
       image_name: forky
@@ -87,9 +93,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   gcc-forky:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - forky
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: forky/gcc
       image_name: forky-gcc
@@ -99,9 +106,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-gcc-forky:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - gcc-forky
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: forky/gcc/rig
       image_name: forky-gcc-rig
@@ -111,9 +119,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rdev-rig-gcc-forky:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-gcc-forky
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: forky/gcc/rig/rdev
       image_name: forky-gcc-rig-rdev
@@ -123,9 +132,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   duckdb-rdev-rig-gcc-forky:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rdev-rig-gcc-forky
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: forky/gcc/rig/rdev/duckdb
       image_name: forky-gcc-rig-rdev-duckdb
@@ -135,9 +145,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-bookworm:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - p3m-bookworm-rbuild
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-bookworm
       image_name: p3m-bookworm
@@ -147,18 +158,19 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-bookworm-rbuild:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-bookworm-rbuild
       image_name: p3m-bookworm-rbuild
       architectures: '["amd64"]'
-      push_on_pr: true
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-centos7:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-centos7
       image_name: p3m-centos7
@@ -168,7 +180,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-jammy:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-jammy
       image_name: p3m-jammy
@@ -178,7 +191,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-manylinux:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-manylinux
       image_name: p3m-manylinux
@@ -188,7 +202,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-noble:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-noble
       image_name: p3m-noble
@@ -198,7 +213,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-opensuse:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-opensuse
       image_name: p3m-opensuse
@@ -208,7 +224,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-resolute:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-resolute
       image_name: p3m-resolute
@@ -218,9 +235,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-rhel10:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - p3m-rhel10-rbuild
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-rhel10
       image_name: p3m-rhel10
@@ -230,18 +248,19 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-rhel10-rbuild:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-rhel10-rbuild
       image_name: p3m-rhel10-rbuild
       architectures: '["amd64", "arm64"]'
-      push_on_pr: true
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-rhel8:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-rhel8
       image_name: p3m-rhel8
@@ -251,7 +270,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-rhel9:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-rhel9
       image_name: p3m-rhel9
@@ -261,7 +281,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   p3m-trixie:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: p3m-trixie
       image_name: p3m-trixie
@@ -271,7 +292,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   r-minimal:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: r-minimal
       image_name: r-minimal
@@ -281,7 +303,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rchk-igraph:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rchk-igraph
       image_name: rchk-igraph
@@ -291,7 +314,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-debian:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-debian
       image_name: rig-debian
@@ -301,7 +325,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-rocky8:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-rocky8
       image_name: rig-rocky8
@@ -311,7 +336,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-ubuntu:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu
       image_name: rig-ubuntu
@@ -321,9 +347,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dbi-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/dbi
       image_name: rig-ubuntu-dbi
@@ -333,9 +360,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dm-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/dm
       image_name: rig-ubuntu-dm
@@ -345,9 +373,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   duckdb-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/duckdb
       image_name: rig-ubuntu-duckdb
@@ -357,9 +386,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dev-duckdb-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - duckdb-rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/duckdb/dev
       image_name: rig-ubuntu-duckdb-dev
@@ -369,9 +399,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   duckdb4-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/duckdb4
       image_name: rig-ubuntu-duckdb4
@@ -381,9 +412,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   igraph-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/igraph
       image_name: rig-ubuntu-igraph
@@ -393,9 +425,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   r-postgres-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/r-postgres
       image_name: rig-ubuntu-r-postgres
@@ -405,9 +438,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   revdepcheck-rig-ubuntu:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: rig-ubuntu/revdepcheck
       image_name: rig-ubuntu-revdepcheck
@@ -417,7 +451,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   ubuntu24:
-    uses: ./.github/workflows/publish.yml
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24
       image_name: ubuntu24
@@ -427,9 +462,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   msfonts-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/msfonts
       image_name: ubuntu24-msfonts
@@ -439,9 +475,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   pak-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/pak
       image_name: ubuntu24-pak
@@ -451,9 +488,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rlang-pak-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - pak-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/pak/rlang
       image_name: ubuntu24-pak-rlang
@@ -463,9 +501,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rlang2-pak-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - pak-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/pak/rlang2
       image_name: ubuntu24-pak-rlang2
@@ -475,9 +514,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig
       image_name: ubuntu24-rig
@@ -487,9 +527,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rdev-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rdev
       image_name: ubuntu24-rig-rdev
@@ -499,9 +540,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dc-rdev-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rdev-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rdev/dc
       image_name: ubuntu24-rig-rdev-dc
@@ -511,9 +553,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dt-dc-rdev-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - dc-rdev-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rdev/dc/dt
       image_name: ubuntu24-rig-rdev-dc-dt
@@ -523,9 +566,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   gcc14-rdev-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rdev-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rdev/gcc14
       image_name: ubuntu24-rig-rdev-gcc14
@@ -535,9 +579,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   duckdb-gcc14-rdev-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - gcc14-rdev-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rdev/gcc14/duckdb
       image_name: ubuntu24-rig-rdev-gcc14-duckdb
@@ -547,9 +592,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   rrel-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rrel
       image_name: ubuntu24-rig-rrel
@@ -559,9 +605,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dc-rrel-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - rrel-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rrel/dc
       image_name: ubuntu24-rig-rrel-dc
@@ -571,9 +618,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dt-dc-rrel-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - dc-rrel-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rrel/dc/dt
       image_name: ubuntu24-rig-rrel-dc-dt
@@ -583,9 +631,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   dm-dt-dc-rrel-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - dt-dc-rrel-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rrel/dc/dt/dm
       image_name: ubuntu24-rig-rrel-dc-dt-dm
@@ -595,9 +644,10 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   pkgcache-dt-dc-rrel-rig-ubuntu24:
+    if: ${{ github.event_name != 'pull_request' }}
     needs:
       - dt-dc-rrel-rig-ubuntu24
-    uses: ./.github/workflows/publish.yml
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
       path: ubuntu24/rig/rrel/dc/dt/pkgcache
       image_name: ubuntu24-rig-rrel-dc-dt-pkgcache
@@ -605,6 +655,30 @@ jobs:
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  pr-build:
+    name: PR build (changed images + downstream, no push)
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Log in to the Container registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build changed images and downstream dependents (no push)
+        run: python3 .github/build-pr-images.py
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
   ci:
     name: CI
@@ -663,6 +737,7 @@ jobs:
       - dt-dc-rrel-rig-ubuntu24
       - dm-dt-dc-rrel-rig-ubuntu24
       - pkgcache-dt-dc-rrel-rig-ubuntu24
+      - pr-build
     steps:
       - name: All image builds passed
         if: ${{ !(contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')) }}

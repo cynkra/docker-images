@@ -1,5 +1,4 @@
 # arch: amd64, arm64
-# push-on-pr: true
 
 # Named build-stage image for p3m-rhel10.
 #
