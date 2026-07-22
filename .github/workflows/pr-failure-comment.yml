@@ -20,10 +20,12 @@
 #    The parser falls back to the tail of the failed job's log (trimmed at the
 #    last `##[error]`), which captures the docker build failure.
 #
-# 3. The PR workflow is a per-image DAG: one job per image (job name = image
-#    name) plus a final aggregation job named `CI`. We enumerate failed jobs via
-#    the API and comment on each, skipping the `CI` gate itself (its log is just
-#    the aggregation echo, not a build failure).
+# 3. The PR workflow is a per-image DAG: a `detect` pre-step that computes the
+#    build plan, one job per image (job name = image name), and a final
+#    aggregation job named `CI`. We enumerate failed jobs via the API and comment
+#    on each, skipping the `CI` gate itself (its log is just the aggregation echo,
+#    not a build failure). Images not in the plan are skipped, not failed, so they
+#    are never enumerated.
 
 name: PR failure comment
 
