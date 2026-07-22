@@ -1,6 +1,6 @@
 # arch: amd64
 
-FROM rhub/clang18
+FROM rhub/clang20
 
 # Compile the duckdb R package from source with the image's clang toolchain.
 # CRAN serves only source packages for Linux, and `type = "source"` makes the

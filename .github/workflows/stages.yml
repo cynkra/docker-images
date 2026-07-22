@@ -50,6 +50,9 @@ jobs:
             ["alma9-rig-rrel"]="alma9/rig/rrel"
             ["alma9-rig-rrel-coinor"]="alma9/rig/rrel/coinor"
             ["clang18-duckdb"]="clang18-duckdb"
+            ["clang18-duckdb-extension"]="clang18-duckdb/extension"
+            ["clang20-duckdb"]="clang20-duckdb"
+            ["clang20-duckdb-extension"]="clang20-duckdb/extension"
             ["forky"]="forky"
             ["forky-gcc"]="forky/gcc"
             ["forky-gcc-rig"]="forky/gcc/rig"
@@ -104,6 +107,9 @@ jobs:
             ["alma9-rig-rrel"]="alma9-rig"
             ["alma9-rig-rrel-coinor"]="alma9-rig-rrel"
             ["clang18-duckdb"]=""
+            ["clang18-duckdb-extension"]="clang18-duckdb"
+            ["clang20-duckdb"]=""
+            ["clang20-duckdb-extension"]="clang20-duckdb"
             ["forky"]=""
             ["forky-gcc"]="forky"
             ["forky-gcc-rig"]="forky-gcc"
@@ -158,6 +164,9 @@ jobs:
             alma9-rig-rrel
             alma9-rig-rrel-coinor
             clang18-duckdb
+            clang18-duckdb-extension
+            clang20-duckdb
+            clang20-duckdb-extension
             forky
             forky-gcc
             forky-gcc-rig
@@ -399,6 +408,94 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/clang18-duckdb:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/clang18-duckdb:latest" \
             clang18-duckdb
+      - name: Save clang18-duckdb
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/clang18-duckdb.tar \
+            "$REGISTRY/$REPO_NAME/clang18-duckdb:latest-amd64" "$REGISTRY/$REPO_NAME/clang18-duckdb:latest"
+      - name: Upload clang18-duckdb
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-clang18-duckdb
+          path: /tmp/img-out/clang18-duckdb.tar
+          retention-days: 1
+
+  extension-clang18-duckdb:
+    name: clang18-duckdb-extension
+    needs: [detect, clang18-duckdb]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-extension') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image clang18-duckdb
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-clang18-duckdb
+          path: /tmp/img-in
+      - name: Load image clang18-duckdb
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb') }}
+        run: docker load --input /tmp/img-in/clang18-duckdb.tar
+      - name: Build clang18-duckdb-extension
+        run: |
+          date -Idate | tee clang18-duckdb/extension/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-extension:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-extension:latest" \
+            clang18-duckdb/extension
+
+  clang20-duckdb:
+    name: clang20-duckdb
+    needs: [detect]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build clang20-duckdb
+        run: |
+          date -Idate | tee clang20-duckdb/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb:latest" \
+            clang20-duckdb
+      - name: Save clang20-duckdb
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/clang20-duckdb.tar \
+            "$REGISTRY/$REPO_NAME/clang20-duckdb:latest-amd64" "$REGISTRY/$REPO_NAME/clang20-duckdb:latest"
+      - name: Upload clang20-duckdb
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-clang20-duckdb
+          path: /tmp/img-out/clang20-duckdb.tar
+          retention-days: 1
+
+  extension-clang20-duckdb:
+    name: clang20-duckdb-extension
+    needs: [detect, clang20-duckdb]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-extension') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image clang20-duckdb
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-clang20-duckdb
+          path: /tmp/img-in
+      - name: Load image clang20-duckdb
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb') }}
+        run: docker load --input /tmp/img-in/clang20-duckdb.tar
+      - name: Build clang20-duckdb-extension
+        run: |
+          date -Idate | tee clang20-duckdb/extension/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-extension:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-extension:latest" \
+            clang20-duckdb/extension
 
   forky:
     name: forky
@@ -1611,6 +1708,9 @@ jobs:
       - rrel-rig-alma9
       - coinor-rrel-rig-alma9
       - clang18-duckdb
+      - extension-clang18-duckdb
+      - clang20-duckdb
+      - extension-clang20-duckdb
       - forky
       - gcc-forky
       - rig-gcc-forky

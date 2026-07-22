@@ -226,7 +226,35 @@ with the default CRAN repo pointed at a P3M Linux **binary** distribution.
   needs glibc >= 2.28; EL7 ships 2.17). Steer EL workloads to `p3m-rhel8/9/10`
   or `p3m-manylinux`.
 
-## 9. Always Update CLAUDE.md
+## 9. Clang + DuckDB Extension Reproduction Images
+
+The `clang18-duckdb` / `clang20-duckdb` families reproduce
+[duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107): loading a
+**prebuilt** DuckDB extension (e.g. `spatial`) segfaults R when the `duckdb` R
+package was compiled with clang. They form a base → child → grand-child chain:
+
+- **`clang18-duckdb` / `clang20-duckdb`** (root images, external base
+  `rhub/clang18` / `rhub/clang20`) install the `duckdb` R package **from source**
+  with the image's clang toolchain. Use `install.packages("duckdb", type =
+  "source")` here **on purpose** — a deliberate, documented exception to the
+  `pak::pak()` rule (§2). The whole point of these images is to *guarantee* a
+  source compile with the active clang toolchain, and `type = "source"` states
+  that unambiguously (on Linux, CRAN serves only source anyway, and `rhub/clang*`
+  may not ship `pak`). Restrict them to `# arch: amd64` — the r-hub clang images
+  are x86_64-only.
+- **`clang18-duckdb/extension` / `clang20-duckdb/extension`** (nested
+  grand-children, inherit from their parent via the FROM hierarchy) attempt
+  `INSTALL spatial` then `LOAD spatial`, printing `PRAGMA version` / `PRAGMA
+  platform` first for diagnostics.
+
+**Guard the expected crash so it never turns CI red.** The `LOAD` (and, defensively,
+the `INSTALL`) step is wrapped as `{ R -q -e '...' || echo "... failed (exit $?)"; }`
+so the segfault is recorded in the build log while the `RUN` layer still exits 0.
+The image also sets a `CMD` that runs the full `INSTALL`+`LOAD` repro, so
+`docker run <image>` demonstrates the crash directly. `COPY date.txt /date.txt`
+in the grand-children forces a fresh extension-download attempt on each rebuild.
+
+## 10. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development

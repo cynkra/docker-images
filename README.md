@@ -145,7 +145,22 @@ AlmaLinux 9 R environment with COIN-OR SYMPHONY optimization library built and i
 ### [clang18-duckdb](clang18-duckdb)
 
 **Dependency**: rhub/clang18
-Specialized environment with Clang 18 compiler for testing DuckDB with alternative compiler toolchain. Used for compiler compatibility testing.
+Clang 18 environment with the `duckdb` R package compiled **from source** (`install.packages(type = "source")`) using the image's clang toolchain. Base for reproducing compiler-specific DuckDB issues (see [duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107)).
+
+### [clang18-duckdb/extension](clang18-duckdb/extension)
+
+**Dependency**: clang18-duckdb
+Grand-child of `clang18-duckdb` that attempts to `INSTALL` and `LOAD` the DuckDB `spatial` extension. Reproduces [duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107): loading a prebuilt extension segfaults R when duckdb-r was built with clang. The attempt is guarded so the build stays green; `docker run` the image to reproduce the crash.
+
+### [clang20-duckdb](clang20-duckdb)
+
+**Dependency**: rhub/clang20
+Clang 20 counterpart of `clang18-duckdb`: the `duckdb` R package compiled **from source** with the image's clang toolchain.
+
+### [clang20-duckdb/extension](clang20-duckdb/extension)
+
+**Dependency**: clang20-duckdb
+Grand-child of `clang20-duckdb` that attempts to `INSTALL` and `LOAD` the DuckDB `spatial` extension, reproducing [duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107) on clang 20.
 
 ### [forky](forky)
 
