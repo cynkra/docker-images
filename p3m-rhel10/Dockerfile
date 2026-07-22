@@ -19,6 +19,10 @@ FROM ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH} AS rbui
 
 FROM almalinux:10
 
+# Re-declare in this stage so the runtime install below can branch on it
+# (BuildKit fills TARGETARCH automatically; stages.yml also passes it).
+ARG TARGETARCH
+
 COPY date.txt /date.txt
 
 # Bring in the compiled R (only the install prefix).
@@ -27,6 +31,8 @@ COPY --from=rbuild /opt/R/current /opt/R/current
 # Install R's runtime shared libraries (no compilers, no JDK; CRB enabled for
 # libXt/tcl/tk), configure the locale, expose R/Rscript on PATH, and write the
 # authoritative P3M binary repo configuration to the site-wide Rprofile.
+# libquadmath is x86_64-only (no aarch64 build on AlmaLinux 10), so it is
+# installed only on amd64; aarch64 libgfortran does not depend on it.
 RUN \
   dnf -y install 'dnf-command(config-manager)' && \
   dnf config-manager --set-enabled crb && \
@@ -35,7 +41,8 @@ RUN \
     openssl-libs libicu \
     libpng libjpeg-turbo libtiff \
     cairo pango libX11 libXt tcl tk \
-    libgfortran libgomp "libquadmath.so.0()(64bit)" && \
+    libgfortran libgomp && \
+  if [ "${TARGETARCH}" = "amd64" ]; then dnf -y install "libquadmath.so.0()(64bit)"; fi && \
   ln -s /opt/R/current/bin/R /usr/local/bin/R && \
   ln -s /opt/R/current/bin/Rscript /usr/local/bin/Rscript && \
   printf '%s\n' \
