@@ -337,19 +337,25 @@ grand-children forces a fresh extension-download attempt on each rebuild.
 **Also run the full duckdb test suite in the `/extension` grand-children.** In
 addition to the `spatial` `INSTALL`+`LOAD`, each grand-child runs the complete
 `duckdb` R package testthat suite against the *installed* duckdb (the clang /
-shared build), to surface any crash or failure beyond the extension load:
+shared build), to surface any crash or failure beyond the extension load. Use
+the **sanctioned installed-package runner**, not a hand-rolled `test_dir`:
 
-- **Clone the duckdb-r source at the tag matching the installed version**
-  (`v$(packageVersion("duckdb"))`, falling back to the default branch) — the
-  binary/source install ships no tests, so the suite comes from a fresh clone.
-- **Run with the package's internal namespace exposed:**
-  `testthat::test_dir("tests/testthat", package = "duckdb", env = asNamespace("duckdb"), stop_on_failure = FALSE)`.
-  The `env = asNamespace("duckdb")` is essential — the tests/helpers call
-  un-exported internals (`default_conn()`, `get_duckdb_version()`,
-  `simulate_duckdb()`, …), so a plain installed-package `test_dir` can't find
-  them; this mirrors what `test_check()` does under `R CMD check`. Set
-  `DUCKDB_R_RUN_TESTS=true` — `tests/testthat.R` otherwise skips the suite off
-  CRAN/CI.
+- **Install the package *with its tests*** in the parent child image — add
+  `--install-tests` to the duckdb install (`install.packages("duckdb", type =
+  "source", INSTALL_opts = "--install-tests")` for the vendored build;
+  `… R CMD INSTALL --install-tests .` for the shared build). The testthat suite
+  then ships inside the installed package, so the grand-child needs **no source
+  clone** and tests exactly the installed build.
+- **Run `testthat::test_package("duckdb", reporter = "summary", stop_on_failure = FALSE)`.**
+  Do **not** hand-roll `testthat::test_dir(..., env = asNamespace("duckdb"))`: a
+  namespace is a **locked** environment, so the test helpers' bindings (e.g.
+  `drv <- duckdb(...)` in `helper-DBItest.R`) fail with *"cannot add bindings to
+  a locked environment"*. `test_package()` is the sanctioned entry point — it
+  builds a proper **writable** test env whose parent is the namespace, so the
+  tests' un-exported internals (`default_conn()`, `get_duckdb_version()`,
+  `simulate_duckdb()`, …) still resolve.
+- **Opt the suite in with `NOT_CRAN=true DUCKDB_R_RUN_TESTS=true`** — otherwise
+  `skip_on_cran()` (and `tests/testthat.R`) skip most of it.
 - **Install test deps as P3M binaries.** Detect the distro codename from
   `/etc/os-release` and point `repos` at `…/__linux__/<codename>/latest` with the
   `HTTPUserAgent` header (add `cloud.r-project.org` as a source fallback), so the

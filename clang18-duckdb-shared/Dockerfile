@@ -42,7 +42,9 @@ RUN rig add 4.5 --without-pak --without-p3m && \
     scripts/install-libduckdb.sh --prefix /usr/local && \
     test -f /usr/local/lib/libduckdb.so && \
     R -q -e 'options(repos = c(CRAN = "https://cloud.r-project.org")); install.packages("DBI")' && \
-    DUCKDB_R_USE_SYSTEM_LIB=1 R CMD INSTALL . && \
+    # --install-tests keeps the package's testthat suite so the /extension
+    # grand-child can run it via the sanctioned test_package().
+    DUCKDB_R_USE_SYSTEM_LIB=1 R CMD INSTALL --install-tests . && \
     R -q -e 'stopifnot(getRversion() >= "4.5.0", getRversion() < "4.6.0"); library(duckdb); cat("duckdb loaded OK against shared libduckdb\n")' && \
     cd / && rm -rf /tmp/duckdb-r && \
     rm -rf /var/lib/apt/lists/* && \
