@@ -162,6 +162,26 @@ Clang 20 counterpart of `clang18-duckdb`: the `duckdb` R package compiled **from
 **Dependency**: clang20-duckdb
 Grand-child of `clang20-duckdb` that attempts to `INSTALL` and `LOAD` the DuckDB `spatial` extension, reproducing [duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107) on clang 20.
 
+### [clang18-duckdb-shared](clang18-duckdb-shared)
+
+**Dependency**: rhub/clang18
+Like `clang18-duckdb`, but the `duckdb` R package is **linked against a shared `libduckdb`** of the same version (DuckDB v1.5.5, via duckdb-r tag `v1.5.4.9901`) instead of compiling the vendored engine — using duckdb-r's `DUCKDB_R_USE_SYSTEM_LIB` + `scripts/install-libduckdb.sh` mechanism, as its CI/CD does. Only the R glue is clang-built; the engine is the official prebuilt library. Tests whether a matching shared engine avoids the [#1107](https://github.com/duckdb/duckdb-r/issues/1107) extension segfault. R 4.5 pinned; a failed install is a hard build failure.
+
+### [clang18-duckdb-shared/extension](clang18-duckdb-shared/extension)
+
+**Dependency**: clang18-duckdb-shared
+Grand-child of `clang18-duckdb-shared` that `INSTALL`s and `LOAD`s the DuckDB `spatial` extension on the shared-`libduckdb`-linked package. Guarded so the build stays green whether the extension loads cleanly or segfaults; `docker run` the image to see the outcome.
+
+### [clang20-duckdb-shared](clang20-duckdb-shared)
+
+**Dependency**: rhub/clang20
+Clang 20 counterpart of `clang18-duckdb-shared`: the `duckdb` R package linked against the shared `libduckdb` (DuckDB v1.5.5) via the `DUCKDB_R_USE_SYSTEM_LIB` mechanism, on R 4.5.
+
+### [clang20-duckdb-shared/extension](clang20-duckdb-shared/extension)
+
+**Dependency**: clang20-duckdb-shared
+Grand-child of `clang20-duckdb-shared` that `INSTALL`s and `LOAD`s the `spatial` extension on the shared-`libduckdb`-linked package, on clang 20.
+
 ### [forky](forky)
 
 **Dependency**: debian:forky

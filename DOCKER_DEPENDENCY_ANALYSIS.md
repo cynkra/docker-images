@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 63
-- Images with local dependencies: 42
+- Total Dockerfiles found: 67
+- Images with local dependencies: 44
 - Build stages required: 6
 
 ## Dependency Tree
@@ -18,8 +18,12 @@
 ✓ alma9-rig-rrel-coinor ← alma9-rig-rrel ← ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest
 ✓ clang18-duckdb ← rhub/clang18 (external)
 ✓ clang18-duckdb-extension ← clang18-duckdb ← ghcr.io/cynkra/docker-images/clang18-duckdb:latest
+✓ clang18-duckdb-shared ← rhub/clang18 (external)
+✓ clang18-duckdb-shared-extension ← clang18-duckdb-shared ← ghcr.io/cynkra/docker-images/clang18-duckdb-shared:latest
 ✓ clang20-duckdb ← rhub/clang20 (external)
 ✓ clang20-duckdb-extension ← clang20-duckdb ← ghcr.io/cynkra/docker-images/clang20-duckdb:latest
+✓ clang20-duckdb-shared ← rhub/clang20 (external)
+✓ clang20-duckdb-shared-extension ← clang20-duckdb-shared ← ghcr.io/cynkra/docker-images/clang20-duckdb-shared:latest
 ✓ forky ← debian:forky (external)
 ✓ forky-gcc ← forky ← ghcr.io/cynkra/docker-images/forky:latest
 ✓ forky-gcc-rig ← forky-gcc ← ghcr.io/cynkra/docker-images/forky-gcc:latest
@@ -85,7 +89,9 @@
 
 - alma9
 - clang18-duckdb
+- clang18-duckdb-shared
 - clang20-duckdb
+- clang20-duckdb-shared
 - forky
 - p3m-bookworm-rbuild
 - p3m-jammy
@@ -104,7 +110,9 @@
 
 - alma9-rig
 - clang18-duckdb-extension
+- clang18-duckdb-shared-extension
 - clang20-duckdb-extension
+- clang20-duckdb-shared-extension
 - forky-gcc
 - p3m-bookworm
 - p3m-jammy-duckdb
@@ -172,8 +180,8 @@
 - `debian:trixie` used by: p3m-trixie, rig-debian
 - `kalibera/rchk:latest` used by: rchk-igraph
 - `opensuse/leap:15.6` used by: p3m-opensuse
-- `rhub/clang18` used by: clang18-duckdb
-- `rhub/clang20` used by: clang20-duckdb
+- `rhub/clang18` used by: clang18-duckdb, clang18-duckdb-shared
+- `rhub/clang20` used by: clang20-duckdb, clang20-duckdb-shared
 - `rockylinux:8` used by: rig-rocky8
 - `ubuntu:22.04` used by: p3m-jammy, rig-ubuntu
 - `ubuntu:24.04` used by: p3m-noble, ubuntu24
@@ -190,8 +198,12 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `alma9-rig-rrel-coinor`: FROM `ghcr.io/cynkra/docker-images/alma9-rig-rrel:latest` ✓
 - `clang18-duckdb` (root): FROM `rhub/clang18` ✓
 - `clang18-duckdb-extension`: FROM `ghcr.io/cynkra/docker-images/clang18-duckdb:latest` ✓
+- `clang18-duckdb-shared` (root): FROM `rhub/clang18` ✓
+- `clang18-duckdb-shared-extension`: FROM `ghcr.io/cynkra/docker-images/clang18-duckdb-shared:latest` ✓
 - `clang20-duckdb` (root): FROM `rhub/clang20` ✓
 - `clang20-duckdb-extension`: FROM `ghcr.io/cynkra/docker-images/clang20-duckdb:latest` ✓
+- `clang20-duckdb-shared` (root): FROM `rhub/clang20` ✓
+- `clang20-duckdb-shared-extension`: FROM `ghcr.io/cynkra/docker-images/clang20-duckdb-shared:latest` ✓
 - `forky` (root): FROM `debian:forky` ✓
 - `forky-gcc`: FROM `ghcr.io/cynkra/docker-images/forky:latest` ✓
 - `forky-gcc-rig`: FROM `ghcr.io/cynkra/docker-images/forky-gcc:latest` ✓

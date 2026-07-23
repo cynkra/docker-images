@@ -51,8 +51,12 @@ jobs:
             ["alma9-rig-rrel-coinor"]="alma9/rig/rrel/coinor"
             ["clang18-duckdb"]="clang18-duckdb"
             ["clang18-duckdb-extension"]="clang18-duckdb/extension"
+            ["clang18-duckdb-shared"]="clang18-duckdb-shared"
+            ["clang18-duckdb-shared-extension"]="clang18-duckdb-shared/extension"
             ["clang20-duckdb"]="clang20-duckdb"
             ["clang20-duckdb-extension"]="clang20-duckdb/extension"
+            ["clang20-duckdb-shared"]="clang20-duckdb-shared"
+            ["clang20-duckdb-shared-extension"]="clang20-duckdb-shared/extension"
             ["forky"]="forky"
             ["forky-gcc"]="forky/gcc"
             ["forky-gcc-rig"]="forky/gcc/rig"
@@ -116,8 +120,12 @@ jobs:
             ["alma9-rig-rrel-coinor"]="alma9-rig-rrel"
             ["clang18-duckdb"]=""
             ["clang18-duckdb-extension"]="clang18-duckdb"
+            ["clang18-duckdb-shared"]=""
+            ["clang18-duckdb-shared-extension"]="clang18-duckdb-shared"
             ["clang20-duckdb"]=""
             ["clang20-duckdb-extension"]="clang20-duckdb"
+            ["clang20-duckdb-shared"]=""
+            ["clang20-duckdb-shared-extension"]="clang20-duckdb-shared"
             ["forky"]=""
             ["forky-gcc"]="forky"
             ["forky-gcc-rig"]="forky-gcc"
@@ -181,8 +189,12 @@ jobs:
             alma9-rig-rrel-coinor
             clang18-duckdb
             clang18-duckdb-extension
+            clang18-duckdb-shared
+            clang18-duckdb-shared-extension
             clang20-duckdb
             clang20-duckdb-extension
+            clang20-duckdb-shared
+            clang20-duckdb-shared-extension
             forky
             forky-gcc
             forky-gcc-rig
@@ -469,6 +481,58 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-extension:latest" \
             clang18-duckdb/extension
 
+  clang18-duckdb-shared:
+    name: clang18-duckdb-shared
+    needs: [detect]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-shared') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build clang18-duckdb-shared
+        run: |
+          date -Idate | tee clang18-duckdb-shared/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-shared:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-shared:latest" \
+            clang18-duckdb-shared
+      - name: Save clang18-duckdb-shared
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/clang18-duckdb-shared.tar \
+            "$REGISTRY/$REPO_NAME/clang18-duckdb-shared:latest-amd64" "$REGISTRY/$REPO_NAME/clang18-duckdb-shared:latest"
+      - name: Upload clang18-duckdb-shared
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-clang18-duckdb-shared
+          path: /tmp/img-out/clang18-duckdb-shared.tar
+          retention-days: 1
+
+  extension-clang18-duckdb-shared:
+    name: clang18-duckdb-shared-extension
+    needs: [detect, clang18-duckdb-shared]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-shared-extension') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image clang18-duckdb-shared
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-shared') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-clang18-duckdb-shared
+          path: /tmp/img-in
+      - name: Load image clang18-duckdb-shared
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-shared') }}
+        run: docker load --input /tmp/img-in/clang18-duckdb-shared.tar
+      - name: Build clang18-duckdb-shared-extension
+        run: |
+          date -Idate | tee clang18-duckdb-shared/extension/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-shared-extension:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-shared-extension:latest" \
+            clang18-duckdb-shared/extension
+
   clang20-duckdb:
     name: clang20-duckdb
     needs: [detect]
@@ -520,6 +584,58 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-extension:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-extension:latest" \
             clang20-duckdb/extension
+
+  clang20-duckdb-shared:
+    name: clang20-duckdb-shared
+    needs: [detect]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-shared') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build clang20-duckdb-shared
+        run: |
+          date -Idate | tee clang20-duckdb-shared/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-shared:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-shared:latest" \
+            clang20-duckdb-shared
+      - name: Save clang20-duckdb-shared
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/clang20-duckdb-shared.tar \
+            "$REGISTRY/$REPO_NAME/clang20-duckdb-shared:latest-amd64" "$REGISTRY/$REPO_NAME/clang20-duckdb-shared:latest"
+      - name: Upload clang20-duckdb-shared
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-clang20-duckdb-shared
+          path: /tmp/img-out/clang20-duckdb-shared.tar
+          retention-days: 1
+
+  extension-clang20-duckdb-shared:
+    name: clang20-duckdb-shared-extension
+    needs: [detect, clang20-duckdb-shared]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-shared-extension') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image clang20-duckdb-shared
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-shared') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-clang20-duckdb-shared
+          path: /tmp/img-in
+      - name: Load image clang20-duckdb-shared
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-shared') }}
+        run: docker load --input /tmp/img-in/clang20-duckdb-shared.tar
+      - name: Build clang20-duckdb-shared-extension
+        run: |
+          date -Idate | tee clang20-duckdb-shared/extension/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-shared-extension:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-shared-extension:latest" \
+            clang20-duckdb-shared/extension
 
   forky:
     name: forky
@@ -2021,8 +2137,12 @@ jobs:
       - coinor-rrel-rig-alma9
       - clang18-duckdb
       - extension-clang18-duckdb
+      - clang18-duckdb-shared
+      - extension-clang18-duckdb-shared
       - clang20-duckdb
       - extension-clang20-duckdb
+      - clang20-duckdb-shared
+      - extension-clang20-duckdb-shared
       - forky
       - gcc-forky
       - rig-gcc-forky
