@@ -35,6 +35,7 @@ RUN rig add 4.5 --without-pak --without-p3m && \
     cd /tmp/duckdb-r && \
     scripts/install-libduckdb.sh --prefix /usr/local && \
     test -f /usr/local/lib/libduckdb.so && \
+    { echo "=== DIAG: is duckdb::BaseScalarFunction::ToString() exported by libduckdb.so? ==="; nm -D /usr/local/lib/libduckdb.so | grep -E "BaseScalarFunction" | head -20 || echo "NONE"; echo "=== DIAG: stdlib flavor  libc++(St3__1)=$(nm -D /usr/local/lib/libduckdb.so | grep -c St3__1)  libstdc++(__cxx11)=$(nm -D /usr/local/lib/libduckdb.so | grep -c __cxx11) ==="; echo "=== DIAG: /root/.R/Makevars ==="; cat /root/.R/Makevars 2>/dev/null || echo "(none)"; echo "=== DIAG END ==="; } ; \
     R -q -e 'options(repos = c(CRAN = "https://cloud.r-project.org")); install.packages("DBI")' && \
     DUCKDB_R_USE_SYSTEM_LIB=1 R CMD INSTALL . && \
     R -q -e 'stopifnot(getRversion() >= "4.5.0", getRversion() < "4.6.0"); if (!requireNamespace("duckdb", quietly = TRUE)) stop("duckdb failed to install")' && \
