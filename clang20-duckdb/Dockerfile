@@ -27,13 +27,15 @@ ENV MAKEFLAGS="-j4"
 # from source (installing extensions is the job of clang20-duckdb/extension).
 # The getRversion() assertion fails loudly if the active R is not 4.5, and the
 # requireNamespace() check makes a failed duckdb install a hard build failure.
+# `--install-tests` keeps the package's testthat suite in the installed package
+# so the /extension grand-child can run it via the sanctioned test_package().
 RUN rig add 4.5 --without-pak --without-p3m && \
     RVER="$(rig list --plain | grep -E '^4\.5\.' | sort -V | tail -n1)" && \
     echo "Pinning R $RVER" && test -n "$RVER" && \
     ln -sfn "/opt/R/$RVER" /opt/R/pinned && \
     rig default "$RVER" && \
     R --version | head -n1 && \
-    R -q -e 'stopifnot(getRversion() >= "4.5.0", getRversion() < "4.6.0"); options(repos = c(CRAN = "https://cloud.r-project.org")); install.packages("duckdb", type = "source"); if (!requireNamespace("duckdb", quietly = TRUE)) stop("duckdb failed to install")' && \
+    R -q -e 'stopifnot(getRversion() >= "4.5.0", getRversion() < "4.6.0"); options(repos = c(CRAN = "https://cloud.r-project.org")); install.packages("duckdb", type = "source", INSTALL_opts = "--install-tests"); if (!requireNamespace("duckdb", quietly = TRUE)) stop("duckdb failed to install")' && \
     rm -rf /tmp/* && \
     rm -rf /var/tmp/* && \
     true
