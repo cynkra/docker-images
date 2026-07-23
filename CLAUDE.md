@@ -401,8 +401,9 @@ compare against §10: does a matching *shared* engine avoid the #1107 segfault?
   `rhub/clang*` default) references the un-tagged `…ToStringEv` and the package
   fails to load with `undefined symbol: …ToStringEv`. So `sed
   's/-stdlib=libc++/-stdlib=libstdc++/g'` the base image's clang `Makevars` into
-  a new `Makevars.sysduckdb` (pointed to by `R_MAKEVARS_USER`; version-agnostic,
-  so it also covers clang20) and `apt-get install g++` for the libstdc++ headers.
+  a new `Makevars.libstdcxx` (pointed to by `R_MAKEVARS_USER`; version-agnostic,
+  so it also covers clang20; the **same file** the §12 `clang*-duckdb-libstdcxx`
+  source-compile variant uses) and `apt-get install g++` for the libstdc++ headers.
   It is still clang — only the C++ runtime matches the shared engine, which the
   shared-lib link fundamentally requires (there is no libc++ `libduckdb` release).
   Verify the diagnosis with `nm -D libduckdb.so | grep -c __cxx11` (libstdc++)
@@ -412,7 +413,43 @@ compare against §10: does a matching *shared* engine avoid the #1107 segfault?
   identical to §10's (one-session `INSTALL`+`LOAD`, guarded) and run the same full
   duckdb test suite against the installed shared-linked duckdb (§10).
 
-## 12. Always Update CLAUDE.md
+## 12. Clang + DuckDB **Source Compile with libstdc++** (`clang*-duckdb-libstdcxx`)
+
+`clang18-duckdb-libstdcxx` / `clang20-duckdb-libstdcxx` (+ their `/extension`
+grand-children) are the **third** point in the #1107 comparison. They compile
+DuckDB's *vendored* engine into the R package from source with clang — exactly
+like §10's `clang*-duckdb` — but with **libstdc++** instead of the rhub base's
+default **libc++**. This isolates the C++ standard library as the single
+variable across the three families:
+
+| Family | Engine | C++ stdlib |
+|--------|--------|------------|
+| `clang*-duckdb` (§10) | vendored, source-compiled | **libc++** (reproduces the segfault) |
+| `clang*-duckdb-libstdcxx` (§12) | vendored, source-compiled | **libstdc++** |
+| `clang*-duckdb-shared` (§11) | shared official `libduckdb` | libstdc++ glue |
+
+- **Same as `clang*-duckdb` except the stdlib.** Root images (external base
+  `rhub/clang18` / `rhub/clang20`, `# arch: amd64`), same R 4.5 pin / clang paths
+  / `MAKEFLAGS`, same `install.packages("duckdb", type = "source", INSTALL_opts =
+  "--install-tests")` + hard-fail. The only change: switch the toolchain to
+  libstdc++.
+- **Switch the stdlib via a SITE `~/.R/Makevars`, never a package-local setting.**
+  `sed 's/-stdlib=libc++/-stdlib=libstdc++/g' /root/.R/Makevars >
+  /root/.R/Makevars.libstdcxx` (pointed to by `R_MAKEVARS_USER`) and `apt-get
+  install g++` for the libstdc++ headers — the **same `Makevars.libstdcxx`**
+  mechanism §11's shared images use. **A package-local `-stdlib=libstdc++` (in
+  duckdb's own `src/Makevars`) would NOT be CRAN-acceptable**: CRAN requires
+  packages to build with R's configured toolchain; hardcoding a stdlib is
+  non-portable (breaks libc++-only platforms like macOS) and risks ABI mismatch
+  with R/other libraries. The legitimate place for the choice is the R install /
+  site Makevars — which is what these images do.
+- **Extension grand-children** mirror §10's (one-session `spatial`
+  `INSTALL`+`LOAD`, guarded, plus the full `test_package("duckdb")` suite via
+  §10's sanctioned runner), but ask the sharper question: does switching *only*
+  the stdlib to libstdc++ — still a source compile, no shared engine — avoid the
+  crash?
+
+## 13. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development
