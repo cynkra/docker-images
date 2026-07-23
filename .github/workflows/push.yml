@@ -85,6 +85,28 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  clang18-duckdb-libstdcxx:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang18-duckdb-libstdcxx
+      image_name: clang18-duckdb-libstdcxx
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  extension-clang18-duckdb-libstdcxx:
+    needs:
+      - clang18-duckdb-libstdcxx
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang18-duckdb-libstdcxx/extension
+      image_name: clang18-duckdb-libstdcxx-extension
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   clang18-duckdb-shared:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -124,6 +146,28 @@ jobs:
     with:
       path: clang20-duckdb/extension
       image_name: clang20-duckdb-extension
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  clang20-duckdb-libstdcxx:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang20-duckdb-libstdcxx
+      image_name: clang20-duckdb-libstdcxx
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  extension-clang20-duckdb-libstdcxx:
+    needs:
+      - clang20-duckdb-libstdcxx
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang20-duckdb-libstdcxx/extension
+      image_name: clang20-duckdb-libstdcxx-extension
       architectures: '["amd64"]'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -786,10 +830,14 @@ jobs:
       - coinor-rrel-rig-alma9
       - clang18-duckdb
       - extension-clang18-duckdb
+      - clang18-duckdb-libstdcxx
+      - extension-clang18-duckdb-libstdcxx
       - clang18-duckdb-shared
       - extension-clang18-duckdb-shared
       - clang20-duckdb
       - extension-clang20-duckdb
+      - clang20-duckdb-libstdcxx
+      - extension-clang20-duckdb-libstdcxx
       - clang20-duckdb-shared
       - extension-clang20-duckdb-shared
       - forky

@@ -51,10 +51,14 @@ jobs:
             ["alma9-rig-rrel-coinor"]="alma9/rig/rrel/coinor"
             ["clang18-duckdb"]="clang18-duckdb"
             ["clang18-duckdb-extension"]="clang18-duckdb/extension"
+            ["clang18-duckdb-libstdcxx"]="clang18-duckdb-libstdcxx"
+            ["clang18-duckdb-libstdcxx-extension"]="clang18-duckdb-libstdcxx/extension"
             ["clang18-duckdb-shared"]="clang18-duckdb-shared"
             ["clang18-duckdb-shared-extension"]="clang18-duckdb-shared/extension"
             ["clang20-duckdb"]="clang20-duckdb"
             ["clang20-duckdb-extension"]="clang20-duckdb/extension"
+            ["clang20-duckdb-libstdcxx"]="clang20-duckdb-libstdcxx"
+            ["clang20-duckdb-libstdcxx-extension"]="clang20-duckdb-libstdcxx/extension"
             ["clang20-duckdb-shared"]="clang20-duckdb-shared"
             ["clang20-duckdb-shared-extension"]="clang20-duckdb-shared/extension"
             ["forky"]="forky"
@@ -120,10 +124,14 @@ jobs:
             ["alma9-rig-rrel-coinor"]="alma9-rig-rrel"
             ["clang18-duckdb"]=""
             ["clang18-duckdb-extension"]="clang18-duckdb"
+            ["clang18-duckdb-libstdcxx"]=""
+            ["clang18-duckdb-libstdcxx-extension"]="clang18-duckdb-libstdcxx"
             ["clang18-duckdb-shared"]=""
             ["clang18-duckdb-shared-extension"]="clang18-duckdb-shared"
             ["clang20-duckdb"]=""
             ["clang20-duckdb-extension"]="clang20-duckdb"
+            ["clang20-duckdb-libstdcxx"]=""
+            ["clang20-duckdb-libstdcxx-extension"]="clang20-duckdb-libstdcxx"
             ["clang20-duckdb-shared"]=""
             ["clang20-duckdb-shared-extension"]="clang20-duckdb-shared"
             ["forky"]=""
@@ -189,10 +197,14 @@ jobs:
             alma9-rig-rrel-coinor
             clang18-duckdb
             clang18-duckdb-extension
+            clang18-duckdb-libstdcxx
+            clang18-duckdb-libstdcxx-extension
             clang18-duckdb-shared
             clang18-duckdb-shared-extension
             clang20-duckdb
             clang20-duckdb-extension
+            clang20-duckdb-libstdcxx
+            clang20-duckdb-libstdcxx-extension
             clang20-duckdb-shared
             clang20-duckdb-shared-extension
             forky
@@ -481,6 +493,58 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-extension:latest" \
             clang18-duckdb/extension
 
+  clang18-duckdb-libstdcxx:
+    name: clang18-duckdb-libstdcxx
+    needs: [detect]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-libstdcxx') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build clang18-duckdb-libstdcxx
+        run: |
+          date -Idate | tee clang18-duckdb-libstdcxx/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-libstdcxx:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-libstdcxx:latest" \
+            clang18-duckdb-libstdcxx
+      - name: Save clang18-duckdb-libstdcxx
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/clang18-duckdb-libstdcxx.tar \
+            "$REGISTRY/$REPO_NAME/clang18-duckdb-libstdcxx:latest-amd64" "$REGISTRY/$REPO_NAME/clang18-duckdb-libstdcxx:latest"
+      - name: Upload clang18-duckdb-libstdcxx
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-clang18-duckdb-libstdcxx
+          path: /tmp/img-out/clang18-duckdb-libstdcxx.tar
+          retention-days: 1
+
+  extension-clang18-duckdb-libstdcxx:
+    name: clang18-duckdb-libstdcxx-extension
+    needs: [detect, clang18-duckdb-libstdcxx]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-libstdcxx-extension') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image clang18-duckdb-libstdcxx
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-libstdcxx') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-clang18-duckdb-libstdcxx
+          path: /tmp/img-in
+      - name: Load image clang18-duckdb-libstdcxx
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang18-duckdb-libstdcxx') }}
+        run: docker load --input /tmp/img-in/clang18-duckdb-libstdcxx.tar
+      - name: Build clang18-duckdb-libstdcxx-extension
+        run: |
+          date -Idate | tee clang18-duckdb-libstdcxx/extension/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-libstdcxx-extension:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang18-duckdb-libstdcxx-extension:latest" \
+            clang18-duckdb-libstdcxx/extension
+
   clang18-duckdb-shared:
     name: clang18-duckdb-shared
     needs: [detect]
@@ -584,6 +648,58 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-extension:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-extension:latest" \
             clang20-duckdb/extension
+
+  clang20-duckdb-libstdcxx:
+    name: clang20-duckdb-libstdcxx
+    needs: [detect]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-libstdcxx') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build clang20-duckdb-libstdcxx
+        run: |
+          date -Idate | tee clang20-duckdb-libstdcxx/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-libstdcxx:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-libstdcxx:latest" \
+            clang20-duckdb-libstdcxx
+      - name: Save clang20-duckdb-libstdcxx
+        run: |
+          mkdir -p /tmp/img-out
+          docker save --output /tmp/img-out/clang20-duckdb-libstdcxx.tar \
+            "$REGISTRY/$REPO_NAME/clang20-duckdb-libstdcxx:latest-amd64" "$REGISTRY/$REPO_NAME/clang20-duckdb-libstdcxx:latest"
+      - name: Upload clang20-duckdb-libstdcxx
+        uses: actions/upload-artifact@v4
+        with:
+          name: img-clang20-duckdb-libstdcxx
+          path: /tmp/img-out/clang20-duckdb-libstdcxx.tar
+          retention-days: 1
+
+  extension-clang20-duckdb-libstdcxx:
+    name: clang20-duckdb-libstdcxx-extension
+    needs: [detect, clang20-duckdb-libstdcxx]
+    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-libstdcxx-extension') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download image clang20-duckdb-libstdcxx
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-libstdcxx') }}
+        uses: actions/download-artifact@v4
+        with:
+          name: img-clang20-duckdb-libstdcxx
+          path: /tmp/img-in
+      - name: Load image clang20-duckdb-libstdcxx
+        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'clang20-duckdb-libstdcxx') }}
+        run: docker load --input /tmp/img-in/clang20-duckdb-libstdcxx.tar
+      - name: Build clang20-duckdb-libstdcxx-extension
+        run: |
+          date -Idate | tee clang20-duckdb-libstdcxx/extension/date.txt
+          docker build --build-arg TARGETARCH=amd64 \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-libstdcxx-extension:latest-amd64" \
+            --tag "$REGISTRY/$REPO_NAME/clang20-duckdb-libstdcxx-extension:latest" \
+            clang20-duckdb-libstdcxx/extension
 
   clang20-duckdb-shared:
     name: clang20-duckdb-shared
@@ -2137,10 +2253,14 @@ jobs:
       - coinor-rrel-rig-alma9
       - clang18-duckdb
       - extension-clang18-duckdb
+      - clang18-duckdb-libstdcxx
+      - extension-clang18-duckdb-libstdcxx
       - clang18-duckdb-shared
       - extension-clang18-duckdb-shared
       - clang20-duckdb
       - extension-clang20-duckdb
+      - clang20-duckdb-libstdcxx
+      - extension-clang20-duckdb-libstdcxx
       - clang20-duckdb-shared
       - extension-clang20-duckdb-shared
       - forky

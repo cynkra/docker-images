@@ -182,6 +182,26 @@ Clang 20 counterpart of `clang18-duckdb-shared`: the `duckdb` R package linked a
 **Dependency**: clang20-duckdb-shared
 Grand-child of `clang20-duckdb-shared` that `INSTALL`s and `LOAD`s the `spatial` extension on the shared-`libduckdb`-linked package, on clang 20.
 
+### [clang18-duckdb-libstdcxx](clang18-duckdb-libstdcxx)
+
+**Dependency**: rhub/clang18
+Like `clang18-duckdb` (the `duckdb` R package compiled **from source** with clang, on R 4.5), but with **libstdc++** instead of the base's default **libc++** — via a site `~/.R/Makevars` (`R_MAKEVARS_USER`), not a package-local setting. The third point in the [#1107](https://github.com/duckdb/duckdb-r/issues/1107) comparison: does switching only the C++ standard library — still a source compile, no shared engine — avoid the prebuilt-extension segfault? Installs duckdb with `--install-tests`. A failed install is a hard build failure.
+
+### [clang18-duckdb-libstdcxx/extension](clang18-duckdb-libstdcxx/extension)
+
+**Dependency**: clang18-duckdb-libstdcxx
+Grand-child of `clang18-duckdb-libstdcxx` that `INSTALL`s and `LOAD`s the `spatial` extension, then runs the full `duckdb` testthat suite (`testthat::test_package()`), against the libstdc++/source-compiled package. Guarded so the build stays green whether it loads cleanly or crashes; `docker run` to see the outcome.
+
+### [clang20-duckdb-libstdcxx](clang20-duckdb-libstdcxx)
+
+**Dependency**: rhub/clang20
+Clang 20 counterpart of `clang18-duckdb-libstdcxx`: the `duckdb` R package compiled **from source** with clang **and libstdc++** (site `~/.R/Makevars`), on R 4.5, installed with `--install-tests`.
+
+### [clang20-duckdb-libstdcxx/extension](clang20-duckdb-libstdcxx/extension)
+
+**Dependency**: clang20-duckdb-libstdcxx
+Grand-child of `clang20-duckdb-libstdcxx` that `INSTALL`s and `LOAD`s the `spatial` extension and runs the full `duckdb` testthat suite against the libstdc++/source-compiled package, on clang 20.
+
 ### [forky](forky)
 
 **Dependency**: debian:forky

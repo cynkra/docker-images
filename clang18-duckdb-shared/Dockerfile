@@ -19,7 +19,7 @@ FROM rhub/clang18
 # covers clang20) and install g++ for the libstdc++ headers. It is still clang;
 # only the C++ runtime matches the shared engine (which the shared-lib link
 # requires). Same R 4.5 pin as clang18-duckdb (base R-devel can't compile cpp11).
-ENV R_MAKEVARS_USER="/root/.R/Makevars.sysduckdb"
+ENV R_MAKEVARS_USER="/root/.R/Makevars.libstdcxx"
 ENV PATH="/opt/R/pinned/bin:/usr/local/clang/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/lib"
 ENV MAKEFLAGS="-j4"
@@ -36,7 +36,7 @@ RUN rig add 4.5 --without-pak --without-p3m && \
     ln -sfn "/opt/R/$RVER" /opt/R/pinned && \
     rig default "$RVER" && \
     apt-get update && apt-get install -y --no-install-recommends unzip binutils curl ca-certificates g++ && \
-    sed 's/-stdlib=libc++/-stdlib=libstdc++/g' /root/.R/Makevars > /root/.R/Makevars.sysduckdb && \
+    sed 's/-stdlib=libc++/-stdlib=libstdc++/g' /root/.R/Makevars > /root/.R/Makevars.libstdcxx && \
     git clone --depth 1 --branch v1.5.4.9901 https://github.com/duckdb/duckdb-r.git /tmp/duckdb-r && \
     cd /tmp/duckdb-r && \
     scripts/install-libduckdb.sh --prefix /usr/local && \
