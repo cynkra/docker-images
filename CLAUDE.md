@@ -334,6 +334,32 @@ grand-children forces a fresh extension-download attempt on each rebuild.
 > the `linux_amd64` extension build. Whether `LOAD` then segfaults or loads
 > cleanly is exactly what these grand-children exist to show.
 
+**Also run the full duckdb test suite in the `/extension` grand-children.** In
+addition to the `spatial` `INSTALL`+`LOAD`, each grand-child runs the complete
+`duckdb` R package testthat suite against the *installed* duckdb (the clang /
+shared build), to surface any crash or failure beyond the extension load:
+
+- **Clone the duckdb-r source at the tag matching the installed version**
+  (`v$(packageVersion("duckdb"))`, falling back to the default branch) — the
+  binary/source install ships no tests, so the suite comes from a fresh clone.
+- **Run with the package's internal namespace exposed:**
+  `testthat::test_dir("tests/testthat", package = "duckdb", env = asNamespace("duckdb"), stop_on_failure = FALSE)`.
+  The `env = asNamespace("duckdb")` is essential — the tests/helpers call
+  un-exported internals (`default_conn()`, `get_duckdb_version()`,
+  `simulate_duckdb()`, …), so a plain installed-package `test_dir` can't find
+  them; this mirrors what `test_check()` does under `R CMD check`. Set
+  `DUCKDB_R_RUN_TESTS=true` — `tests/testthat.R` otherwise skips the suite off
+  CRAN/CI.
+- **Install test deps as P3M binaries.** Detect the distro codename from
+  `/etc/os-release` and point `repos` at `…/__linux__/<codename>/latest` with the
+  `HTTPUserAgent` header (add `cloud.r-project.org` as a source fallback), so the
+  ~dozen `Suggests` (testthat, DBItest, dplyr, …) install as binaries rather than
+  recompiling with clang. Optional Suggests that stay absent (arrow, sf, wk, …)
+  simply skip their tests.
+- **Guard it like the extension load** (`{ … } || echo "… errored"`, `;`-joined
+  before cleanup so the layer still exits 0): a failing or crashing test is an
+  informative result for these reproduction images, not a reason to turn CI red.
+
 
 ## 11. Clang + DuckDB **Shared-Library** Variant (`clang*-duckdb-shared`)
 
@@ -377,7 +403,8 @@ compare against §10: does a matching *shared* engine avoid the #1107 segfault?
   vs `grep -c St3__1` (libc++).
 - Same R 4.5 pin as §10, but `LD_LIBRARY_PATH=/usr/local/lib` (for `libduckdb.so`;
   no libc++ path needed since the glue is libstdc++). Extension grand-children are
-  identical to §10's (one-session `INSTALL`+`LOAD`, guarded).
+  identical to §10's (one-session `INSTALL`+`LOAD`, guarded) and run the same full
+  duckdb test suite against the installed shared-linked duckdb (§10).
 
 ## 12. Always Update CLAUDE.md
 
