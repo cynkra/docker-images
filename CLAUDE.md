@@ -335,7 +335,51 @@ grand-children forces a fresh extension-download attempt on each rebuild.
 > cleanly is exactly what these grand-children exist to show.
 
 
-## 11. Always Update CLAUDE.md
+## 11. Clang + DuckDB **Shared-Library** Variant (`clang*-duckdb-shared`)
+
+`clang18-duckdb-shared` / `clang20-duckdb-shared` (+ their `/extension`
+grand-children) mirror §10 but **link the `duckdb` R package against a shared
+`libduckdb` of the same version** instead of compiling the vendored engine —
+using duckdb-r's own `DUCKDB_R_USE_SYSTEM_LIB` mechanism, the same one its CI/CD
+runs in `.github/workflows/custom/before-install`. Only the thin R glue is
+clang-built; the DuckDB engine is the official prebuilt library. The point is to
+compare against §10: does a matching *shared* engine avoid the #1107 segfault?
+
+- **Build from the duckdb-r git source, not CRAN.** `DUCKDB_R_USE_SYSTEM_LIB` is
+  a configure-time switch in the duckdb-r tree, and `scripts/install-libduckdb.sh`
+  reads the vendored `pragma_version.cpp`. Clone a **tag whose vendored DuckDB is
+  a released version** so a prebuilt `libduckdb` exists — e.g. `v1.5.4.9901`
+  vendors DuckDB **v1.5.5** (`libduckdb-linux-amd64.zip` published on the v1.5.5
+  release). A `-dev` snapshot has no prebuilt and `install-libduckdb.sh` skips.
+- **The mechanism**: `scripts/install-libduckdb.sh --prefix /usr/local` installs
+  `libduckdb.so` + headers (matching the vendored commit), then
+  `DUCKDB_R_USE_SYSTEM_LIB=1 R CMD INSTALL .` compiles only the glue and links
+  `-lduckdb` with an rpath to the lib dir. configure **hard-fails** unless the
+  lib's embedded commit matches the vendored headers (the "same version" guard).
+  Install `DBI` first (`R CMD INSTALL` does not fetch dependencies); install
+  `unzip`/`binutils` (the script needs `unzip` and `strings`).
+- **Never fall back to a source build here.** CI's `before-install` clears
+  `DUCKDB_R_USE_SYSTEM_LIB` when no prebuilt is found; these images instead
+  **`test -f /usr/local/lib/libduckdb.so`** and hard-fail, so the image always
+  exercises the shared-lib path (that is the whole point).
+- **Build the glue with `libstdc++`, not libc++.** The official `libduckdb` is a
+  **libstdc++** build — its symbols carry the `[abi:cxx11]` tag (e.g.
+  `duckdb::BaseScalarFunction::ToString[abi:cxx11]()`,
+  `_ZNK6duckdb18BaseScalarFunction8ToStringB5cxx11Ev`). A libc++ glue (the
+  `rhub/clang*` default) references the un-tagged `…ToStringEv` and the package
+  fails to load with `undefined symbol: …ToStringEv`. So `sed
+  's/-stdlib=libc++/-stdlib=libstdc++/g'` the base image's clang `Makevars` into
+  a new `Makevars.sysduckdb` (pointed to by `R_MAKEVARS_USER`; version-agnostic,
+  so it also covers clang20) and `apt-get install g++` for the libstdc++ headers.
+  It is still clang — only the C++ runtime matches the shared engine, which the
+  shared-lib link fundamentally requires (there is no libc++ `libduckdb` release).
+  Verify the diagnosis with `nm -D libduckdb.so | grep -c __cxx11` (libstdc++)
+  vs `grep -c St3__1` (libc++).
+- Same R 4.5 pin as §10, but `LD_LIBRARY_PATH=/usr/local/lib` (for `libduckdb.so`;
+  no libc++ path needed since the glue is libstdc++). Extension grand-children are
+  identical to §10's (one-session `INSTALL`+`LOAD`, guarded).
+
+## 12. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development
