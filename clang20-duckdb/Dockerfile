@@ -1,8 +1,8 @@
 # arch: amd64
 
-FROM rhub/clang18
+FROM rhub/clang20
 
-# The rhub/clang18 base ships R-devel (4.6). duckdb's vendored cpp11 calls
+# The rhub/clang20 base ships R-devel (4.6). duckdb's vendored cpp11 calls
 # R_getRegisteredNamespace() guarded by `R_VERSION >= 4.6.0`, but this R-devel
 # build does not declare that symbol, so duckdb fails to compile. Install R 4.5
 # (release) via rig: cpp11 then takes its pre-4.6 code path (R_NamespaceRegistry
@@ -24,7 +24,7 @@ ENV PKG_CONFIG_PATH="/usr/local/clang/lib/pkgconfig"
 ENV MAKEFLAGS="-j4"
 
 # Install R 4.5, pin it as the active R, then compile *only* the duckdb R package
-# from source (installing extensions is the job of clang18-duckdb/extension).
+# from source (installing extensions is the job of clang20-duckdb/extension).
 # The getRversion() assertion fails loudly if the active R is not 4.5, and the
 # requireNamespace() check makes a failed duckdb install a hard build failure.
 RUN rig add 4.5 --without-pak --without-p3m && \

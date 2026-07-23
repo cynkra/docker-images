@@ -73,6 +73,40 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  extension-clang18-duckdb:
+    needs:
+      - clang18-duckdb
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang18-duckdb/extension
+      image_name: clang18-duckdb-extension
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  clang20-duckdb:
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang20-duckdb
+      image_name: clang20-duckdb
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  extension-clang20-duckdb:
+    needs:
+      - clang20-duckdb
+    uses: cynkra/docker-images/.github/workflows/publish.yml@main
+    with:
+      path: clang20-duckdb/extension
+      image_name: clang20-duckdb-extension
+      architectures: '["amd64"]'
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
   forky:
     uses: cynkra/docker-images/.github/workflows/publish.yml@main
     with:
@@ -707,6 +741,9 @@ jobs:
       - rrel-rig-alma9
       - coinor-rrel-rig-alma9
       - clang18-duckdb
+      - extension-clang18-duckdb
+      - clang20-duckdb
+      - extension-clang20-duckdb
       - forky
       - gcc-forky
       - rig-gcc-forky

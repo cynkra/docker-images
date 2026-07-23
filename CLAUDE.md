@@ -258,7 +258,84 @@ Each distro P3M base image has a child layer `p3m-<slug>/duckdb` (image
   After adding/removing a layer, regenerate with
   `make stages generate-makefiles analysis`.
 
-## 10. Always Update CLAUDE.md
+## 10. Clang + DuckDB Extension Reproduction Images
+
+The `clang18-duckdb` / `clang20-duckdb` families reproduce
+[duckdb/duckdb-r#1107](https://github.com/duckdb/duckdb-r/issues/1107): loading a
+**prebuilt** DuckDB extension (e.g. `spatial`) segfaults R when the `duckdb` R
+package was compiled with clang. They form a base → child → grand-child chain:
+
+**Installing duckdb and installing extensions are two separate images** — the
+duckdb install must succeed, while the extension load is *expected* to crash, so
+they get opposite failure policies (hard vs soft).
+
+- **`clang18-duckdb` / `clang20-duckdb`** (root images, external base
+  `rhub/clang18` / `rhub/clang20`) install **only** the `duckdb` R package **from
+  source** with the image's clang toolchain. Use `install.packages("duckdb", type
+  = "source")` here **on purpose** — a deliberate, documented exception to the
+  `pak::pak()` rule (§2). The whole point of these images is to *guarantee* a
+  source compile with the active clang toolchain, and `type = "source"` states
+  that unambiguously (on Linux, CRAN serves only source anyway, and `rhub/clang*`
+  may not ship `pak`). **Treat a failed duckdb install as a hard failure:**
+  `install.packages()` only *warns* and exits 0 on a failed build, so append
+  `if (!requireNamespace("duckdb", quietly = TRUE)) stop("duckdb failed to install")`
+  to fail the build. Restrict them to `# arch: amd64` — the r-hub clang images
+  are x86_64-only.
+    - **Install R 4.5 (release) via rig; do not use the base image's R-devel.**
+      The `rhub/clang*` bases ship R-devel (4.6). duckdb's vendored `cpp11`
+      calls `R_getRegisteredNamespace()` under `#if R_VERSION >= R_Version(4,6,0)`,
+      but the R-devel build on these images does **not** declare that symbol, so
+      duckdb (and any cpp11 package) fails to compile with
+      `use of undeclared identifier 'R_getRegisteredNamespace'`. Installing R 4.5
+      makes `cpp11` take its pre-4.6 path (`R_NamespaceRegistry` / `R_getVar`,
+      both present in R 4.5) and duckdb builds. R 4.5 is also a more
+      representative reproduction than R-devel.
+    - **`rig default` is not enough — pin R 4.5 and put it first on `PATH`.** On
+      these bases the plain `R` command resolves to R-devel *regardless* of the
+      link `rig default` updates (verified from CI: R-devel still ran the install
+      → package landed in `.../library/4.6`). So after `rig add 4.5`, capture the
+      exact version, `ln -sfn /opt/R/<ver> /opt/R/pinned`, and set
+      `ENV PATH="/opt/R/pinned/bin:…"` **before** the inherited PATH. That makes
+      plain `R` = R 4.5 in the image and every child. Assert it with
+      `stopifnot(getRversion() >= "4.5.0", getRversion() < "4.6.0")` so a wrong R
+      fails the build loudly instead of falling back into the cpp11 error.
+    - **Re-declare the clang paths at the image level.** The base wires clang
+      via `/root/.R/Makevars` (version-independent, kept via `R_MAKEVARS_USER`),
+      but exports clang's `bin`/`lib` paths only through the *devel* R's
+      `Renviron`/`Rprofile`, which a different R version does not inherit. So also
+      put `/usr/local/clang/bin` on `PATH`, and set
+      `ENV LD_LIBRARY_PATH=/usr/local/clang/lib` (needed at runtime to load the
+      clang/`libc++`-built duckdb) and `ENV PKG_CONFIG_PATH=/usr/local/clang/lib/pkgconfig`
+      so R 4.5 both compiles and loads duckdb with the clang toolchain.
+    - **Compile in parallel with `ENV MAKEFLAGS=-j4`.** duckdb's `configure` only
+      runs its `MAKEFLAGS` auto-probe when `MAKEFLAGS` is unset, and that probe
+      is broken in the CRAN tarball layout here (`scripts/setup-makeflags.R` is
+      absent), leaving `MAKEFLAGS` as a garbage string and the build
+      single-threaded (~30 min). Setting `MAKEFLAGS=-j4` skips the probe and
+      parallelises the compile (a few minutes).
+- **`clang18-duckdb/extension` / `clang20-duckdb/extension`** (nested
+  grand-children, inherit from their parent via the FROM hierarchy) do the
+  **extension** half: they `INSTALL spatial` then `LOAD spatial`, printing
+  `PRAGMA version` / `PRAGMA platform` first for diagnostics. **Run `INSTALL`
+  and `LOAD` in the SAME R session** (one `R -q -e '...'`): duckdb caches
+  downloaded extensions in a per-session temp dir, so a `LOAD` in a fresh
+  session fails with "Extension not found" instead of exercising the load. This
+  matches the issue's REPREX.
+
+**Guard the expected crash so it never turns CI red.** The whole `INSTALL`+`LOAD`
+attempt is wrapped as `{ R -q -e '...' || echo "... failed (exit $?)"; }` so a
+segfault (or any other failure) is recorded in the build log while the `RUN`
+layer still exits 0. The image also sets a `CMD` that runs the same repro, so
+`docker run <image>` demonstrates it directly. `COPY date.txt /date.txt` in the
+grand-children forces a fresh extension-download attempt on each rebuild.
+
+> Note (observed in CI): a source-built duckdb reports `PRAGMA platform` =
+> `linux_amd64` (not the CRAN binary's `linux_amd64_gcc4`), so `INSTALL` fetches
+> the `linux_amd64` extension build. Whether `LOAD` then segfaults or loads
+> cleanly is exactly what these grand-children exist to show.
+
+
+## 11. Always Update CLAUDE.md
 
 - **Always update** this CLAUDE.md file when making changes to Docker images or establishing new patterns
 - Include any new best practices, patterns, or important considerations discovered during development
