@@ -362,9 +362,22 @@ compare against §10: does a matching *shared* engine avoid the #1107 segfault?
   `DUCKDB_R_USE_SYSTEM_LIB` when no prebuilt is found; these images instead
   **`test -f /usr/local/lib/libduckdb.so`** and hard-fail, so the image always
   exercises the shared-lib path (that is the whole point).
-- Same R 4.5 pin + clang wiring as §10, plus `/usr/local/lib` on
-  `LD_LIBRARY_PATH` for `libduckdb.so`. Extension grand-children are identical to
-  §10's (one-session `INSTALL`+`LOAD`, guarded).
+- **Build the glue with `libstdc++`, not libc++.** The official `libduckdb` is a
+  **libstdc++** build — its symbols carry the `[abi:cxx11]` tag (e.g.
+  `duckdb::BaseScalarFunction::ToString[abi:cxx11]()`,
+  `_ZNK6duckdb18BaseScalarFunction8ToStringB5cxx11Ev`). A libc++ glue (the
+  `rhub/clang*` default) references the un-tagged `…ToStringEv` and the package
+  fails to load with `undefined symbol: …ToStringEv`. So `sed
+  's/-stdlib=libc++/-stdlib=libstdc++/g'` the base image's clang `Makevars` into
+  a new `Makevars.sysduckdb` (pointed to by `R_MAKEVARS_USER`; version-agnostic,
+  so it also covers clang20) and `apt-get install g++` for the libstdc++ headers.
+  It is still clang — only the C++ runtime matches the shared engine, which the
+  shared-lib link fundamentally requires (there is no libc++ `libduckdb` release).
+  Verify the diagnosis with `nm -D libduckdb.so | grep -c __cxx11` (libstdc++)
+  vs `grep -c St3__1` (libc++).
+- Same R 4.5 pin as §10, but `LD_LIBRARY_PATH=/usr/local/lib` (for `libduckdb.so`;
+  no libc++ path needed since the glue is libstdc++). Extension grand-children are
+  identical to §10's (one-session `INSTALL`+`LOAD`, guarded).
 
 ## 12. Always Update CLAUDE.md
 
