@@ -5,8 +5,8 @@
 
 ## Summary
 
-- Total Dockerfiles found: 73
-- Images with local dependencies: 48
+- Total Dockerfiles found: 72
+- Images with local dependencies: 47
 - Build stages required: 6
 
 ## Dependency Tree
@@ -50,7 +50,6 @@
 ✓ p3m-resolute-duckdb ← p3m-resolute ← ghcr.io/cynkra/docker-images/p3m-resolute:latest
 ✓ p3m-rhel10 ← almalinux:10 (external)
   └─ FROM p3m-rhel10-rbuild ← ghcr.io/cynkra/docker-images/p3m-rhel10-rbuild:latest-${TARGETARCH}
-✓ p3m-rhel10-duckdb ← p3m-rhel10 ← ghcr.io/cynkra/docker-images/p3m-rhel10:latest
 ✓ p3m-rhel10-rbuild ← almalinux:10 (external)
 ✓ p3m-rhel8 ← almalinux:8 (external)
 ✓ p3m-rhel8-duckdb ← p3m-rhel8 ← ghcr.io/cynkra/docker-images/p3m-rhel8:latest
@@ -150,7 +149,6 @@
 - alma9-rig-rrel
 - forky-gcc-rig
 - p3m-bookworm-duckdb
-- p3m-rhel10-duckdb
 - rig-ubuntu-duckdb-dev
 - ubuntu24-pak-rlang
 - ubuntu24-pak-rlang2
@@ -240,7 +238,6 @@ This section shows the expected FROM instructions based on directory hierarchy:
 - `p3m-resolute` (root): FROM `ubuntu:26.04` ✓
 - `p3m-resolute-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-resolute:latest` ✓
 - `p3m-rhel10` (root): FROM `almalinux:10` ✓
-- `p3m-rhel10-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-rhel10:latest` ✓
 - `p3m-rhel10-rbuild` (root): FROM `almalinux:10` ✓
 - `p3m-rhel8` (root): FROM `almalinux:8` ✓
 - `p3m-rhel8-duckdb`: FROM `ghcr.io/cynkra/docker-images/p3m-rhel8:latest` ✓

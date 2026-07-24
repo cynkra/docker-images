@@ -81,7 +81,6 @@ jobs:
             ["p3m-resolute"]="p3m-resolute"
             ["p3m-resolute-duckdb"]="p3m-resolute/duckdb"
             ["p3m-rhel10"]="p3m-rhel10"
-            ["p3m-rhel10-duckdb"]="p3m-rhel10/duckdb"
             ["p3m-rhel10-rbuild"]="p3m-rhel10-rbuild"
             ["p3m-rhel8"]="p3m-rhel8"
             ["p3m-rhel8-duckdb"]="p3m-rhel8/duckdb"
@@ -156,7 +155,6 @@ jobs:
             ["p3m-resolute"]=""
             ["p3m-resolute-duckdb"]="p3m-resolute"
             ["p3m-rhel10"]="p3m-rhel10-rbuild"
-            ["p3m-rhel10-duckdb"]="p3m-rhel10"
             ["p3m-rhel10-rbuild"]=""
             ["p3m-rhel8"]=""
             ["p3m-rhel8-duckdb"]="p3m-rhel8"
@@ -231,7 +229,6 @@ jobs:
             p3m-resolute
             p3m-resolute-duckdb
             p3m-rhel10
-            p3m-rhel10-duckdb
             p3m-rhel10-rbuild
             p3m-rhel8
             p3m-rhel8-duckdb
@@ -1307,42 +1304,6 @@ jobs:
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel10:latest-amd64" \
             --tag "$REGISTRY/$REPO_NAME/p3m-rhel10:latest" \
             p3m-rhel10
-      - name: Save p3m-rhel10
-        run: |
-          mkdir -p /tmp/img-out
-          docker save --output /tmp/img-out/p3m-rhel10.tar \
-            "$REGISTRY/$REPO_NAME/p3m-rhel10:latest-amd64" "$REGISTRY/$REPO_NAME/p3m-rhel10:latest"
-      - name: Upload p3m-rhel10
-        uses: actions/upload-artifact@v4
-        with:
-          name: img-p3m-rhel10
-          path: /tmp/img-out/p3m-rhel10.tar
-          retention-days: 1
-
-  duckdb-p3m-rhel10:
-    name: p3m-rhel10-duckdb
-    needs: [detect, p3m-rhel10]
-    if: ${{ !cancelled() && needs.detect.result == 'success' && contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel10-duckdb') }}
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Download image p3m-rhel10
-        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel10') }}
-        uses: actions/download-artifact@v4
-        with:
-          name: img-p3m-rhel10
-          path: /tmp/img-in
-      - name: Load image p3m-rhel10
-        if: ${{ contains(fromJSON(needs.detect.outputs.plan), 'p3m-rhel10') }}
-        run: docker load --input /tmp/img-in/p3m-rhel10.tar
-      - name: Build p3m-rhel10-duckdb
-        run: |
-          date -Idate | tee p3m-rhel10/duckdb/date.txt
-          docker build --build-arg TARGETARCH=amd64 \
-            --tag "$REGISTRY/$REPO_NAME/p3m-rhel10-duckdb:latest-amd64" \
-            --tag "$REGISTRY/$REPO_NAME/p3m-rhel10-duckdb:latest" \
-            p3m-rhel10/duckdb
 
   p3m-rhel10-rbuild:
     name: p3m-rhel10-rbuild
@@ -2361,7 +2322,6 @@ jobs:
       - p3m-resolute
       - duckdb-p3m-resolute
       - p3m-rhel10
-      - duckdb-p3m-rhel10
       - p3m-rhel10-rbuild
       - p3m-rhel8
       - duckdb-p3m-rhel8
