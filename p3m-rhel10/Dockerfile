@@ -33,10 +33,13 @@ COPY --from=rbuild /opt/R/current /opt/R/current
 # authoritative P3M binary repo configuration to the site-wide Rprofile.
 # libquadmath is x86_64-only (no aarch64 build on AlmaLinux 10), so it is
 # installed only on amd64; aarch64 libgfortran does not depend on it.
+# `which` is required: R's `utils` package runs `system("which ...")` in its
+# .onLoad, and the AlmaLinux minimal base ships no `which` - without it, utils
+# (and therefore install.packages()) fails to load. Debian bases include it.
 RUN \
   dnf -y install 'dnf-command(config-manager)' && \
   dnf config-manager --set-enabled crb && \
-  dnf -y install glibc-langpack-en \
+  dnf -y install glibc-langpack-en which \
     readline pcre2 xz-libs bzip2-libs libtirpc \
     openssl-libs libicu \
     libpng libjpeg-turbo libtiff \

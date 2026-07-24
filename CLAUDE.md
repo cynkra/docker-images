@@ -195,6 +195,15 @@ with the default CRAN repo pointed at a P3M Linux **binary** distribution.
       /opt/R/current /opt/R/current`, installs only R's **runtime** shared
       libraries (no compilers, **no Java**), symlinks `/opt/R/current/bin/{R,Rscript}`
       into `/usr/local/bin`, and writes the P3M `Rprofile.site`.
+    - **The runtime image must install `which`** on the AlmaLinux bases: R's
+      `utils` package runs `system("which ...")` in its `.onLoad`, and the
+      AlmaLinux minimal base ships no `which`. Without it `utils` fails to load
+      (`system` errors with *"Function not implemented"`), so even
+      `install.packages()` is undefined — while base R still starts, masking the
+      problem. Debian bases already include `which`, so `p3m-bookworm` is fine;
+      `p3m-rhel10` must add it explicitly. R installs into **`lib64`** on EL
+      (`R_HOME=/opt/R/current/lib64/R`), which is fine — the packages are all
+      present; the only missing piece was `which`.
     - Reference the build stage at its **arch-specific** tag
       (`…-rbuild:latest-${TARGETARCH}`, `ARG TARGETARCH` in scope) — the multi-arch
       `:latest` manifest only exists on `main`.
