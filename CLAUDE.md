@@ -249,6 +249,16 @@ Each distro P3M base image has a child layer `p3m-<slug>/duckdb` (image
 - **No layer on the `-rbuild` stages.** `p3m-bookworm-rbuild` and
   `p3m-rhel10-rbuild` are internal R-compilation build stages, not distro
   runtimes, so they get no duckdb layer.
+- **Source-built-R bases need a compiler.** `p3m-bookworm` builds R from
+  source and P3M ships no duckdb **binary** for its R build, so
+  `install.packages("duckdb")` compiles from source. Its base carries no
+  compiler, so `p3m-bookworm/duckdb` installs a C++ toolchain (`g++`, `make`,
+  and `xz-utils` — duckdb's vendored sources ship xz-compressed), sets
+  `MAKEFLAGS` explicitly (configure's `setup-makeflags.R` helper is absent and
+  to cap parallelism), builds duckdb, then `apt-get purge --auto-remove`s the
+  toolchain to keep the image slim. Its modern gcc handles C++17 (unlike EL7).
+  (`p3m-rhel10` also builds R from source but gets a duckdb binary from P3M, so
+  it needs no compiler.)
 - **No layer on `p3m-centos7`.** P3M ships no duckdb **binary** for the EL7
   slug, so `install.packages("duckdb")` falls back to a source build, which
   EL7's gcc 4.8 cannot do (`C++17 standard requested but CXX17 is not
